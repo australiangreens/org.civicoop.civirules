@@ -1,60 +1,56 @@
 <?php
+/**
+ * Class for CiviRules Contribution status changed
+ *
+ * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
+ * @license AGPL-3.0
+ */
 
-class CRM_CivirulesConditions_Activity_StatusChanged extends CRM_CivirulesConditions_Generic_FieldValueChangeComparison {
-
-  /**
+class CRM_CivirulesConditions_Contribution_StatusChanged extends CRM_CivirulesConditions_Generic_FieldValueChangeComparison {
+	
+	/**
    * Returns the value of the field for the condition
    * For example: I want to check if age > 50, this function would return the 50
    *
    * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
-   * @return mixed
+   * @return
    * @access protected
+   * @abstract
    */
   protected function getOriginalFieldValue(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $field = 'status_id';
+  	$entity = $this->getEntity();
+    if ($triggerData->getOriginalEntity() != $entity) {
+      return null;
+    }
 
     $data = $triggerData->getOriginalData();
+    $field = $this->getField();
     if (isset($data[$field])) {
       return $data[$field];
     }
-
     return null;
   }
-
-  /**
+	
+	/**
    * Returns the value of the field for the condition
    * For example: I want to check if age > 50, this function would return the 50
    *
    * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
-   * @return mixed
+   * @return
    * @access protected
+   * @abstract
    */
   protected function getFieldValue(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $field = 'status_id';
-
-    $activityData = $triggerData->getEntityData('Activity');
-    $data = civicrm_api3('Activity', 'getsingle', array(
-      'return' => array($field),
-      'id' => $activityData['id'],
-    ));
+  	$entity = $this->getEntity();
+    $data = $triggerData->getEntityData($entity);
+    $field = $this->getField();
     if (isset($data[$field])) {
       return $data[$field];
     }
-
     return null;
-  }
-
-  /**
-   * Returns an array with required entity names
-   *
-   * @return array
-   * @access public
-   */
-  public function requiredEntities() {
-    return array('Activity');
-  }
-
-  /**
+  }	
+	
+	/**
    * Returns an array with all possible options for the field, in
    * case the field is a select field, e.g. gender, or financial type
    * Return false when the field is a select field
@@ -66,17 +62,27 @@ class CRM_CivirulesConditions_Activity_StatusChanged extends CRM_CivirulesCondit
    * @return bool
    */
   public function getFieldOptions() {
-    return CRM_Core_BAO_OptionValue::getOptionValuesAssocArrayFromName('activity_status');
+    return CRM_Core_BAO_OptionValue::getOptionValuesAssocArrayFromName('contribution_status');
   }
 
   /**
-   * Returns true when the field is a select option with multiple select
+   * Returns name of entity
    *
-   * @see getFieldOptions
-   * @return bool
+   * @return string
+   * @access protected
    */
-  public function isMultiple() {
-    return true;
+  protected function getEntity() {
+    return 'Contribution';
+  }
+
+  /**
+   * Returns name of the field
+   *
+   * @return string
+   * @access protected
+   */
+  protected function getField() {
+    return 'contribution_status_id';
   }
 
 }
