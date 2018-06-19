@@ -1,7 +1,7 @@
 {
   "name": "australian_greens/org.civicoop.civirules",
   "type": "drupal-module",
-  "description": "Australian Greens fork of the civirules civicrm extesnion",
+  "description": "Australian Greens fork of the civirules civicrm extension",
   "require": {
     "composer/installers": "~1.0",
     "drupal/drupal": "~7"
