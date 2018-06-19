@@ -24,6 +24,10 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
     if (empty($ruleTagOptionGroup)) {
       CRM_Civirules_Utils_OptionGroup::create('civirule_rule_tag', 'Tags for CiviRules', 'Tags used to filter CiviRules on the CiviRules page');
     }
+    // now insert all Civirules Actions and Conditions
+    $this->executeSqlFile('sql/insertCivirulesActions.sql');
+    $this->executeSqlFile('sql/insertCivirulesConditions.sql');
+
   }
 
   public function uninstall() {
@@ -253,4 +257,70 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
 		");
 		return TRUE;
 	}
+
+  /**
+   * Upgrade 1023 (issue #189 - replace managed entities with inserts
+   *
+   * @return bool
+   */
+	public function upgrade_1023() {
+    $this->ctx->log->info('Applying update 1023 - remove unwanted managed entities');
+    $query = "DELETE FROM civicrm_managed WHERE module = %1 AND entity_type IN(%2, %3, %4)";
+    $params = array(
+      1 => array("org.civicoop.civirules", "String"),
+      2 => array("CiviRuleAction", "String"),
+      3 => array("CiviRuleCondition", "String"),
+      4 => array("CiviRuleTrigger", "String"),
+    );
+    if (CRM_Core_DAO::checkTableExists("civicrm_managed")) {
+      CRM_Core_DAO::executeQuery($query, $params);
+    }
+
+    // Update the participant trigger and add the event conditions
+    CRM_Core_DAO::executeQuery("UPDATE `civirule_trigger` SET `class_name` = 'CRM_CivirulesPostTrigger_Participant' WHERE `object_name` = 'Participant'");
+    CRM_Core_DAO::executeQuery("
+      INSERT INTO civirule_condition (name, label, class_name, is_active) VALUES 
+        ('event_type', 'Event Type is', 'CRM_CivirulesConditions_Event_EventType', 1),
+        ('participant_role', 'Participant has role', 'CRM_CivirulesConditions_Participant_ParticipantRole', 1),
+        ('participant_status', 'Participant status is', 'CRM_CivirulesConditions_Participant_ParticipantStatus', 1);
+    ");
+
+    return TRUE;
+	}
+
+  /**
+   * Upgrade 1024 (issue #138 rules for trash en untrash)
+   *
+   * @return bool
+   */
+  public function upgrade_1024() {
+    CRM_Core_DAO::executeQuery("UPDATE `civirule_trigger` SET `class_name`='CRM_CivirulesPostTrigger_ContactTrashed', `op`='update' WHERE `name` in ('trashed_contact','trashed_individual','trashed_organization','trashed_household')");
+    CRM_Core_DAO::executeQuery("UPDATE `civirule_trigger` SET `class_name`='CRM_CivirulesPostTrigger_ContactRestored', `op`='update' WHERE `name` in ('restored_contact','restored_individual','restored_organization','restored_household')");
+    return TRUE;
+  }
+
+  /**
+   * Upgrade 1030 add Contact Lives in Country condition
+   */
+	public function upgrade_1025() {
+    $this->ctx->log->info('Applying update 1030 - add LivesInCountry condition to CiviRules');
+    $select = "SELECT COUNT(*) FROM civirule_condition WHERE class_name = %1";
+    $selectParams = array(
+      1 => array('CRM_CivirulesConditions_Contact_LivesInCountry', 'String'),
+    );
+    $count = CRM_Core_DAO::singleValueQuery($select, $selectParams);
+    if ($count == 0) {
+      $insert = "INSERT INTO civirule_condition (name, label, class_name, is_active) VALUES(%1, %2, %3, %4)";
+      $insertParams = array(
+        1 => array('contact_in_country', 'String'),
+        2 => array('Contact Lives in (one of) Country(ies)', 'String'),
+        3 => array('CRM_CivirulesConditions_Contact_LivesInCountry', 'String'),
+        4 => array(1, 'Integer'),
+      );
+      CRM_Core_DAO::executeQuery($insert, $insertParams);
+    }
+    return TRUE;
+  }
+
 }
+
