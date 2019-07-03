@@ -328,23 +328,6 @@ class CRM_Civirules_Utils {
   }
 
   /**
-   * Method to retrieve the custom search id of the find rules search
-   * @return array|bool
-   */
-  public static function getFindRulesCsId() {
-    // find custom search to find rules
-    try {
-      return civicrm_api3('OptionValue', 'getvalue', array(
-        'option_group_id' => 'custom_search',
-        'name' => 'CRM_Civirules_Form_Search_Rules',
-        'return' => 'value'
-      ));
-    } catch (CiviCRM_API3_Exception $ex) {
-      return FALSE;
-    }
-  }
-  
-  /**
    * Method to get the activity type list
    *
    * @return array
@@ -371,6 +354,95 @@ class CRM_Civirules_Utils {
       $campaignList = array();
     }
     return $campaignList;
+  }
+
+  /**
+   * Function to return event type list
+   *
+   * @return array $eventTypeList
+   * @access public
+   */
+  public static function getEventTypeList() {
+    $eventTypeList = array();
+    $eventTypeOptionGroupId = self::getOptionGroupIdWithName('event_type');
+    $params = array(
+      'option_group_id' => $eventTypeOptionGroupId,
+      'is_active' => 1,
+      'options' => array('limit' => 0));
+    $eventTypes = civicrm_api3('OptionValue', 'Get', $params);
+    foreach ($eventTypes['values'] as $optionValue) {
+      $eventTypeList[$optionValue['value']] = $optionValue['label'];
+    }
+    return $eventTypeList;
+  }
+
+  /**
+   * Method to set the date operator options
+   *
+   * @return array
+   */
+  public static function getActivityDateOperatorOptions() {
+    return array(
+      'equals',
+      'later than',
+      'later than or equal',
+      'earlier than',
+      'earlier than or equal',
+      'not equal',
+      'between',
+    );
+  }
+
+  /**
+   * Method to set the generic comparison operators
+   *
+   * @return array
+   */
+  public static function getGenericComparisonOperatorOptions() {
+    return array(
+      'equals',
+      'greater than',
+      'greater than or equal',
+      'less than',
+      'less than or equal',
+      'not equal',
+    );
+  }
+
+  /**
+   * Method to get the CiviCRM version
+   *
+   * @return float
+   * @throws CiviCRM_API3_Exception
+   */
+  public static function getCiviVersion() {
+    $apiVersion = (string) civicrm_api3('Domain', 'getvalue', array('current_domain' => "TRUE", 'return' => 'version'));
+    $civiVersion = (float) substr($apiVersion, 0, 3);
+    return $civiVersion;
+  }
+
+  /**
+   * Method to get the civirules base path
+   *
+   * @return string
+   * @throws CiviCRM_API3_Exception
+   */
+  public static function getCivirulesPath() {
+    $version = CRM_Core_BAO_Domain::version();
+    if ($version >= 4.7) {
+      $container = CRM_Extension_System::singleton()->getFullContainer();
+      return $container->getPath('org.civicoop.civirules');
+    }
+    else {
+      $settings = civicrm_api3('Setting', 'getsingle', []);
+      $path = $settings['extensionsDir'].'/civirules/';
+      if (is_dir($path)) {
+        return $path;
+      }
+      else {
+        return $settings['extensionsDir'].'/org.civicoop/civirules/';
+      }
+    }
   }
 
 }

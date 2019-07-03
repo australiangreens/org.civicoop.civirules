@@ -276,14 +276,46 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
       CRM_Core_DAO::executeQuery($query, $params);
     }
 
+    // now insert all Civirules Actions and Conditions
+    $this->executeSqlFile('sql/insertCivirulesActions.sql');
+    $this->executeSqlFile('sql/insertCivirulesConditions.sql');
+
+    // Now check whether we have a backup and restore the backup
+    if (CRM_Core_DAO::checkTableExists('civirule_rule_action_backup')) {
+      CRM_Core_DAO::executeQuery("TRUNCATE `civirule_rule_action`");
+      CRM_Core_DAO::executeQuery("
+        INSERT INTO `civirule_rule_action` 
+        SELECT `civirule_rule_action_backup`.`id`,
+        `civirule_rule_action_backup`.`rule_id`,
+        `civirule_action`.`id` as `action_id`,
+        `civirule_rule_action_backup`.`action_params`,
+        `civirule_rule_action_backup`.`delay`,
+        `civirule_rule_action_backup`.`ignore_condition_with_delay`,
+        `civirule_rule_action_backup`.`is_active` 
+        FROM `civirule_rule_action_backup`
+        INNER JOIN `civirule_action` ON `civirule_rule_action_backup`.`action_class_name` = `civirule_action`.`class_name`
+      ");
+      CRM_Core_DAO::executeQuery("DROP TABLE `civirule_rule_action_backup`");
+    }
+    if (CRM_Core_DAO::checkTableExists('civirule_rule_condition_backup')) {
+      CRM_Core_DAO::executeQuery("TRUNCATE `civirule_rule_condition`");
+      CRM_Core_DAO::executeQuery("
+        INSERT INTO `civirule_rule_condition` 
+        SELECT `civirule_rule_condition_backup`.`id`,
+        `civirule_rule_condition_backup`.`rule_id`,
+        `civirule_rule_condition_backup`.`condition_link`,
+        `civirule_condition`.`id` as `condition_id`,
+        `civirule_rule_condition_backup`.`condition_params`,
+        `civirule_rule_condition_backup`.`is_active` 
+        FROM `civirule_rule_condition_backup`
+        INNER JOIN `civirule_condition` ON `civirule_rule_condition_backup`.`condition_class_name` = `civirule_condition`.`class_name`
+      ");
+      CRM_Core_DAO::executeQuery("DROP TABLE `civirule_rule_condition_backup`");
+    }
+
+
     // Update the participant trigger and add the event conditions
     CRM_Core_DAO::executeQuery("UPDATE `civirule_trigger` SET `class_name` = 'CRM_CivirulesPostTrigger_Participant' WHERE `object_name` = 'Participant'");
-    CRM_Core_DAO::executeQuery("
-      INSERT INTO civirule_condition (name, label, class_name, is_active) VALUES 
-        ('event_type', 'Event Type is', 'CRM_CivirulesConditions_Event_EventType', 1),
-        ('participant_role', 'Participant has role', 'CRM_CivirulesConditions_Participant_ParticipantRole', 1),
-        ('participant_status', 'Participant status is', 'CRM_CivirulesConditions_Participant_ParticipantStatus', 1);
-    ");
 
     return TRUE;
 	}
@@ -300,10 +332,10 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
   }
 
   /**
-   * Upgrade 1030 add Contact Lives in Country condition
+   * Upgrade 1025 add Contact Lives in Country condition
    */
 	public function upgrade_1025() {
-    $this->ctx->log->info('Applying update 1030 - add LivesInCountry condition to CiviRules');
+    $this->ctx->log->info('Applying update 1025 - add LivesInCountry condition to CiviRules');
     $select = "SELECT COUNT(*) FROM civirule_condition WHERE class_name = %1";
     $selectParams = array(
       1 => array('CRM_CivirulesConditions_Contact_LivesInCountry', 'String'),
@@ -319,6 +351,192 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
       );
       CRM_Core_DAO::executeQuery($insert, $insertParams);
     }
+    return TRUE;
+  }
+
+  /**
+   * Upgrade 1026 add activity date conditions.
+   */
+  public function upgrade_1026() {
+    // This function is a stub and does not do anything in particulair.
+    return TRUE;
+  }
+
+  /**
+   * Upgrade 1027 check and insert civirules conditions, actions and triggers if needed
+   */
+  public function upgrade_1027() {
+    $this->ctx->log->info('Applying update 1027 - inserting conditions, actions and triggers if required');
+    CRM_Civirules_Utils_Upgrader::checkCiviRulesConditions();
+    CRM_Civirules_Utils_Upgrader::checkCiviRulesActions();
+    CRM_Civirules_Utils_Upgrader::checkCiviRulesTriggers();
+    return TRUE;
+  }
+
+  public function upgrade_2000() {
+    // Stub function to make sure the schema version jumps to 2000, indicating we are on 2.x version. 
+    return TRUE;
+  }
+
+  /**
+   * Upgrade 1028 add activity date condition
+   */
+  public function upgrade_2010() {
+    $this->ctx->log->info('Applying update 2010 - add Activity Date is .... condition');
+    $select = "SELECT COUNT(*) FROM civirule_condition WHERE class_name = %1";
+    $selectParams = array(
+      1 => array('CRM_CivirulesConditions_Activity_DateComparison', 'String'),
+    );
+    $count = \CRM_Core_DAO::singleValueQuery($select, $selectParams);
+    if ($count == 0) {
+      $insert = "INSERT INTO civirule_condition (name, label, class_name, is_active) VALUES(%1, %2, %3, %4)";
+      $insertParams = array(
+        1 => array('activity_date_comparison', 'String'),
+        2 => array('Activity Date is ....', 'String'),
+        3 => array('CRM_CivirulesConditions_Activity_Date', 'String'),
+        4 => array(1, 'Integer'),
+      );
+      \CRM_Core_DAO::executeQuery($insert, $insertParams);
+    }
+    return TRUE;
+  }
+
+  public function upgrade_2011() {
+    \CRM_Core_DAO::executeQuery("INSERT INTO civirule_condition (name, label, class_name, is_active)
+  VALUES('group_type', 'Group is (not) one of Type(s)', 'CRM_CivirulesConditions_Group_GroupType', 1);");
+    return TRUE;
+  }
+
+  /**
+   * Upgrade 2012 add xth contribution of donor condition
+   */
+  public function upgrade_2012() {
+    $this->ctx->log->info('Applying update 2012 - add xth Contribution condition');
+    $select = "SELECT COUNT(*) FROM civirule_condition WHERE class_name = %1";
+    $selectParams = array(
+      1 => array('CRM_CivirulesConditions_Contribution_xthContribution', 'String'),
+    );
+    $count = \CRM_Core_DAO::singleValueQuery($select, $selectParams);
+    if ($count == 0) {
+      $insert = "INSERT INTO civirule_condition (name, label, class_name, is_active) VALUES(%1, %2, %3, %4)";
+      $insertParams = array(
+        1 => array('xth_contribution_contact', 'String'),
+        2 => array('xth Contribution of Contact', 'String'),
+        3 => array('CRM_CivirulesConditions_Contribution_xthContribution', 'String'),
+        4 => array(1, 'Integer'),
+      );
+      \CRM_Core_DAO::executeQuery($insert, $insertParams);
+    }
+    return TRUE;
+  }
+
+  /**
+   * Upgrade 2013 add contribution paid by condition
+   */
+  public function upgrade_2013() {
+    $this->ctx->log->info('Applying update 2013 - add Contributon Paid By condition');
+    $select = "SELECT COUNT(*) FROM civirule_condition WHERE class_name = %1";
+    $selectParams = array(
+      1 => array('CRM_CivirulesConditions_Contribution_PaidBy', 'String'),
+    );
+    $count = CRM_Core_DAO::singleValueQuery($select, $selectParams);
+    if ($count == 0) {
+      $insert = "INSERT INTO civirule_condition (name, label, class_name, is_active) VALUES(%1, %2, %3, %4)";
+      $insertParams = array(
+        1 => array('contribution_paid_y', 'String'),
+        2 => array('Contribution paid by', 'String'),
+        3 => array('CRM_CivirulesConditions_Contribution_PaidBy', 'String'),
+        4 => array(1, 'Integer'),
+      );
+      CRM_Core_DAO::executeQuery($insert, $insertParams);
+    }
+    return TRUE;
+  }
+
+  public function upgrade_2014() {
+    CRM_Core_DAO::executeQuery("
+        INSERT INTO civirule_trigger (name, label, object_name, op, cron, class_name, created_date, created_user_id)
+        VALUES 
+        ('membershipenddate', 'Membership End Date', NULL, NULL, 1, 'CRM_CivirulesCronTrigger_MembershipEndDate',  CURDATE(), 1);
+    ");
+    return TRUE;
+  }
+
+  /**
+   * Upgrade 2015 remove custom search and add manage rules form
+   */
+  public function upgrade_2015() {
+    $this->ctx->log->info('Applying update 2015');
+    // remove custom search
+    try {
+      $optionValueId = civicrm_api3('OptionValue', 'getvalue', [
+        'option_group_id' => 'custom_search',
+        'name' => 'CRM_Civirules_Form_Search_Rules',
+        'return' => 'id'
+      ]);
+      if ($optionValueId) {
+        civicrm_api3('OptionValue', 'delete', ['id' => $optionValueId]);
+      }
+    } catch (CiviCRM_API3_Exception $ex) {
+    }
+    return TRUE;
+  }
+
+  /**
+   * Upgrade 2020 - change constraints for civirule_rule to ON DELETE CASCADE
+   *
+   * @return bool
+   */
+  public function upgrade_2020() {
+    $this->ctx->log->info('Applying update 2020');
+    // civirule_rule_tag table
+    $drop = "ALTER TABLE civirule_rule_tag DROP FOREIGN KEY fk_rule_id";
+    CRM_Core_DAO::executeQuery($drop);
+    $cascade = "ALTER TABLE civirule_rule_tag ADD CONSTRAINT fk_rule_id 
+    FOREIGN KEY (rule_id) REFERENCES civirule_rule (id) ON DELETE CASCADE";
+    CRM_Core_DAO::executeQuery($cascade);
+    // civirule_rule_condition table
+    $drop = "ALTER TABLE civirule_rule_condition DROP FOREIGN KEY fk_rc_condition";
+    CRM_Core_DAO::executeQuery($drop);
+    $cascade = "ALTER TABLE civirule_rule_condition ADD CONSTRAINT fk_rc_condition 
+    FOREIGN KEY (condition_id) REFERENCES civirule_condition (id) ON DELETE CASCADE";
+    CRM_Core_DAO::executeQuery($cascade);
+    $drop = "ALTER TABLE civirule_rule_condition DROP FOREIGN KEY fk_rc_rule";
+    CRM_Core_DAO::executeQuery($drop);
+    $cascade = "ALTER TABLE civirule_rule_condition ADD CONSTRAINT fk_rc_rule 
+    FOREIGN KEY (rule_id) REFERENCES civirule_rule (id) ON DELETE CASCADE";
+    CRM_Core_DAO::executeQuery($cascade);
+    // civirule_rule_action table
+    $drop = "ALTER TABLE civirule_rule_action DROP FOREIGN KEY fk_ra_action";
+    CRM_Core_DAO::executeQuery($drop);
+    $cascade = "ALTER TABLE civirule_rule_action ADD CONSTRAINT fk_ra_action 
+    FOREIGN KEY (action_id) REFERENCES civirule_action (id) ON DELETE CASCADE";
+    CRM_Core_DAO::executeQuery($cascade);
+    $drop = "ALTER TABLE civirule_rule_action DROP FOREIGN KEY fk_ra_rule";
+    CRM_Core_DAO::executeQuery($drop);
+    $cascade = "ALTER TABLE civirule_rule_action ADD CONSTRAINT fk_ra_rule 
+    FOREIGN KEY (rule_id) REFERENCES civirule_rule (id) ON DELETE CASCADE";
+    CRM_Core_DAO::executeQuery($cascade);
+    return TRUE;
+  }
+
+  public function upgrade_2021() {
+    CRM_Core_DAO::executeQuery("
+        INSERT INTO civirule_trigger (name, label, object_name, op, cron, class_name, created_date, created_user_id)
+        VALUES 
+        ('eventdate', 'Event Date reached', NULL, NULL, 1, 'CRM_CivirulesCronTrigger_EventDate',  CURDATE(), 1);
+    ");
+    return TRUE;
+  }
+
+  /**
+   * Upgrade 1027 check and insert civirules conditions, actions and triggers if needed
+   */
+  public function upgrade_2022() {
+    $this->ctx->log->info('Applying update 2022 - inserting conditions, actions and triggers if required');
+    CRM_Civirules_Utils_Upgrader::checkCiviRulesConditions();
+    CRM_Civirules_Utils_Upgrader::checkCiviRulesActions();
+    CRM_Civirules_Utils_Upgrader::checkCiviRulesTriggers();
     return TRUE;
   }
 
