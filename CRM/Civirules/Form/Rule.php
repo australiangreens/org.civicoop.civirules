@@ -3,14 +3,14 @@
  * Form controller class to manage CiviRule/Rule
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
- * 
+ *
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
 require_once 'CRM/Core/Form.php';
 
 class CRM_Civirules_Form_Rule extends CRM_Core_Form {
-  
+
   protected $ruleId = NULL;
 
   protected $rule;
@@ -26,7 +26,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
   /**
    * Function to buildQuickForm (extends parent function)
-   * 
+   *
    * @access public
    */
   function buildQuickForm() {
@@ -59,10 +59,14 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
   /**
    * Function to perform processing before displaying form (overrides parent function)
-   * 
+   *
    * @access public
    */
   function preProcess() {
+    // make sure Cancel returns to the overview
+    $session = CRM_Core_Session::singleton();
+    $session->pushUserContext(CRM_Utils_System::url('civicrm/civirules/form/rulesview', 'reset=1'));
+
     $this->ruleId = CRM_Utils_Request::retrieve('id', 'Integer');
 
     $this->rule = new CRM_Civirules_BAO_Rule();
@@ -97,26 +101,41 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
     $this->assign('action', $this->_action);
     $this->assign('rule', $this->rule);
-    $session = CRM_Core_Session::singleton();
+
+    if ($this->_action == CRM_Core_Action::UPDATE) {
+      $clones = civicrm_api3('CiviRuleRule', 'getclones', [
+        'id' => $this->ruleId,
+      ]);
+      if ($clones['count'] > 0) {
+        $cloneLabels = [];
+        foreach ($clones['values'] as $key => $clone) {
+          $cloneLabels[$key] = $clone['label'];
+        }
+        $this->assign('clones', implode(',', $cloneLabels));
+      }
+    }
   }
 
   /**
    * Function to perform post save processing (extends parent function)
-   * 
+   *
    * @access public
    */
   function postProcess() {
     $session = CRM_Core_Session::singleton();
     $userId = $session->get('userID');
-    if ($this->_action == CRM_Core_Action::DELETE) {
-      CRM_Civirules_BAO_Rule::deleteWithId($this->ruleId);
-      $session->setStatus('CiviRule deleted', 'Delete', 'success');
-      CRM_Utils_System::redirect($session->readUserContext());
+
+    if (isset($this->_submitValues['_qf_Rule_next_clone'])) {
+      $result = civicrm_api3('CiviRuleRule', 'clone', [
+        'id' => $this->ruleId,
+      ]);
+      $this->ruleId = $result['values']['clone_id'];
+      $session->setStatus('Rule cloned succesfully', 'CiviRule clone', 'success');
+    } else {
+      $this->saveRule($this->_submitValues, $userId);
+      $this->saveRuleTrigger($this->_submitValues);
+      $session->setStatus('Rule with linked Trigger saved succesfully', 'CiviRule saved', 'success');
     }
-    
-    $this->saveRule($this->_submitValues, $userId);
-    $this->saveRuleTrigger($this->_submitValues);
-    $session->setStatus('Rule with linked Trigger saved succesfully', 'CiviRule saved', 'success');
     /*
      * if add mode, set user context to form in edit mode to add conditions and actions
      */
@@ -127,9 +146,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
     if (isset($this->_submitValues['rule_trigger_select'])) {
       $redirectUrl = $this->getTriggerRedirect($this->_submitValues['rule_trigger_select']);
-      if ($redirectUrl) {
-        CRM_Utils_System::redirect($redirectUrl);
-      }
+      $session->pushUserContext($redirectUrl);
     }
 
     parent::postProcess();
@@ -137,7 +154,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
   /**
    * Function to set default values (overrides parent function)
-   * 
+   *
    * @return array $defaults
    * @access public
    */
@@ -157,7 +174,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
   /**
    * Function to add validation rules (overrides parent function)
-   * 
+   *
    * @access public
    */
   function addRules() {
@@ -220,7 +237,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
   /**
    * Function to add the form elements
-   * 
+   *
    * @access protected
    */
   protected function createFormElements() {
@@ -235,13 +252,13 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
         $this->addWysiwyg('rule_help_text', ts('Help text with purpose of rule'), array('rows' => 6, 'cols' => 80), FALSE);
       }
       $this->add('select', 'rule_tag_id', ts('Civirule Tag(s)'), CRM_Civirules_BAO_RuleTag::getRuleTagsList(), FALSE,
-        array('id' => 'rule_tag_id', 'multiple' => 'multiple', 'class' => 'crm-select2'));
+        array('id' => 'rule_tag_id', 'multiple' => 'multiple', 'class' => 'crm-select2 huge'));
       $this->add('checkbox', 'rule_is_active', ts('Enabled'));
       $this->add('text', 'rule_created_date', ts('Created Date'));
       $this->add('text', 'rule_created_contact', ts('Created By'));
       $triggerList = array(' - select - ') + CRM_Civirules_Utils::buildTriggerList();
       asort($triggerList);
-      $this->add('select', 'rule_trigger_select', ts('Select Trigger'), $triggerList, false, array('class' => 'crm-select2'));
+      $this->add('select', 'rule_trigger_select', ts('Select Trigger'), $triggerList, false, array('class' => 'crm-select2 huge'));
       if ($this->_action == CRM_Core_Action::UPDATE) {
         $this->createUpdateFormElements();
       }
@@ -257,6 +274,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     } else {
       $this->addButtons(array(
         array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
+        array('type' => 'next', 'name' => ts('Clone'), 'subName' => 'clone', 'icon' => 'fa-creative-commons'),
         array('type' => 'cancel', 'name' => ts('Cancel'))));
     }
   }
@@ -272,7 +290,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
   /**
    * Function to set the form title based on action and data coming in
-   * 
+   *
    * @access protected
    */
   protected function setFormTitle() {
@@ -282,7 +300,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
   /**
    * Function to set default values if action is add
-   * 
+   *
    * @param array $defaults
    * @access protected
    */
@@ -295,7 +313,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
   /**
    * Function to set default values if action is update
-   * 
+   *
    * @param array $defaults
    * @access protected
    */
@@ -324,7 +342,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
         $defaults['rule_help_text'] = $ruleData[$this->ruleId]['help_text'];
       }
       $defaults['rule_is_active'] = $ruleData[$this->ruleId]['is_active'];
-      $defaults['rule_created_date'] = date('d-m-Y', 
+      $defaults['rule_created_date'] = date('d-m-Y',
         strtotime($ruleData[$this->ruleId]['created_date']));
       $defaults['rule_created_contact'] = CRM_Civirules_Utils::
         getContactName($ruleData[$this->ruleId]['created_user_id']);
@@ -377,7 +395,9 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $ruleActions[$ruleActionId]['formattedDelay'] = '';
       if (!empty($ruleAction['delay'])) {
         $delayClass = unserialize($ruleAction['delay']);
-        $ruleActions[$ruleActionId]['formattedDelay'] = $delayClass->getDelayExplanation();
+        if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
+          $ruleActions[$ruleActionId]['formattedDelay'] = $delayClass->getDelayExplanation();
+        }
       }
     }
     return $ruleActions;

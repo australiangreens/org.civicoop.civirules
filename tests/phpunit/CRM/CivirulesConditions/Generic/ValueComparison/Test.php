@@ -9,7 +9,7 @@ use Civi\Test\TransactionalInterface;
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  * @group headless
  */
-class CRM_CivirulesConditions_Generic_ValueComparison_Test extends \PHPUnit_Framework_TestCase implements HeadlessInterface, HookInterface, TransactionalInterface {
+class CRM_CivirulesConditions_Generic_ValueComparison_Test extends \PHPUnit\Framework\TestCase implements HeadlessInterface, HookInterface, TransactionalInterface {
 
   public function setUpHeadless() {
     // Civi\Test has many helpers, like install(), uninstall(), sql(), and sqlFile().
@@ -49,6 +49,12 @@ class CRM_CivirulesConditions_Generic_ValueComparison_Test extends \PHPUnit_Fram
     $this->assertFalse($compareMethod->invoke($testObject, 'false', 'truth', 'contains string'));
     $this->assertTrue($compareMethod->invoke($testObject, 'yes please', 'yes', 'contains string'));
     $this->assertTrue($compareMethod->invoke($testObject, 'Yes please', 'yes', 'contains string')); // Test caps.
+
+    // Test the striung on the left does not contain the string on the right.
+    $this->assertTrue($compareMethod->invoke($testObject, 'false', 'truth', 'not contains string'));
+    $this->assertFalse($compareMethod->invoke($testObject, 'test', 'test', 'not contains string'));
+    $this->assertTrue($compareMethod->invoke($testObject, 'yes please', 'no', 'not contains string'));
+    $this->assertTrue($compareMethod->invoke($testObject, 'yes please', 'no', 'not contains string')); // Test caps.
   }
 
 }
