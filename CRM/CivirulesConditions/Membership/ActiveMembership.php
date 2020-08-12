@@ -5,6 +5,20 @@ class CRM_CivirulesConditions_Membership_ActiveMembership extends CRM_Civirules_
   protected $_conditionParams = array();
 
   /**
+   * Method to set the Rule Condition data
+   *
+   * @param array $ruleCondition
+   * @access public
+   */
+  public function setRuleConditionData($ruleCondition) {
+    parent::setRuleConditionData($ruleCondition);
+    $this->conditionParams = array();
+    if (!empty($this->ruleCondition['condition_params'])) {
+      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
+    }
+  }
+
+  /**
    * This method returns true or false when an condition is valid or not
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
@@ -19,9 +33,9 @@ class CRM_CivirulesConditions_Membership_ActiveMembership extends CRM_Civirules_
 
     $memberships = civicrm_api3('Membership', 'get', $params);
     if (isset($memberships['values']) && count($memberships['values']) > 0) {
-      return true;
+      return ($this->conditionParams['negate'] ? false : true);
     }
-    return false;
+    return ($this->conditionParams['negate'] ? true : false);
   }
 
   /**

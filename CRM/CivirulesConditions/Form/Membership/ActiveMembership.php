@@ -21,6 +21,12 @@ class CRM_CivirulesConditions_Form_Membership_ActiveMembership extends CRM_Civir
     asort($membershipTypes);
     $this->add('select', 'membership_type_id', ts('Membership Type'), $membershipTypes, true);
 
+    $this->add(
+      'checkbox',
+      'negate',
+      ts('Negate')
+    );
+
     $this->addButtons(array(
       array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
       array('type' => 'cancel', 'name' => ts('Cancel'))));
@@ -38,6 +44,9 @@ class CRM_CivirulesConditions_Form_Membership_ActiveMembership extends CRM_Civir
     if (!empty($data['membership_type_id'])) {
       $defaultValues['membership_type_id'] = $data['membership_type_id'];
     }
+    if (!empty($data['negate'])) {
+      $defaultValues['negate'] = $data['negate'];
+    }
     return $defaultValues;
   }
 
@@ -49,6 +58,7 @@ class CRM_CivirulesConditions_Form_Membership_ActiveMembership extends CRM_Civir
    */
   public function postProcess() {
     $data['membership_type_id'] = $this->_submitValues['membership_type_id'];
+    $data['negate'] = $this->_submitValues['negate'];
     $this->ruleCondition->condition_params = serialize($data);
     $this->ruleCondition->save();
     parent::postProcess();
