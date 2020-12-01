@@ -31,8 +31,7 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
   }
 
   /**
-   * Method to check if the condition is valid, will check if the contact
-   * has an activity of the selected type
+   * Method to check if the condition is valid, will check if the campaign is (not) of the selected type
    *
    * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool

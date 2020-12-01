@@ -1,9 +1,17 @@
 <?php
 
+use CRM_Civirules_ExtensionUtil as E;
+
 class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
 {
 
   protected $ruleConditionId = false;
+
+  /**
+   * The (internal) name of the rule condition
+   * @var string
+   */
+  protected $ruleConditionName = '';
 
   protected $ruleCondition;
 
@@ -28,9 +36,9 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
    *
    * @access public
    */
-  public function preProcess()
-  {
+  public function preProcess() {
     $this->ruleConditionId = CRM_Utils_Request::retrieve('rule_condition_id', 'Integer');
+    $this->ruleConditionName = CRM_Utils_Request::retrieve('condition_name', 'String');
 
     $this->ruleCondition = new CRM_Civirules_BAO_RuleCondition();
     $this->ruleCondition->id = $this->ruleConditionId;
@@ -71,6 +79,8 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
     parent::preProcess();
 
     $this->setFormTitle();
+    $this->assign('ruleConditionHelp', $this->getHelpText());
+    $this->assign('ruleName', $this->condition->name);
 
     //set user context
     $session = CRM_Core_Session::singleton();
@@ -98,7 +108,7 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
 
   public function postProcess() {
     $session = CRM_Core_Session::singleton();
-    $session->setStatus('Condition '.$this->condition->label.' parameters updated to CiviRule '.$this->rule->label, 'Condition parameters updated', 'success');
+    $session->setStatus(E::ts("Condition '%1' parameters updated for CiviRule '%2'", [1 => $this->condition->label, 2 => $this->rule->label]), 'Condition parameters updated', 'success');
 
     $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->rule->id, TRUE);
     CRM_Utils_System::redirect($redirectUrl);
@@ -111,8 +121,18 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
    */
   protected function setFormTitle() {
     $title = 'CiviRules Edit Condition parameters';
-    $this->assign('ruleConditionHeader', 'Edit Condition '.$this->condition->label.' of CiviRule '.$this->rule->label);
+    $this->assign('ruleConditionHeader', E::ts("Edit Condition '%1' for CiviRule '%2'", [ 1 => $this->condition->label, 2 => $this->rule->label]));
     CRM_Utils_System::setTitle($title);
+  }
+
+  /**
+   * Returns a help text for this condition.
+   * The help text is shown to the administrator who is configuring the condition.
+   *
+   * @return string
+   */
+  protected function getHelpText() {
+    return '';
   }
 
 }

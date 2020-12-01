@@ -694,6 +694,67 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
     CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
     return TRUE;
   }
+  public function upgrade_2043() {
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
+    return TRUE;
+  }
+
+  // Soft Credits & Membership End Date Changed
+  public function upgrade_2044() {
+    CRM_Civirules_Utils_Upgrader::insertTriggersFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/triggers.json');
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2045() {
+    \CRM_Core_DAO::executeQuery("
+    ALTER TABLE civirule_rule_log
+    ADD COLUMN entity_table VARCHAR (255) NULL,
+    ADD COLUMN entity_id INT UNSIGNED NULL");
+    return TRUE;
+  }
+
+  public function upgrade_2046() {
+      CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir.DIRECTORY_SEPARATOR.'sql/conditions.json');
+      return TRUE;
+  }
+
+  // Scheduled Reminders
+  public function upgrade_2047() {
+    CRM_Civirules_Utils_Upgrader::insertTriggersFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/triggers.json');
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2048() {
+    // Add the action: update date value
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/actions.json');
+    return true;
+  }
+
+  public function upgrade_2049() {
+    $this->ctx->log->info('Applying update 2049 - Add Activity Scheduled Date Cron trigger.');
+    CRM_Civirules_Utils_Upgrader::insertTriggersFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/triggers.json');
+    return TRUE;
+  }
+
+  public function upgrade_2050() {
+    $this->ctx->log->info('Applying update 2050 - Editing triggering activity action.');
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/actions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2060() {
+    $this->ctx->log->info('Applying update 2060 - Add condition case custom field changed is one of.');
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2061() {
+    $this->ctx->log->info('Applying update 2061 - Update classname for Case Status condition.');
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
+    return TRUE;
+  }
 
 }
 

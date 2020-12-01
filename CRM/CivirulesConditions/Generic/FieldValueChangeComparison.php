@@ -3,15 +3,78 @@
 abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extends CRM_CivirulesConditions_Generic_ValueComparison {
 
   /**
+   * Returns name of entity
+   * @fixme should be abstract but requires conversion of all child classes first
+   *
+   * @return string
+   */
+  protected function getEntity() {
+    return '';
+  }
+
+  /**
+   * Returns name of the field
+   * @fixme should be abstract but requires conversion of all child classes first
+   *
+   * @return string
+   */
+  protected function getEntityStatusFieldName() {
+    return '';
+  }
+
+  /**
    * Returns the value of the field for the condition
    * For example: I want to check if age > 50, this function would return the 50
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
-   * @return
-   * @access protected
-   * @abstract
+   * @param \CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @return mixed|null
    */
-  abstract protected function getOriginalFieldValue(CRM_Civirules_TriggerData_TriggerData $triggerData);
+  protected function getOriginalFieldValue(CRM_Civirules_TriggerData_TriggerData $triggerData) {
+    $entity = $this->getEntity();
+    if ($triggerData->getOriginalEntity() != $entity) {
+      return NULL;
+    }
+
+    $data = $triggerData->getOriginalData();
+    $field = $this->getEntityStatusFieldName();
+    if (isset($data[$field])) {
+      return $data[$field];
+    }
+    return NULL;
+  }
+
+  /**
+   * Returns the value of the field for the condition
+   * For example: I want to check if age > 50, this function would return the 50
+   *
+   * @param \CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @return mixed|null
+   */
+  protected function getFieldValue(CRM_Civirules_TriggerData_TriggerData $triggerData) {
+    $entity = $this->getEntity();
+    $data = $triggerData->getEntityData($entity);
+    $field = $this->getEntityStatusFieldName();
+    if (isset($data[$field])) {
+      return $data[$field];
+    }
+    return NULL;
+  }
+
+  /**
+   * This function validates whether this condition works with the selected trigger.
+   *
+   * This function could be overridden in child classes to provide additional validation
+   * whether a condition is possible in the current setup. E.g. we could have a condition
+   * which works on contribution or on contributionRecur then this function could do
+   * this kind of validation and return false/true
+   *
+   * @param CRM_Civirules_Trigger $trigger
+   * @param CRM_Civirules_BAO_Rule $rule
+   * @return bool
+   */
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
+    return $trigger->doesProvideEntity($this->getEntity());
+  }
 
   /**
    * Returns the value for the data comparison
@@ -42,7 +105,7 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
     }
 
     if (isset($key)
-        and !empty($this->conditionParams[$key])) {
+      and !empty($this->conditionParams[$key])) {
       return $this->conditionParams[$key];
     } else {
       return '';
@@ -78,7 +141,7 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
     }
 
     if (isset($key)
-        and !empty($this->conditionParams[$key])) {
+      and !empty($this->conditionParams[$key])) {
       return $this->conditionParams[$key];
     } else {
       return '';
@@ -170,31 +233,31 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
    */
   public function userFriendlyConditionParams() {
     $originalComparisonValue = $this->getOriginalComparisonValue();
-		$comparisonValue = $this->getComparisonValue();
-		$options = $this->getFieldOptions();
-		if (is_array($options)) {
-			if (is_array($originalComparisonValue)) {
-				foreach($originalComparisonValue as $idx => $val) {
-					if (isset($options[$val])) {
-						$originalComparisonValue[$idx] = $options[$val];
-					}
-				}
-			} elseif (isset($options[$originalComparisonValue])) {
-				$originalComparisonValue = $options[$originalComparisonValue];
-			}
-			
-			if (is_array($comparisonValue)) {
-				foreach($comparisonValue as $idx => $val) {
-					if (isset($options[$val])) {
-						$comparisonValue[$idx] = $options[$val];
-					}
-				}
-			} elseif (isset($options[$comparisonValue])) {
-				$comparisonValue = $options[$comparisonValue];
-			}
-		}
-		
-		
+    $comparisonValue = $this->getComparisonValue();
+    $options = $this->getFieldOptions();
+    if (is_array($options)) {
+      if (is_array($originalComparisonValue)) {
+        foreach($originalComparisonValue as $idx => $val) {
+          if (isset($options[$val])) {
+            $originalComparisonValue[$idx] = $options[$val];
+          }
+        }
+      } elseif (isset($options[$originalComparisonValue])) {
+        $originalComparisonValue = $options[$originalComparisonValue];
+      }
+
+      if (is_array($comparisonValue)) {
+        foreach($comparisonValue as $idx => $val) {
+          if (isset($options[$val])) {
+            $comparisonValue[$idx] = $options[$val];
+          }
+        }
+      } elseif (isset($options[$comparisonValue])) {
+        $comparisonValue = $options[$comparisonValue];
+      }
+    }
+
+
     if (is_array($originalComparisonValue)) {
       $originalComparisonValue = implode(", ", $originalComparisonValue);
     }

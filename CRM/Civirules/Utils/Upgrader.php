@@ -312,7 +312,7 @@ class CRM_Civirules_Utils_Upgrader {
         'label' => 'Participant has (not) one of Role(s)',
         'name' => 'participant_role',
       ),
-      'CRM_CivirulesConditions_Participant_ParticipantStatus' => array(
+      'CRM_CivirulesConditions_Participant_Status' => array(
         'label' => 'Participant Status is (not) one of',
         'name' => 'participant_status',
       ),
@@ -323,6 +323,10 @@ class CRM_Civirules_Utils_Upgrader {
       'CRM_CivirulesConditions_Activity_ActivityIsPast' => array(
         'label' => 'Activity Date in the Past',
         'name' => 'activity_is_past_date',
+      ),
+      'CRM_CivirulesConditions_Contact_CreatedBy' => array(
+        'label' => 'Contact added by Contact (not) in Group(s)',
+        'name' => 'contact_createdby',
       ),
     );
     foreach ($conditions as $className => $conditionData) {

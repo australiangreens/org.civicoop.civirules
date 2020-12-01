@@ -1,6 +1,6 @@
 <?php
 
-class CRM_CivirulesConditions_Participant_ParticipantStatus extends CRM_Civirules_Condition {
+class CRM_CivirulesConditions_ContributionSoft_SoftCreditType extends CRM_Civirules_Condition {
 
   private $conditionParams = array();
 
@@ -24,19 +24,23 @@ class CRM_CivirulesConditions_Participant_ParticipantStatus extends CRM_Civirule
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
-    $participant = $triggerData->getEntityData('Participant');
-    $participant_status_id = $participant['participant_status_id'];
+    $contributionSoft = $triggerData->getEntityData('ContributionSoft');
+    if (!isset($contributionSoft['soft_credit_type_id'])) {
+      // The soft credit type could be empty because it was submitted via API or otherwise undefined at post time.
+      // So we have to look it up in the database.
+      $contributionSoft['soft_credit_type_id'] = CRM_Core_DAO::singleValueQuery("SELECT soft_credit_type_id FROM civicrm_contribution_soft WHERE id = %1", [1 => [$contributionSoft['id'], 'Integer']]);
+    }
     switch ($this->conditionParams['operator']) {
       case 0:
-        if (in_array($participant_status_id, $this->conditionParams['participant_status_id'])) {
+        if (in_array($contributionSoft['soft_credit_type_id'], $this->conditionParams['soft_credit_type_id'])) {
           $isConditionValid = TRUE;
         }
         break;
+
       case 1:
-        if (!in_array($participant_status_id, $this->conditionParams['participant_status_id'])) {
+        if (!in_array($contributionSoft['soft_credit_type_id'], $this->conditionParams['soft_credit_type_id'])) {
           $isConditionValid = TRUE;
         }
         break;
@@ -55,7 +59,7 @@ class CRM_CivirulesConditions_Participant_ParticipantStatus extends CRM_Civirule
    * @abstract
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/participant_status', 'rule_condition_id='.$ruleConditionId);
+    return CRM_Utils_System::url('civicrm/civirule/form/condition/contribution_soft_type', 'rule_condition_id=' . $ruleConditionId);
   }
 
   /**
@@ -64,29 +68,26 @@ class CRM_CivirulesConditions_Participant_ParticipantStatus extends CRM_Civirule
    *
    * @return string
    * @access public
-   * @throws Exception
    */
   public function userFriendlyConditionParams() {
     $friendlyText = "";
+
     if ($this->conditionParams['operator'] == 0) {
-      $friendlyText = 'Participant Status is one of: ';
+      $friendlyText = 'Soft Credit Type is one of: ';
     }
     if ($this->conditionParams['operator'] == 1) {
-      $friendlyText = 'Participant Status is NOT one of: ';
+      $friendlyText = 'Soft Credit Type is NOT one of: ';
     }
-    $statusText = array();
-    $participantStatus = civicrm_api3('ParticipantStatusType', 'get', array(
-      'id' => array('IN' => $this->conditionParams['participant_status_id']),
-      'option_group_id' => 'participant_status',
-      'options' => array('limit' => 0)
-    ));
-    foreach($participantStatus['values'] as $status) {
-      $statusText[] = $status['label'];
+    $selectedSoftCreditTypes = array_column(civicrm_api3('OptionValue', 'get', [
+      'sequential' => 1,
+      'option_group_id' => "soft_credit_type",
+      'value' => ['IN' => $this->conditionParams['soft_credit_type_id']],
+    ])['values'], 'label');
+
+    if ($selectedSoftCreditTypes) {
+      $friendlyText .= implode(", ", $selectedSoftCreditTypes);
     }
 
-    if (!empty($statusText)) {
-      $friendlyText .= implode(", ", $statusText);
-    }
     return $friendlyText;
   }
 
@@ -103,7 +104,7 @@ class CRM_CivirulesConditions_Participant_ParticipantStatus extends CRM_Civirule
    * @return bool
    */
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
-    return $trigger->doesProvideEntity('Participant');
+    return $trigger->doesProvideEntity('ContributionSoft');
   }
 
 }

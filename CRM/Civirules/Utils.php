@@ -47,6 +47,34 @@ class CRM_Civirules_Utils {
   }
 
   /**
+   * Helper function to generate a formatted contact link/name
+   *
+   * @param $contactId
+   * @param $contactName
+   *
+   * @return string
+   */
+  public static function formatContactLink($contactId, $contactName) {
+    if (empty($contactId)) {
+      return NULL;
+    }
+
+    if (empty($contactName)) {
+      return $contactId;
+    }
+
+    $hasViewContact = CRM_Contact_BAO_Contact_Permission::allow($contactId);
+
+    if ($hasViewContact) {
+      $contactViewUrl = CRM_Utils_System::url("civicrm/contact/view", "reset=1&cid={$contactId}");
+      return "<a href=\"{$contactViewUrl}\">" . $contactName . "</a>";
+    }
+    else {
+      return $contactName;
+    }
+  }
+
+  /**
    * Public function to generate name from label
    *
    * @param $label
@@ -170,6 +198,7 @@ class CRM_Civirules_Utils {
    *
    * @return array $campaignTypeList
    * @access public
+   * @throws
    */
   public static function getCampaignTypeList() {
     $campaignTypeList = [];
@@ -184,6 +213,28 @@ class CRM_Civirules_Utils {
       $campaignTypeList[$optionValue['value']] = $optionValue['label'];
     }
     return $campaignTypeList;
+  }
+
+  /**
+   * Function to return campaign status list
+   *
+   * @return array $campaignStatusList
+   * @access public
+   * @throws
+   */
+  public static function getCampaignStatusList() {
+    $campaignStatusList = [];
+    $campaignStatusOptionGroupId = self::getOptionGroupIdWithName('campaign_status');
+    $params = [
+      'option_group_id' => $campaignStatusOptionGroupId,
+      'is_active' => 1,
+      'options' => ['limit' => 0],
+      ];
+    $campaignStatus = civicrm_api3('OptionValue', 'get', $params);
+    foreach ($campaignStatus['values'] as $optionValue) {
+      $campaignStatusList[$optionValue['value']] = $optionValue['label'];
+    }
+    return $campaignStatusList;
   }
 
   /**
@@ -313,6 +364,29 @@ class CRM_Civirules_Utils {
   }
 
   /**
+   * Method to get the payment processors
+   * @param bool $live
+   *
+   * @return array
+   */
+  public static function getPaymentProcessors($live = TRUE) {
+    $return = [];
+    if ($live) {
+      $params = ['is_test' => 0];
+    } else {
+      $params = ['is_test' => 1];
+    }
+    $params['options'] = ['limit' => 0, 'sort' => "name ASC"];
+    try {
+      $paymentProcessors = civicrm_api3("PaymentProcessor", "Get", $params);
+      foreach ($paymentProcessors['values'] as $paymentProcessor) {
+        $return[$paymentProcessor['id']] = $paymentProcessor['name'];
+      }
+    } catch (CiviCRM_API3_Exception $ex) {}
+    return $return;
+  }
+
+  /**
    * Method to check if the incoming date is later than today
    *
    * @param mixed $inDate
@@ -395,6 +469,21 @@ class CRM_Civirules_Utils {
       $eventTypeList[$optionValue['value']] = $optionValue['label'];
     }
     return $eventTypeList;
+  }
+
+  /**
+   * Function to return scheduled reminder list
+   *
+   * @return array $scheduledReminderList
+   * @access public
+   */
+  public static function getScheduledReminderList() {
+    $scheduledReminderList = [];
+    $reminders = CRM_Core_BAO_ActionSchedule::getList();
+    foreach ($reminders as $reminder) {
+      $scheduledReminderList[$reminder['id']] = $reminder['title'];
+    }
+    return $scheduledReminderList;
   }
 
   /**

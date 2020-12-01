@@ -1,8 +1,9 @@
 site_name: CiviRules
 repo_url: https://lab.civicrm.org/extensions/civirules
-theme: material
+theme: 
+  name: material
 
-pages:
+nav:
 - Introduction: index.md
 - Basic Examples: 
   - Introduction: basic-example-introduction.md
@@ -10,6 +11,7 @@ pages:
   - Scheduled Processing: basic-example-scheduled-processing.md
   - Donor Classification: basic-example-donor-classification.md
   - Field Value Comparison Condition: basic-example-field-value-comparison-condition.md
+  - Hints: basic-example-hints.md
 - How to make your own:
   - Introduction: create-your-own-introduction.md
   - A Little More About Trigger: trigger.md

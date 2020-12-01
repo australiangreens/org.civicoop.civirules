@@ -1,8 +1,95 @@
 # CHANGELOG
 
-## Version 2.12 (not yet released)
+## Version 2.20 (not yet released)
+
+* Activity Scheduled date trigger: Don't trigger for deleted activities !90 
+* Rename Case status condition class so it works !79
+
+## Version 2.19
+
+* Add trigger for relationship start date !86
+* Add trigger for relationship end date !88
+* Added action to remove subtypes of a contact !88
+
+## Version 2.18
+
+* Add ability to send activity email for Add/Edit Activity Actions (!85)
+* Fix calls to wrong API function in "UpdateNumericValue.php" (!84)
+* Fix activityScheduledDate trigger so it does not re-trigger every day (!83)
+* Ability to modify the activity from a rule triggered by an Activity trigger (!82)
+* Add condition case custom field changed is one of
+
+## Version 2.17
+
+* Add Scheduled Reminder log trigger and conditions (!61)
+* Added action to set a sepcific custom field. (!64)
+* Added action to assign activity and send an e-mail (!72)
+* Added action to update/set a date value (!73)
+* Fixed condition Last Contribution (#86)
+* Add Activity Scheduled Date Cron trigger (!77)
+* Allow to trigger on case activities or non-case activities and filter by record type (!80)
+
+## Version 2.16
+
+* Show createdby/date in the list if rule has not been modified since it was created
+* Improved error handling.
+* Fixed #82 - Participant Role condition saves now the value instead of the id
+* Fix generic status comparison to work with Campaign and other entities
+
+## Version 2.15
+
+* Fixed issue with participant status comparison.
+* Fixed issue with campaign status comparison. (issue 79)
+* Fixed issue with contact subtype in combination with other triggers than contact related (issue 80)
+* Fixed issue with Field Value Comparison and comparing custom fields.
+
+## Version 2.14.1
+
+* Fixed regression bug in cron triggers.
+
+## Version 2.14
+
+* Fix Field Value Comparision
+* Add trigger "Membership is Renewed" that is triggered after a membership is renewed (End date is increased by one term).
+* Add 'Save and Done' button to a rule.
+* Display Modified date/by instead of Created date/by in list of rules (you can still see Created when editing the rule).
+* Change cancel button to close and always redirect to rules list.
+* Membership End Date trigger:
+  * Allows you to select multiple membership types.
+  * Provide ContributionRecur entity so conditions based on the linked recurring contribution can be used.
+* Make status condition generic, support matching multiple statuses and add support for the ContributionRecur entity.
+* Add ContributionRecur status changed condition and make the parent class more generic to support more entities.
+* 'Recurring Payment Processor is' changes:
+  * Now works with Contribution entity.
+  * Now works for test payment processors too.
+* Fixed issue with setting original data on the edit field value comparison screen.
+* Add condition "Contact has recurring contribution(s) with status" which checks if the contact has any recurring contributions with a specific status.
+* Added logging of the triggered entity
+
+
+## Version 2.13
+
+* Fixed #58: added locking mechanism to cron triggers to prevent that a rule gets fired again whilst it is running.
+
+
+## Version 2.12
 
 * Added operator 'Does not contain string' to Field Value condition.
+* Make sure we trigger rules after transaction has completed (see also issue #21)
+* Added "No Bulk Mail" (is_opt_out) to privacy options action
+* Fixed issue #61 (add condition campaign status is (not) one of)
+* Added contribution soft credit trigger
+* Added condition: "Soft Credit Type is (not) one of"
+* Added condition: "Contact added by Contact (not) in Group(s)"
+* Added action: "Update Numeric Value"
+* Also check smartgroups for 'Contact in group' condition
+* Fixed issue #67 ("Event Type is" condition doesn't work)
+* Add condition "Recurring Contribution Payment Processor is" that checks which payment processor is linked to the recur
+* Add condition "Compare old Membership Status to new Membership Status".
+* Add help to rule conditions and update ContributionRecur has payment processor condition
+* Fix crash on FieldValueComparison if not saved properly
+* Membership Type condition changed so we can check for multiple types
+* Added condition 'Membership End Date Changed'
 
 ## Version 2.11
 

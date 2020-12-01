@@ -7,7 +7,8 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-require_once 'CRM/Core/Form.php';
+
+use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
@@ -125,7 +126,10 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     $session = CRM_Core_Session::singleton();
     $userId = $session->get('userID');
 
-    if (isset($this->_submitValues['_qf_Rule_next_clone'])) {
+    if (isset($this->_submitValues['_qf_Rule_next_cancel'])) {
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/civirules/form/rulesview', 'reset=1'));
+    }
+    elseif (isset($this->_submitValues['_qf_Rule_next_clone'])) {
       $result = civicrm_api3('CiviRuleRule', 'clone', [
         'id' => $this->ruleId,
       ]);
@@ -134,7 +138,10 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     } else {
       $this->saveRule($this->_submitValues, $userId);
       $this->saveRuleTrigger($this->_submitValues);
-      $session->setStatus('Rule with linked Trigger saved succesfully', 'CiviRule saved', 'success');
+      $session->setStatus("Rule: '{$this->_submitValues['rule_label']}' saved succesfully", 'CiviRule saved', 'success');
+      if (isset($this->_submitValues['_qf_Rule_upload_done'])) {
+        CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/civirules/form/rulesview', 'reset=1'));
+      }
     }
     /*
      * if add mode, set user context to form in edit mode to add conditions and actions
@@ -274,8 +281,13 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     } else {
       $this->addButtons(array(
         array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
+        [
+          'type' => 'upload',
+          'name' => ts('Save and Done'),
+          'subName' => 'done',
+        ],
         array('type' => 'next', 'name' => ts('Clone'), 'subName' => 'clone', 'icon' => 'fa-creative-commons'),
-        array('type' => 'cancel', 'name' => ts('Cancel'))));
+        array('type' => 'next', 'name' => ts('Close'), 'subName' => 'cancel', 'icon' => 'fa-close')));
     }
   }
 
@@ -416,12 +428,12 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
     $editUrl = $condition->getExtraDataInputUrl($ruleConditionId);
     if (!empty($editUrl)) {
-      $conditionActions[] = '<a class="action-item" title="Edit" href="'.$editUrl.'">'.ts('Edit').'</a>';
+      $conditionActions[] = '<a class="action-item" title="Edit" href="'.$editUrl.'">'.E::ts('Edit').'</a>';
     }
 
     $removeUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_condition', 'reset=1&action=delete&rid='
       .$this->ruleId.'&id='.$ruleConditionId);
-    $conditionActions[] = '<a class="action-item" title="Remove" href="'.$removeUrl.'">Remove</a>';
+    $conditionActions[] = '<a class="action-item" title="Remove" href="'.$removeUrl.'">'.E::ts('Remove').'</a>';
     return $conditionActions;
   }
 
@@ -436,18 +448,17 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
   protected function setRuleActionActions($ruleActionId, CRM_Civirules_Action $action) {
     $actionActions = array();
 
-    $delaySettingsUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', 'reset=1&action=update&rule_id='
-      .$this->ruleId.'&id='.$ruleActionId);
-    $actionActions[] = '<a class="action-item" title="Edit delay settings" href="'.$delaySettingsUrl.'">'.ts('Edit delay').'</a>';
+    $delaySettingsUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', "reset=1&action=update&rule_id={$this->ruleId}&id={$ruleActionId}");
+    $actionActions[] = '<a class="action-item" title="Edit delay settings" href="'.$delaySettingsUrl.'">'.E::ts('Edit delay').'</a>';
 
     $editUrl = $action->getExtraDataInputUrl($ruleActionId);
     if (!empty($editUrl)) {
-      $actionActions[] = '<a class="action-item" title="Edit" href="'.$editUrl.'">'.ts('Edit').'</a>';
+      $actionActions[] = '<a class="action-item" title="Edit" href="'.$editUrl.'">'.E::ts('Edit').'</a>';
     }
 
     $removeUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', 'reset=1&action=delete&rule_id='
       .$this->ruleId.'&id='.$ruleActionId);
-    $actionActions[] = '<a class="action-item" title="Remove" href="'.$removeUrl.'">Remove</a>';
+    $actionActions[] = '<a class="action-item" title="Remove" href="'.$removeUrl.'">'.E::ts('Remove').'</a>';
     return $actionActions;
   }
 

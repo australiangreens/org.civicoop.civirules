@@ -79,7 +79,12 @@ class CRM_Civirules_Engine {
     } else {
       //there is no delay so process action immediatly
       $triggerData->isDelayedExecution = FALSE;
-      $actionEngine->execute();
+      try {
+        $actionEngine->execute();
+      }
+      catch (Exception $e) {
+        CRM_Civirules_Utils_LoggerFactory::logError("Failed to execute action",  $e->getMessage(), $triggerData);
+      }
     }
   }
 
@@ -125,38 +130,38 @@ class CRM_Civirules_Engine {
    */
   public static function executeDelayedAction() {
     try {
-    	// Check how many arguments this function has.
-    	// If there are two we could use the ActionEngine if one we should convert the ruleAction to 
-    	// an actionEngine.
-    	// Why is this? Because we want to make sure that as soon as someone upgrades their existing civirules installation
-    	// the old delayed actions should still be executed.
-    	$args = func_get_args();
-			if (count($args) == 2 && $args[1] instanceof CRM_Civirules_ActionEngine_AbstractActionEngine) {
-				$actionEngine = $args[1];
-				$ruleAction = $actionEngine->getRuleAction();
-				$triggerData = $actionEngine->getTriggerData();
-				if (isset($ruleAction['ignore_condition_with_delay']) && $ruleAction['ignore_condition_with_delay']) {
-					$processAction = true;
-				} else {
-					$processAction = self::areConditionsValid($actionEngine->getTriggerData());	
-				}
-				if ($processAction) {
-        	$actionEngine->execute();
-      	}
-			} elseif (count($args) == 3 && $args[1] instanceof CRM_Civirules_Action && $args[2] instanceof CRM_Civirules_TriggerData_TriggerData) {
-				// Process the 'old' way
-				$action = $args[1];
-				$triggerData = $args[2];
-	      if ($action->ignoreConditionsOnDelayedProcessing()) {
-	        $processAction = true;
-	      } else {
-	        $processAction = self::areConditionsValid($triggerData);
-	      }
-	
-	      if ($processAction) {
-	        $action->processAction($triggerData);
-	      }
-			}
+      // Check how many arguments this function has.
+      // If there are two we could use the ActionEngine if one we should convert the ruleAction to
+      // an actionEngine.
+      // Why is this? Because we want to make sure that as soon as someone upgrades their existing civirules installation
+      // the old delayed actions should still be executed.
+      $args = func_get_args();
+      if (count($args) == 2 && $args[1] instanceof CRM_Civirules_ActionEngine_AbstractActionEngine) {
+        $actionEngine = $args[1];
+        $ruleAction = $actionEngine->getRuleAction();
+        $triggerData = $actionEngine->getTriggerData();
+        if (isset($ruleAction['ignore_condition_with_delay']) && $ruleAction['ignore_condition_with_delay']) {
+          $processAction = true;
+        } else {
+          $processAction = self::areConditionsValid($actionEngine->getTriggerData());
+        }
+        if ($processAction) {
+          $actionEngine->execute();
+        }
+      } elseif (count($args) == 3 && $args[1] instanceof CRM_Civirules_Action && $args[2] instanceof CRM_Civirules_TriggerData_TriggerData) {
+        // Process the 'old' way
+        $action = $args[1];
+        $triggerData = $args[2];
+        if ($action->ignoreConditionsOnDelayedProcessing()) {
+          $processAction = true;
+        } else {
+          $processAction = self::areConditionsValid($triggerData);
+        }
+
+        if ($processAction) {
+          $action->processAction($triggerData);
+        }
+      }
     } catch (Exception $e) {
       CRM_Civirules_Utils_LoggerFactory::logError("Failed to execute delayed action",  $e->getMessage(), $triggerData);
     }
@@ -212,7 +217,7 @@ class CRM_Civirules_Engine {
       }
     }
 
-		$actionDelayedTo = $actionEngine->delayTo($delayedTo);
+    $actionDelayedTo = $actionEngine->delayTo($delayedTo);
     if ($actionDelayedTo instanceof DateTime) {
       if ($now < $actionDelayedTo) {
         return $actionDelayedTo;
@@ -293,17 +298,38 @@ class CRM_Civirules_Engine {
    */
   protected static function logRule(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $trigger = $triggerData->getTrigger();
+    $reactOnEntity = $trigger->getReactOnEntity();
+    $daoClass = $reactOnEntity->daoClass;
+    if($daoClass) {
+      $table = $daoClass::$_tableName;
+    }
     $ruleId = $trigger->getRuleId();
     $contactId = $triggerData->getContactId();
-    // todo make sure this also works for entity_id if no contact_id and object EntityTag (if I can still find that)
-    $sql = "INSERT INTO `civirule_rule_log` (`rule_id`, `contact_id`, `log_date`) VALUES (%1, %2, NOW())";
-    $params[1] = array($ruleId, 'Integer');
-    $params[2] = array($contactId, 'Integer');
+
+    $params = array();
+    if ($triggerData->getEntityId() && $table && $contactId) {
+      $sql = "INSERT INTO `civirule_rule_log` (`rule_id`, `contact_id`, `entity_table`, `entity_id`, `log_date`) VALUES (%1, %2, %3, %4, NOW())";
+      $params[1] = array($ruleId, 'Integer');
+      $params[2] = array($contactId, 'Integer');
+      $params[3] = array($table, 'String');
+      $params[4] = array($triggerData->getEntityId(), 'Integer');
+    } elseif ($triggerData->getEntityId() && $table) {
+      $sql = "INSERT INTO `civirule_rule_log` (`rule_id`, `entity_table`, `entity_id`, `log_date`) VALUES (%1, %2, %3, NOW())";
+      $params[1] = array($ruleId, 'Integer');
+      $params[2] = array($table, 'String');
+      $params[3] = array($triggerData->getEntityId(), 'Integer');
+    } elseif ($contactId) {
+      $sql = "INSERT INTO `civirule_rule_log` (`rule_id`, `contact_id`, `log_date`) VALUES (%1, %2, NOW())";
+      $params[1] = array($ruleId, 'Integer');
+      $params[2] = array($contactId, 'Integer');
+    } else {
+      $sql = "INSERT INTO `civirule_rule_log` (`rule_id`, `log_date`) VALUES (%1, NOW())";
+      $params[1] = array($ruleId, 'Integer');
+    }
+
     if (empty($ruleId)) {
       CRM_Civirules_Utils_LoggerFactory::logError("Failed log rule", "RuleId not set", $triggerData);
-    } elseif (empty($contactId)) {
-      CRM_Civirules_Utils_LoggerFactory::logError("Failed log rule", "contact_id not set", $triggerData);
-    } else {
+    } elseif ($sql) {
       CRM_Core_DAO::executeQuery($sql, $params);
     }
   }
