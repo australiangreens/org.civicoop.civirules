@@ -37,7 +37,7 @@ class CRM_CivirulesConditions_Utils_GroupContact {
     // This triggers a check (and rebuild if necessary).
     \CRM_Contact_BAO_GroupContactCache::check($group_id);
 
-    $query = "SELECT id FROM `civicrm_group_contact_cache` WHERE group_id=%1 AND contact_id=%2";
+    $query = "SELECT group_id FROM `civicrm_group_contact_cache` WHERE group_id=%1 AND contact_id=%2";
     $queryParams = [
       1 => [$group_id, 'Positive'],
       2 => [$contact_id, 'Positive'],
