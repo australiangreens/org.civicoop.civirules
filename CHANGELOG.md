@@ -1,10 +1,15 @@
 # CHANGELOG
+## Version 2.22 (not yet released)
 
-## Version 2.21 (not yet released)
+* Fix #112 call to undefined getObjectName() for HasTag condition when used with CRON trigger !116
+* Make sure entityID and contactID is always set when a rule is executed !117
+
+## Version 2.21
 
 * HasTag API4 compatibility with 5.28 (!110)
 * Code cleanup engine.php (!111)
 * Add debug flag to rule and log condition validation if enabled (!112)
+* Retrieve campaign data if data not complete from getEntityData (!113)
 
 ## Version 2.20
 
@@ -34,7 +39,7 @@
 * Fix calls to wrong API function in "UpdateNumericValue.php" (!84)
 * Fix activityScheduledDate trigger so it does not re-trigger every day (!83)
 * Ability to modify the activity from a rule triggered by an Activity trigger (!82)
-* Add condition case custom field changed is one of
+* Add condition case custom field changed is one of (!96)
 
 ## Version 2.17
 
