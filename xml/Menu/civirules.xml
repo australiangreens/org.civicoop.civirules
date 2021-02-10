@@ -85,6 +85,13 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/condition/generic/date</path>
+    <page_callback>CRM_CivirulesConditions_Form_Generic_Date</page_callback>
+    <title>Activity/Participation/Event Date</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/condition/entitytag/tagid</path>
     <page_callback>CRM_CivirulesConditions_Form_EntityTag_TagId</page_callback>
     <title>EntityTag Tag Id</title>
@@ -135,6 +142,13 @@
   <item>
     <path>civicrm/civirule/form/condition/activemembershiptype</path>
     <page_callback>CRM_CivirulesConditions_Form_Membership_ActiveMembership</page_callback>
+    <title>membership type</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/hasnotactivemembershiptype</path>
+    <page_callback>CRM_CivirulesConditions_Form_Membership_HasNotActiveMembership</page_callback>
     <title>membership type</title>
     <access_arguments>access CiviCRM</access_arguments>
     <access_arguments>administer CiviCRM</access_arguments>
@@ -352,6 +366,13 @@
     <path>civicrm/civirule/form/action/contact/updatedatevalue</path>
     <page_callback>CRM_CivirulesActions_Contact_Form_UpdateDateValue</page_callback>
     <title>Update Date Value</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/action/generic/updatedatevalue</path>
+    <page_callback>CRM_CivirulesActions_Generic_Form_UpdateDateValue</page_callback>
+    <title>Advanced Update Date Value</title>
     <access_arguments>access CiviCRM</access_arguments>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>

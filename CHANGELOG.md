@@ -1,9 +1,31 @@
 # CHANGELOG
+## Version 2.22 (not yet released)
 
-## Version 2.20 (not yet released)
+* Fix #112 call to undefined getObjectName() for HasTag condition when used with CRON trigger !116
+* Make sure entityID and contactID is always set when a rule is executed !117
 
-* Activity Scheduled date trigger: Don't trigger for deleted activities !90 
+## Version 2.21
+
+* HasTag API4 compatibility with 5.28 (!110)
+* Code cleanup engine.php (!111)
+* Add debug flag to rule and log condition validation if enabled (!112)
+* Retrieve campaign data if data not complete from getEntityData (!113)
+
+## Version 2.20
+
+* Activity Scheduled date trigger: Don't trigger for deleted activities !90
 * Rename Case status condition class so it works !79
+* Resolved #90 by passing through a list of named parameters
+* Add 'is NOT one of' operator to 'Membership Type' condition and fix form validation on rule save (!66)
+* Refactor 'contact in group' condition to not reference the `id` column in the group contact cache table !93
+* Optimize trigger condition evaluation !94
+* Refactored the menu code, making it resistant against order extension menu code that can make this menu disappear.
+* Add pre/post eventID tracking to map original/current values for 'Old value/New value' comparisons - requires CiviCRM 5.34: [CiviCRM#19209](https://github.com/civicrm/civicrm-core/pull/19209).
+* Added action to update a date value (!100)
+* Added condition to compare a date value (!100)
+* Add human readable summary of Update Date Value action (!101)
+* Renamed condition "Contact does (not) have tag" to "Entity Has\Does (Not) Have Tag(s)". And made this work with entities that support tags in core: Contact, Activity, Case, File (!103)
+* Added condition Contact has not an active membership of type.
 
 ## Version 2.19
 
@@ -17,7 +39,7 @@
 * Fix calls to wrong API function in "UpdateNumericValue.php" (!84)
 * Fix activityScheduledDate trigger so it does not re-trigger every day (!83)
 * Ability to modify the activity from a rule triggered by an Activity trigger (!82)
-* Add condition case custom field changed is one of
+* Add condition case custom field changed is one of (!96)
 
 ## Version 2.17
 
