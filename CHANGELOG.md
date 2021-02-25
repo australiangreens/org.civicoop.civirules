@@ -1,8 +1,17 @@
 # CHANGELOG
-## Version 2.22 (not yet released)
 
-* Fix #112 call to undefined getObjectName() for HasTag condition when used with CRON trigger !116
+## Version 2.23 (not yet released)
+
+* Fixed #116: Problems with HasTag Condition and Add/Remove Tag Actions by !120
+* Fix HasTag Condition and Tag Added/Removed Actions for the Contact Tagged/Untagged Triggers with !123 fixes partially #120
+* Added `getEntity` to `TriggerData` base class !122 fixes partially #121
+
+
+## Version 2.22
+
+* Fixed #112: call to undefined getObjectName() for HasTag condition when used with CRON trigger by !116
 * Make sure entityID and contactID is always set when a rule is executed !117
+* Fixed #119: DeDupe rules fail on Version 2.21+ by !119
 
 ## Version 2.21
 
