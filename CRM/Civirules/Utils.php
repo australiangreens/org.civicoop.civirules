@@ -691,5 +691,35 @@ class CRM_Civirules_Utils {
     return FALSE;
   }
 
+  /**
+   * Get the history of when the rule was triggered. Returns an array in reverse date order
+   *
+   * @param int $ruleID
+   * @param int $count
+   *
+   * @return array
+   */
+  public static function getRuleLogLatestTriggerDetail($ruleID, $count = 1) {
+    $sql = "SELECT log_date, contact_id, sort_name
+    FROM civirule_rule_log crl
+    LEFT JOIN civicrm_contact cc ON cc.id = crl.contact_id
+    WHERE rule_id = %1
+    ORDER BY log_date DESC LIMIT %2";
+    $queryParams = [
+      1 => [$ruleID, 'Integer'],
+      2 => [$count, 'Integer']
+    ];
+    $dao = CRM_Core_DAO::executeQuery($sql, $queryParams);
+    while ($dao->fetch()) {
+      $triggerHistory[] = [
+        'last_trigger_date' => $dao->log_date ?? '',
+        'last_trigger_contactid' => $dao->contact_id ?? '',
+        'last_trigger_contactname' => $dao->sort_name ?? '',
+        'last_trigger_contact_link' => CRM_Civirules_Utils::formatContactLink($dao->contact_id ?? '', $dao->sort_name ?? '')
+      ];
+    }
+    return $triggerHistory;
+  }
+
 }
 
