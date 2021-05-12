@@ -356,7 +356,7 @@ function civirules_trigger_preinsert(\Civi\Core\DAO\Event\PreUpdate $event) {
     $objectName = CRM_Civirules_Utils::getObjectNameFromObject($event->object);
     $objectId = $event->object->id;
     $eventID = $event->eventID ?? 1;
-    $params = array();
+    $params = [];
     CRM_Core_DAO::storeValues($event->object, $params);
     CRM_Civirules_Utils_PreData::pre('create', $objectName, $objectId, $params, $eventID);
     CRM_Civirules_Utils_CustomDataFromPre::pre('create', $objectName, $objectId, $params, $eventID);
@@ -388,7 +388,7 @@ function civirules_trigger_preupdate(\Civi\Core\DAO\Event\PreUpdate $event) {
     $objectName = CRM_Civirules_Utils::getObjectNameFromObject($event->object);
     $objectId = $event->object->id;
     $eventID = $event->eventID ?? 1;
-    $params = array();
+    $params = [];
     CRM_Core_DAO::storeValues($event->object, $params);
     CRM_Civirules_Utils_PreData::pre('edit', $objectName, $objectId, $params, $eventID);
     CRM_Civirules_Utils_CustomDataFromPre::pre('edit', $objectName, $objectId, $params, $eventID);
@@ -420,7 +420,7 @@ function civirules_trigger_predelete(\Civi\Core\DAO\Event\PreDelete $event) {
     $objectName = CRM_Civirules_Utils::getObjectNameFromObject($event->object);
     $objectId = $event->object->id;
     $eventID = $event->eventID ?? 1;
-    $params = array();
+    $params = [];
     CRM_Core_DAO::storeValues($event->object, $params);
     CRM_Civirules_Utils_PreData::pre('delete', $objectName, $objectId, $params, $eventID);
     CRM_Civirules_Utils_CustomDataFromPre::pre('delete', $objectName, $objectId, $params, $eventID);
