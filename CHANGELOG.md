@@ -2,6 +2,8 @@
 
 ## Version 2.28 (not yet released)
 
+* improve update warning/error message (#147) by !147
+
 ## Version 2.27
 
 * Fixed issue !144. Contact is tagged and is untagged works again.
