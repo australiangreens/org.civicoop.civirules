@@ -37,7 +37,8 @@ class CRM_CivirulesPostTrigger_EntityTag extends CRM_Civirules_Trigger_Post {
     // $objectRef is either an object or an array.
     if (is_object($objectRef)) {
       $entityTags[] = [
-        'tag_id' => $objectId,
+        'id' => $objectId,
+        'tag_id' => $objectRef->tag_id,
         'entity_id' => $objectRef->entity_id,
         'entity_table' => $objectRef->entity_table,
         'contact_id' => $objectRef->entity_id,
