@@ -4,6 +4,7 @@
 
 * improve update warning/error message (#147) by !147
 * Fixed #149. Contact is tagged trigger and condition tag is works again.
+* Fixed issue with removing tags at the action: Synchronize Tags with related contact
 
 ## Version 2.27
 

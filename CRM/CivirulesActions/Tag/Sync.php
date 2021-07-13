@@ -36,10 +36,7 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
             'tag_id' => $tag_id,
           ]);
         } elseif (!in_array($tag_id, $selected_tags) && in_array($tag_id, $target_selected_tags) && $type == 'sync') {
-          $id = array_search($tag_id, $target_selected_tags);
-          if ($id) {
-            civicrm_api3('EntityTag', 'delete', ['id' => $id, 'contact_id' => $target_contact_id]);
-          }
+          civicrm_api3('EntityTag', 'delete', ['tag_id' => $tag_id, 'contact_id' => $target_contact_id]);
         }
       }
     }
