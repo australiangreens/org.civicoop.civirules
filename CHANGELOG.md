@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 2.28 (not yet released)
+## Version 2.28
 
 * improve update warning/error message (#147) by !147
 * Fixed #149. Contact is tagged trigger and condition tag is works again.
