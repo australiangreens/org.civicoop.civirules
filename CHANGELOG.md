@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 2.29 (not yet released)
+
 ## Version 2.28
 
 * improve update warning/error message (#147) by !147
