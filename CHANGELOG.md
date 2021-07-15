@@ -2,6 +2,8 @@
 
 ## Version 2.29 (not yet released)
 
+* Add recent triggers to rule detail view by !134
+
 ## Version 2.28
 
 * improve update warning/error message (#147) by !147
