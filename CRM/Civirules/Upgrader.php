@@ -859,5 +859,11 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
     return TRUE;
   }
 
+  /**
+   * For developers:
+   * since CiviRules 2.28 it is not needed to create an upgrade if you created a new condition, action or trigger.
+   * This is done in the function civirules_civicrm_managed which is called as soon as the cached is cleared.
+   */
+
 }
 

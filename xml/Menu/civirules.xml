@@ -553,4 +553,16 @@
     <title>Contact Custom Field Changed</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/civirule/form/action/activityfromevent</path>
+    <page_callback>CRM_CivirulesAction_Activity_Form_CreateActivityFromEvent</page_callback>
+    <title>Activity</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/trigger/relatedparticipantwhenactivitychanged</path>
+    <page_callback>CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityChanged</page_callback>
+    <title>Related Participant when Activity Changed</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
 </menu>

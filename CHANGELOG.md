@@ -3,6 +3,8 @@
 ## Version 2.29 (not yet released)
 
 * Add recent triggers to rule detail view by !134
+* Added action to create activity from an event
+* Added trigger which is fired when an activity is changed for all related participants of the related event (when the activity is connected to an event).
 
 ## Version 2.28
 
