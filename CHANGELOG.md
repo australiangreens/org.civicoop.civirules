@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 2.30 (not yet released)
+
 ## Version 2.29
 
 * Add recent triggers to rule detail view by !134
