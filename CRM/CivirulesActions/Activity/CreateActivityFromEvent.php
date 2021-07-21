@@ -6,7 +6,7 @@
  * @license AGPL-3.0
  */
 
-class CRM_CivirulesAction_Activity_CreateActivityFromEvent extends CRM_CivirulesActions_Generic_Api {
+class CRM_CivirulesActions_Activity_CreateActivityFromEvent extends CRM_CivirulesActions_Generic_Api {
 
   // Store a list of api params passed to action
   protected $apiParams = [];

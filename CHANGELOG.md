@@ -2,6 +2,8 @@
 
 ## Version 2.30 (not yet released)
 
+* Fixed typos with action Create Activity from Event.
+
 ## Version 2.29
 
 * Add recent triggers to rule detail view by !134

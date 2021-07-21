@@ -6,7 +6,7 @@
  * @license AGPL-3.0
  */
 
-class CRM_CivirulesAction_Activity_Form_CreateActivityFromEvent extends CRM_CivirulesActions_Form_Form {
+class CRM_CivirulesActions_Activity_Form_CreateActivityFromEvent extends CRM_CivirulesActions_Form_Form {
 
   public static function getActivityCustomFields() {
     $customGroups = civicrm_api3('CustomGroup', 'get', ['extends' => 'Activity', 'options' => ['limit' => 0]]);
@@ -101,7 +101,7 @@ class CRM_CivirulesAction_Activity_Form_CreateActivityFromEvent extends CRM_Civi
   public function addRules() {
     parent::addRules();
     $this->addFormRule(array(
-      'CRM_Ffmnsrules_CiviRulesAction_Form_CreateActivityFromEvent',
+      'CRM_CivirulesActions_Activity_Form_CreateActivityFromEvent',
       'validateActivityDateTime'
     ));
   }
