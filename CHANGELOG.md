@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## Version 2.32 (not yet released)
+
+
 ## Version 2.31
 
 * Fixed issue with Condition Activity Has Tag.
