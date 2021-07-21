@@ -18,6 +18,18 @@
     </div>
 
     <div class="crm-section">
+      <div class="label">{$form.event_start_date_custom_field.label}</div>
+      <div class="content">{$form.event_start_date_custom_field.html}</div>
+      <div class="clear"></div>
+    </div>
+
+    <div class="crm-section">
+      <div class="label">{$form.event_end_date_custom_field.label}</div>
+      <div class="content">{$form.event_end_date_custom_field.html}</div>
+      <div class="clear"></div>
+    </div>
+
+    <div class="crm-section">
         <div class="label">{$form.assignee_contact_id.label}</div>
         <div class="content">{$form.assignee_contact_id.html}</div>
         <div class="clear"></div>

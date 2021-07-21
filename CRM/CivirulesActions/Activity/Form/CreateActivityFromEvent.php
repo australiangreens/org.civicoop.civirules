@@ -6,15 +6,26 @@
  * @license AGPL-3.0
  */
 
+use CRM_Civirules_ExtensionUtil as E;
+
 class CRM_CivirulesActions_Activity_Form_CreateActivityFromEvent extends CRM_CivirulesActions_Form_Form {
 
   public static function getActivityCustomFields() {
-    $customGroups = civicrm_api3('CustomGroup', 'get', ['extends' => 'Activity', 'options' => ['limit' => 0]]);
-    $activityCustomFields = [];
-    foreach($customGroups['values'] as $customGroup) {
-      $customFields = civicrm_api3('CustomField', 'get', ['custom_group_id' => $customGroup['id'], 'options' => ['limit' => 0]]);
-      foreach($customFields['values'] as $customField) {
-        $activityCustomFields[$customField['id']] = $customGroup['title'] . ': ' . $customField['label'];
+    static $activityCustomFields = false;
+    if ($activityCustomFields === false) {
+      $customGroups = civicrm_api3('CustomGroup', 'get', [
+        'extends' => 'Activity',
+        'options' => ['limit' => 0]
+      ]);
+      $activityCustomFields = [];
+      foreach ($customGroups['values'] as $customGroup) {
+        $customFields = civicrm_api3('CustomField', 'get', [
+          'custom_group_id' => $customGroup['id'],
+          'options' => ['limit' => 0]
+        ]);
+        foreach ($customFields['values'] as $customField) {
+          $activityCustomFields[$customField['id']] = $customGroup['title'] . ': ' . $customField['label'];
+        }
       }
     }
     return $activityCustomFields;
@@ -27,29 +38,31 @@ class CRM_CivirulesActions_Activity_Form_CreateActivityFromEvent extends CRM_Civ
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $this->add('select', 'activity_type_id', ts('Activity type'), array('' => ts('-- please select --')) + CRM_Core_OptionGroup::values('activity_type'), true);
-    $this->add('select', 'status_id', ts('Status'), array('' => ts('-- please select --')) + CRM_Core_OptionGroup::values('activity_status'), true);
-    $this->add('select', 'event_id_custom_field', ts('Event ID custom field'), array('' => ts('-- please select --')) + self::getActivityCustomFields(), true);
+    $this->add('select', 'activity_type_id', E::ts('Activity type'), array('' => E::ts('-- please select --')) + CRM_Core_OptionGroup::values('activity_type'), true);
+    $this->add('select', 'status_id', E::ts('Status'), array('' => E::ts('-- please select --')) + CRM_Core_OptionGroup::values('activity_status'), true);
+    $this->add('select', 'event_id_custom_field', E::ts('Event ID custom field'), array('' => E::ts('-- please select --')) + self::getActivityCustomFields(), true);
+    $this->add('select', 'event_start_date_custom_field', E::ts('Custom field to store the Event Start Date'), array('' => E::ts('-- please select --')) + self::getActivityCustomFields(), false);
+    $this->add('select', 'event_end_date_custom_field', E::ts('Custom field to store the Event End Date'), array('' => E::ts('-- please select --')) + self::getActivityCustomFields(), false);
 
     $attributes = array(
       'multiple' => TRUE,
       'create' => TRUE,
       'api' => array('params' => array('is_deceased' => 0))
     );
-    $this->addEntityRef('assignee_contact_id', ts('Assigned to'), $attributes, false);
+    $this->addEntityRef('assignee_contact_id', E::ts('Assigned to'), $attributes, false);
 
     $this->addYesNo('send_email', 'Send Email to Assigned Contacts', false, true);
 
-    $delayList = array('' => ts(' - Use system date (default) - ')) + CRM_Civirules_Delay_Factory::getOptionList();
-    $this->add('select', 'activity_date_time', ts('Set activity date'), $delayList);
+    $delayList = array('' => E::ts(' - Use system date (default) - ')) + CRM_Civirules_Delay_Factory::getOptionList();
+    $this->add('select', 'activity_date_time', E::ts('Set activity date'), $delayList);
     foreach(CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->addElements($this, 'activity_date_time', $this->rule);
     }
     $this->assign('delayClasses', CRM_Civirules_Delay_Factory::getAllDelayClasses());
 
     $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+      array('type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,),
+      array('type' => 'cancel', 'name' => E::ts('Cancel'))));
   }
 
   /**
@@ -77,6 +90,12 @@ class CRM_CivirulesActions_Activity_Form_CreateActivityFromEvent extends CRM_Civ
     }
     if (!empty($data['event_id_custom_field'])) {
       $defaultValues['event_id_custom_field'] = $data['event_id_custom_field'];
+    }
+    if (!empty($data['event_start_date_custom_field'])) {
+      $defaultValues['event_start_date_custom_field'] = $data['event_start_date_custom_field'];
+    }
+    if (!empty($data['event_end_date_custom_field'])) {
+      $defaultValues['event_end_date_custom_field'] = $data['event_end_date_custom_field'];
     }
     foreach(CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->setDefaultValues($defaultValues, 'activity_date_time', $this->rule);
@@ -145,6 +164,8 @@ class CRM_CivirulesActions_Activity_Form_CreateActivityFromEvent extends CRM_Civ
     $data['activity_type_id'] = $this->_submitValues['activity_type_id'];
     $data['status_id'] = $this->_submitValues['status_id'];
     $data['event_id_custom_field'] = $this->_submitValues['event_id_custom_field'];
+    $data['event_start_date_custom_field'] = $this->_submitValues['event_start_date_custom_field'] ?? false;
+    $data['event_end_date_custom_field'] = $this->_submitValues['event_end_date_custom_field'] ?? false;
     $data["assignee_contact_id"] = explode(',', $this->_submitValues["assignee_contact_id"]);
 
     $data['activity_date_time'] = 'null';

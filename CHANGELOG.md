@@ -3,6 +3,7 @@
 ## Version 2.31 (not yet released)
 
 * Fixed issue with Condition Activity Has Tag.
+* Added configuration options to Create Activity from Event Action.
 
 ## Version 2.30
 
