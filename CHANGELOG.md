@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 2.31 (not yet released)
+
 ## Version 2.30
 
 * Fixed typos with action Create Activity from Event.
