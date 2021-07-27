@@ -41,7 +41,7 @@ class CRM_CivirulesActions_Activity_CreateActivityFromEvent extends CRM_Civirule
     if ($action_params['event_id_custom_field']) {
       $params['custom_'.$action_params['event_id_custom_field']] = $event['id'];
     }
-    if (!empty($action_params['event_start_date_custom_field']) && !empty($event['event_end_date'])) {
+    if (!empty($action_params['event_start_date_custom_field']) && !empty($event['event_start_date'])) {
       $params['custom_'.$action_params['event_start_date_custom_field']] = $event['event_start_date'];
     }
     if (!empty($action_params['event_end_date_custom_field']) && !empty($event['event_end_date'])) {
