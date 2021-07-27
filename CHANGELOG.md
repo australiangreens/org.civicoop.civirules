@@ -2,6 +2,7 @@
 
 ## Version 2.32 (not yet released)
 
+* Added Trigger which is fired when an activity is tagged and for all related participants of the related event (when the activity is connected to an event).
 
 ## Version 2.31
 

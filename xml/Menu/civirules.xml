@@ -565,4 +565,10 @@
     <title>Related Participant when Activity Changed</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/civirule/form/trigger/relatedparticipantwhenactivityistagged</path>
+    <page_callback>CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged</page_callback>
+    <title>Related Participant when Activity Is Tagged</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
 </menu>
