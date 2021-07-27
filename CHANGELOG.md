@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 2.33 (not yet released)
+
 ## Version 2.32
 
 * Added Trigger which is fired when an activity is tagged and for all related participants of the related event (when the activity is connected to an event).
