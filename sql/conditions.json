@@ -79,5 +79,7 @@
   {"name":"actionlog_email_error", "label":"Scheduled Reminder has error", "class_name":"CRM_CivirulesConditions_ActionLog_Error"},
   {"name":"actionlog_scheduledreminder", "label":"Scheduled Reminder is (not) one of", "class_name":"CRM_CivirulesConditions_ActionLog_ScheduledReminder"},
   {"name":"case_custom_field_changed", "label":"Case Custom Field Changed is one of", "class_name":"CRM_CivirulesConditions_Case_CaseCustomFieldChanged"},
-  {"name":"contact_custom_field_changed", "label":"Contact Custom Field Changed is one of", "class_name":"CRM_CivirulesConditions_Contact_CustomFieldChanged"}
+  {"name":"contact_custom_field_changed", "label":"Contact Custom Field Changed is one of", "class_name":"CRM_CivirulesConditions_Contact_CustomFieldChanged"},
+  {"name":"relationship_has_ended", "label":"Relationship has ended", "class_name":"CRM_CivirulesConditions_Relationship_HasEnded"},
+  {"name":"relationship_is_activated", "label":"Relationship is activated", "class_name":"CRM_CivirulesConditions_Relationship_IsActivated"}
 ]

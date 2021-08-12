@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## Version 2.33 (not yet released)
+## Version 2.34 (not yet released)
+
+## Version 2.33
+* Added conditions for relationship has ended / is activated (issue https://lab.civicrm.org/extensions/civirules/-/issues/150)
 
 ## Version 2.32
 

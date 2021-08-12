@@ -859,6 +859,12 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
     return TRUE;
   }
 
+  public function upgrade_2076() {
+    $this->ctx->log->info('Applying update 2076 - Add condition relationship has ended');
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
+    return TRUE;
+  }
+
   /**
    * For developers:
    * since CiviRules 2.28 it is not needed to create an upgrade if you created a new condition, action or trigger.
