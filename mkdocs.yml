@@ -1,11 +1,11 @@
 site_name: CiviRules
 repo_url: https://lab.civicrm.org/extensions/civirules
-theme: 
+theme:
   name: material
 
 nav:
 - Introduction: index.md
-- Basic Examples: 
+- Basic Examples:
   - Introduction: basic-example-introduction.md
   - Immediate Processing: basic-example-immediate-processing.md
   - Scheduled Processing: basic-example-scheduled-processing.md
@@ -15,10 +15,11 @@ nav:
 - How to make your own:
   - Introduction: create-your-own-introduction.md
   - A Little More About Trigger: trigger.md
-  - Database Tables: databasetables.md  
+  - Database Tables: databasetables.md
   - Create your own delay: create-your-own-delay.md
   - Create your own condition: create-your-own-condition.md
   - Create your own action: create-your-own-action.md
+  - Create your own trigger: create-your-own-trigger.md
   - Add logging: add-logging.md
 - Hooks:
   - hook_civirules_alter_trigger_data: hooks/hook_civirules_alter_trigger_data.md
