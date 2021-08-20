@@ -127,10 +127,16 @@ class CRM_Civirules_Utils_PreData {
    * @static
    */
   public static function getPreData($entity, $entityId, $eventID) {
-    if (isset(self::$preData[$entity][$entityId][$eventID])) {
-      return self::$preData[$entity][$entityId][$eventID];
+    $entityNames = [$entity];
+    if ($entity === 'Contact') {
+      $entityNames = ['Contact', 'Individual', 'Organization', 'Household'];
     }
-    return array();
+    foreach ($entityNames as $entity) {
+      if (isset(self::$preData[$entity][$entityId][$eventID])) {
+        return self::$preData[$entity][$entityId][$eventID];
+      }
+    }
+    return [];
   }
 
 }
