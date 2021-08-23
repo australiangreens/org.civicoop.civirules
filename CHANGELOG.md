@@ -2,6 +2,8 @@
 
 ## Version 2.34 (not yet released)
 
+* Handle contact subtypes when retrieving preData/originalData for Contacts (affects customdata) by !148
+
 ## Version 2.33
 * Added conditions for relationship has ended / is activated (issue https://lab.civicrm.org/extensions/civirules/-/issues/150)
 
