@@ -25,12 +25,12 @@ class CRM_Civirules_Utils_PreData {
       return;
     }
     $nonPreEntities = array('GroupContact', 'EntityTag', 'ActionLog');
-    if ($op != 'edit' || in_array($objectName, $nonPreEntities)) {
+    if (($op != 'edit' && $op != 'delete') || in_array($objectName, $nonPreEntities)) {
       return;
     }
     // Don't execute this if no rules exist for this entity.
-    $rules = CRM_Civirules_BAO_Rule::findRulesByObjectNameAndOp($objectName, $op);
-    if (empty($rules)) {
+    $triggers = CRM_Civirules_BAO_Rule::findRulesByObjectNameAndOp($objectName, $op);
+    if (empty($triggers)) {
       return;
     }
 
@@ -74,8 +74,14 @@ class CRM_Civirules_Utils_PreData {
       foreach ($customData['values'] as $customField ) {
         $data['custom_' . $customField['id']] = $customField['latest'];
       }
-
     }
+
+    foreach($triggers as $trigger) {
+      if ($trigger instanceof CRM_Civirules_Trigger_Post) {
+        $data = $trigger->alterPreData($data, $op, $objectName, $objectId, $params, $eventID);
+      }
+    }
+
     self::setPreData($entity, $id, $data, $eventID);
   }
 

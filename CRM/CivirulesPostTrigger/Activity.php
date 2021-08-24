@@ -40,21 +40,64 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
       $triggerData->setEntityId($objectId);
     }
     //trigger for activity trigger for every source_contact_id, target_contact_id and assignee_contact_id
+    $activityContacts = array();
+    if ($op == 'delete') {
+      $preData = CRM_Civirules_Utils_PreData::getPreData($objectName, $objectId, $eventID);
+      if (isset($preData['activity_contacts'])) {
+        $activityContacts = $preData['activity_contacts'];
+      }
+    } else {
+      $activityContact = new CRM_Activity_BAO_ActivityContact();
+      $activityContact->activity_id = $objectId;
+      if ($this->triggerParams && isset($this->triggerParams['record_type']) && $this->triggerParams['record_type']) {
+        $activityContact->record_type_id = $this->triggerParams['record_type'];
+      }
+      $activityContact->find();
+      while ($activityContact->fetch()) {
+        $data = [];
+        CRM_Core_DAO::storeValues($activityContact, $data);
+        $activityContacts[] = $data;
+      }
+    }
+
+    foreach($activityContacts as $activityContact) {
+      $triggerData->setEntityData('ActivityContact', $activityContact);
+      if (isset($data['contact_id']) && $data['contact_id']) {
+        $triggerData->setContactId($data['contact_id']);
+      }
+      CRM_Civirules_Engine::triggerRule($this, clone $triggerData);
+    }
+  }
+
+  /**
+   * Alter the pre data
+   *
+   * Could be overriden by child classes.
+   *
+   * @param $data
+   * @param $op
+   * @param $objectName
+   * @param $objectId
+   * @param $params
+   * @param $eventID
+   *
+   * @return mixed
+   */
+  public function alterPreData($data, $op, $objectName, $objectId, $params, $eventID) {
+    $activityContacts = [];
     $activityContact = new CRM_Activity_BAO_ActivityContact();
     $activityContact->activity_id = $objectId;
     if ($this->triggerParams && isset($this->triggerParams['record_type']) && $this->triggerParams['record_type']) {
       $activityContact->record_type_id = $this->triggerParams['record_type'];
     }
     $activityContact->find();
-    while($activityContact->fetch()) {
-      $data = array();
+    while ($activityContact->fetch()) {
+      $data = [];
       CRM_Core_DAO::storeValues($activityContact, $data);
-      $triggerData->setEntityData('ActivityContact', $data);
-      if (isset($data['contact_id']) && $data['contact_id']) {
-        $triggerData->setContactId($data['contact_id']);
-      }
-      CRM_Civirules_Engine::triggerRule($this, clone $triggerData);
+      $activityContacts[] = $data;
     }
+    $data['activity_contacts'] = $activityContacts;
+    return $data;
   }
 
   /**

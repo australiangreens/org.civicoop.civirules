@@ -2,6 +2,7 @@
 
 ## Version 2.34 (not yet released)
 
+* Fixed #151: Activity is Deleted trigger does not work
 * Added condition 'Recurring Contribution is (not) financial type'.
 * Handle contact subtypes when retrieving preData/originalData for Contacts (affects customdata) by !148
 

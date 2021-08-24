@@ -158,5 +158,23 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
     return $data;
   }
 
+  /**
+   * Alter the pre data
+   *
+   * Could be overriden by child classes.
+   *
+   * @param $data
+   * @param $op
+   * @param $objectName
+   * @param $objectId
+   * @param $params
+   * @param $eventID
+   *
+   * @return mixed
+   */
+  public function alterPreData($data, $op, $objectName, $objectId, $params, $eventID) {
+    return $data;
+  }
+
 
 }
