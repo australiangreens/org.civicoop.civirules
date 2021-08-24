@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 2.34 (not yet released)
+## Version 2.34
 
 * Fixed #151: Activity is Deleted trigger does not work
 * Added condition 'Recurring Contribution is (not) financial type'.
