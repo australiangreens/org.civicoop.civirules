@@ -2,6 +2,8 @@
 
 ## Version 2.35 (not yet released)
 
+* CiviRules, field value comparison will fail when checking a value of '0' in custom field by !149
+
 ## Version 2.34
 
 * Fixed #151: Activity is Deleted trigger does not work
