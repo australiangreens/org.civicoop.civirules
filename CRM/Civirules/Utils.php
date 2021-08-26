@@ -700,6 +700,7 @@ class CRM_Civirules_Utils {
    * @return array
    */
   public static function getRuleLogLatestTriggerDetail($ruleID, $count = 1) {
+    $triggerHistory = [];
     $sql = "SELECT log_date, contact_id, sort_name
     FROM civirule_rule_log crl
     LEFT JOIN civicrm_contact cc ON cc.id = crl.contact_id
