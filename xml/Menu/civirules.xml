@@ -566,6 +566,12 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/action/relationship/end</path>
+    <page_callback>CRM_CivirulesActions_Relationship_Form_End</page_callback>
+    <title>Relationship End</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/trigger/relatedparticipantwhenactivitychanged</path>
     <page_callback>CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityChanged</page_callback>
     <title>Related Participant when Activity Changed</title>
