@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## Version 2.35 (not yet released)
+## Version 2.36 (not yet released)
+
+## Version 2.35
+
+* Fixed #152 - Action "End Relationship" added
 
 ## Version 2.34
 
@@ -9,6 +13,7 @@
 * Handle contact subtypes when retrieving preData/originalData for Contacts (affects customdata) by !148
 
 ## Version 2.33
+
 * Added conditions for relationship has ended / is activated (issue https://lab.civicrm.org/extensions/civirules/-/issues/150)
 
 ## Version 2.32
