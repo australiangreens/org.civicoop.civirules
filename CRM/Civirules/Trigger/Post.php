@@ -126,7 +126,7 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
     $entity = CRM_Civirules_Utils_ObjectName::convertToEntity($objectName);
 
     $data = $this->convertObjectRefToDataArray($entity, $objectRef, $objectId);
-    if ($op == 'edit') {
+    if ($op == 'edit' || 'delete') {
       //set also original data with an edit event
       $oldData = CRM_Civirules_Utils_PreData::getPreData($entity, $objectId, $eventID);
       $triggerData = new CRM_Civirules_TriggerData_Edit($entity, $objectId, $data, $oldData);

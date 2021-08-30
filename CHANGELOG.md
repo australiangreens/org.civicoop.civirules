@@ -2,10 +2,11 @@
 
 ## Version 2.36 (not yet released)
 
+* Fixed issue with CiviRules and deleting entities.
+
 ## Version 2.35
 
 * Fixed #152 - Action "End Relationship" added
-
 * CiviRules, field value comparison will fail when checking a value of '0' in custom field by !149
 
 ## Version 2.34
