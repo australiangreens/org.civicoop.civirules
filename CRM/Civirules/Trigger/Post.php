@@ -68,6 +68,15 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
   }
 
   /**
+   * Getter for op(eration)
+   *
+   * @return String
+   */
+  public function getOp() {
+    return $this->op;
+  }
+
+  /**
    * Method post
    *
    * @param string $op

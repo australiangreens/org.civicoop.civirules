@@ -3,6 +3,7 @@
 ## Version 2.36 (not yet released)
 
 * Fixed issue with CiviRules and deleting entities.
+* Added function to retrieve the operation (create, edit, delete) from the post trigger.
 
 ## Version 2.35
 
