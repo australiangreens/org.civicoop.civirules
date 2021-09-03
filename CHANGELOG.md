@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 2.37 (not yet released)
+
 ## Version 2.36
 
 * Fixed issue with CiviRules and deleting entities.
