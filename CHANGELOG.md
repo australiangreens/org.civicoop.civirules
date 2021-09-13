@@ -2,6 +2,8 @@
 
 ## Version 2.37 (not yet released)
 
+* Add an option to set activity details for 'add activity to contact' action
+
 ## Version 2.36
 
 * Fixed issue with CiviRules and deleting entities.
