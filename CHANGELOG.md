@@ -3,6 +3,7 @@
 ## Version 2.37 (not yet released)
 
 * Add an option to set activity details for 'add activity to contact' action
+* Fixed #157: Base delay on date field in trigger: Field select doesn't filter by data type and excludes some valid fields by !153
 
 ## Version 2.36
 
