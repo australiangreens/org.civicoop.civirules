@@ -200,15 +200,23 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
     return $return;
   }
 
+  /**
+   * Get custom date fields from the specified custom group.
+   *
+   * @param int $group_id custom group id
+   * @param string $group_label custom group label
+   * @return array
+   */
   protected function getCustomDateFieldPerGroup($group_id, $group_label) {
-    $fields = civicrm_api3('CustomField', 'get', array('custom_group_id' => $group_id));
-    $return = array();
-    foreach($fields['values'] as $field) {
-      if (is_numeric($field['data_type']) && !($field['data_type'] & CRM_Utils_Type::T_DATE)) {
-        continue; //Field is not a Date field.
-      }
-      $key = 'custom_'.$field['id'];
-      $return[$key] = $group_label.': '.$field['label'];
+    $fields = civicrm_api3('CustomField', 'get', [
+      'custom_group_id' => $group_id,
+      'data_type' => 'Date',
+      'options' => ['limit' => 0],
+    ]);
+    $return = [];
+    foreach ($fields['values'] as $field) {
+      $key = 'custom_' . $field['id'];
+      $return[$key] = $group_label . ': ' . $field['label'];
     }
     return $return;
   }
