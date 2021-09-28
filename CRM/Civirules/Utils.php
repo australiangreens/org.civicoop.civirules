@@ -722,5 +722,84 @@ class CRM_Civirules_Utils {
     return $triggerHistory;
   }
 
+  /**
+   * Method to get the group title with group id
+   *
+   * @param int $groupId
+   * @return array|int|mixed
+   */
+  public static function getGroupTitleWithId(int $groupId) {
+    if (function_exists('civicrm_api4')) {
+      try {
+        $groups = \Civi\Api4\Group::get()
+          ->addSelect('title')
+          ->addWhere('id', '=', $groupId)
+          ->execute();
+        $group = $groups->first();
+        if ($group['title']) {
+          return $group['title'];
+        }
+      }
+      catch (API_Exception $ex) {
+      }
+    }
+    else {
+      try {
+        return civicrm_api3('Group', 'getvalue', [
+          'return' => 'title',
+          'id' => $groupId,
+        ]);
+      }
+      catch (CiviCRM_API3_Exception $ex) {
+      }
+    }
+    return $groupId;
+  }
+  /**
+   * Method to get the periods available
+   *
+   * @return string[]
+   */
+  public static function getPeriods() {
+    return ['years', 'quarters', 'months', 'weeks', 'days'];
+  }
+
+  /**
+   * Method to get the list of active groups
+   *
+   * @return array
+   */
+  public static function getGroupList() {
+    $groups = [];
+    if (function_exists('civicrm_api4')) {
+      try {
+        $apiGroups = \Civi\Api4\Group::get()
+          ->addSelect('title')
+          ->addWhere('is_active', '=', TRUE)
+          ->execute();
+        foreach ($apiGroups as $apiGroup) {
+          $groups[$apiGroup['id']] = $apiGroup['title'];
+        }
+      }
+      catch (API_Exception $ex) {
+      }
+    }
+    else {
+      try {
+        $apiGroups = civicrm_api3('Group', 'get', [
+          'return' => ['title'],
+           'is_active' => TRUE,
+          'options' => ['limit' => 0],
+        ]);
+        foreach ($apiGroups['result'] as $groupId => $groupData) {
+          $groups[$groupId] = $groupData['title'];
+        }
+      }
+      catch (CiviCRM_API3_Exception $ex) {
+      }
+    }
+    return $groups;
+  }
+
 }
 

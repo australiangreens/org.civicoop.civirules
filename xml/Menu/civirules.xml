@@ -99,7 +99,13 @@
   <item>
     <path>civicrm/civirule/form/condition/group/grouptype</path>
     <page_callback>CRM_CivirulesConditions_Form_Group_GroupType</page_callback>
-    <title>case type</title>
+    <title>group type</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/groupcontact/ingroupsince</path>
+    <page_callback>CRM_CivirulesConditions_Form_GroupContact_InGroupSince</page_callback>
+    <title>contact in group since</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
