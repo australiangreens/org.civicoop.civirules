@@ -44,12 +44,12 @@ class CRM_CivirulesConditions_GroupContact_InGroupSince extends CRM_Civirules_Co
       $groupDate = $this->getLatestGroupAddDate($contactId);
       if ($sinceDate && $groupDate) {
         if ($this->_conditionParams['operator'] == 'longer') {
-          if ($sinceDate > $groupDate) {
+          if ($groupDate < $sinceDate) {
             return TRUE;
           }
         }
         else {
-          if ($sinceDate <= $groupDate) {
+          if ($groupDate >= $sinceDate) {
             return TRUE;
           }
         }
