@@ -25,7 +25,6 @@ nav:
   - hook_civirules_alter_trigger_data: hooks/hook_civirules_alter_trigger_data.md
   - hook_civirules_logger: hooks/hook_civirules_logger.md
 
-
 markdown_extensions:
   - attr_list
   - admonition

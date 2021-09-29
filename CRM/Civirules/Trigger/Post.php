@@ -8,9 +8,33 @@
 
 class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
 
+  /**
+   * @var string
+   */
   protected $objectName;
 
+  /**
+   * @var string
+   */
   protected $op;
+
+  /**
+   * Getter for object name
+   *
+   * @return mixed
+   */
+  public function getObjectName() {
+    return $this->objectName;
+  }
+
+  /**
+   * Getter for op(eration)
+   *
+   * @return String
+   */
+  public function getOp() {
+    return $this->op;
+  }
 
   /**
    * Returns the name of the trigger data class.
@@ -56,24 +80,6 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
   protected function getDaoClassName() {
     $daoClassName = CRM_Core_DAO_AllCoreTables::getFullName($this->objectName);
     return $daoClassName;
-  }
-
-  /**
-   * Getter for object name
-   *
-   * @return mixed
-   */
-  public function getObjectName() {
-    return $this->objectName;
-  }
-
-  /**
-   * Getter for op(eration)
-   *
-   * @return String
-   */
-  public function getOp() {
-    return $this->op;
   }
 
   /**
@@ -170,7 +176,7 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
   /**
    * Alter the pre data
    *
-   * Could be overriden by child classes.
+   * Could be overridden by child classes.
    *
    * @param $data
    * @param $op
@@ -184,6 +190,5 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
   public function alterPreData($data, $op, $objectName, $objectId, $params, $eventID) {
     return $data;
   }
-
 
 }
