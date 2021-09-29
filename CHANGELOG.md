@@ -7,6 +7,7 @@
 * Add an option to set activity details for 'add activity to contact' action
 * Fixed #157: Base delay on date field in trigger: Field select doesn't filter by data type and excludes some valid fields by !153
 * Fixed #158: add condition contact has been in group since
+* Merged https://lab.civicrm.org/extensions/civirules/-/merge_requests/151 (code cleanup)
 
 ## Version 2.36
 
