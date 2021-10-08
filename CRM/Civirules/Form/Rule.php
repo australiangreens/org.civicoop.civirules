@@ -104,6 +104,8 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     $this->assign('rule', $this->rule);
 
     if ($this->_action == CRM_Core_Action::UPDATE) {
+      $this->assign('ruleTriggerHistory', CRM_Civirules_Utils::getRuleLogLatestTriggerDetail($this->ruleId, 20));
+
       $clones = civicrm_api3('CiviRuleRule', 'getclones', [
         'id' => $this->ruleId,
       ]);

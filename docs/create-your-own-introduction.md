@@ -11,7 +11,7 @@ There are three basic elements in CiviRules:
        cron triggers that will be checked and executed by a scheduled job that will be added to the scheduled job (and set to Daily) when you install the CiviRules extension
     </li>
   </ol>
-</li>      
+</li>
 <li>
 a series of <strong>condition(s)</strong> that can be checked and in total will determine if the linked action will be executed. Each condition will be answered with either FALSE or TRUE. Conditions can be linked with AND or OR (although you can not combine them in a (condition A AND condition B) OR (condition C AND condition D))
 </li>
@@ -27,4 +27,5 @@ Find more detailed information in the tutorials:
 - [Create your own delay](./create-your-own-delay.md)
 - [Create your own condition](./create-your-own-condition.md)
 - [Create your own action](./create-your-own-action.md)
+- [Create your own trigger](./create-your-own-trigger.md)
 - [Add logging](./add-logging.md)

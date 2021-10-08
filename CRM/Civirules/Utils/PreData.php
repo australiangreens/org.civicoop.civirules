@@ -17,9 +17,7 @@ class CRM_Civirules_Utils_PreData {
    * @param string $objectName
    * @param int $objectId
    * @param array $params
-   * @access public
-   * @static
-   *
+   * @param string $eventID
    */
   public static function pre($op, $objectName, $objectId, $params, $eventID) {
     // Do not trigger when objectName is empty. See issue #19
@@ -27,12 +25,12 @@ class CRM_Civirules_Utils_PreData {
       return;
     }
     $nonPreEntities = array('GroupContact', 'EntityTag', 'ActionLog');
-    if ($op != 'edit' || in_array($objectName, $nonPreEntities)) {
+    if (($op != 'edit' && $op != 'delete') || in_array($objectName, $nonPreEntities)) {
       return;
     }
     // Don't execute this if no rules exist for this entity.
-    $rules = CRM_Civirules_BAO_Rule::findRulesByObjectNameAndOp($objectName, $op);
-    if (empty($rules)) {
+    $triggers = CRM_Civirules_BAO_Rule::findRulesByObjectNameAndOp($objectName, $op);
+    if (empty($triggers)) {
       return;
     }
 
@@ -76,9 +74,40 @@ class CRM_Civirules_Utils_PreData {
       foreach ($customData['values'] as $customField ) {
         $data['custom_' . $customField['id']] = $customField['latest'];
       }
-
     }
+
+    foreach($triggers as $trigger) {
+      if ($trigger instanceof CRM_Civirules_Trigger_Post) {
+        $data = $trigger->alterPreData($data, $op, $objectName, $objectId, $params, $eventID);
+      }
+    }
+
     self::setPreData($entity, $id, $data, $eventID);
+  }
+
+  /**
+   * Retrieve the original data when the customPre hook is called.
+   *
+   * @param $op
+   * @param $groupID
+   * @param $entityID
+   * @param $params
+   * @param $eventID
+   */
+  public static function customPre($op, $groupID, $entityID, $params, $eventID=1) {
+    // We use api version 3 here as there is no api v4 for the CustomValue table.
+    $entity = civicrm_api3('CustomGroup', 'getvalue', ['id' => $groupID, 'return' => 'extends']);
+    $data = array();
+    try {
+      $data = civicrm_api3($entity, 'getsingle', array('id' => $entityID));
+    } catch (Exception $e) {
+      // Do nothing.
+    }
+    $customDataApiResult = civicrm_api3('CustomValue', 'get', ['entity_id' => $entityID, 'entity_table' => $entity]);
+    foreach($customDataApiResult['values'] as $customField) {
+      $data['custom_' . $customField['id']] = $customField['latest'];
+    }
+    self::setPreData($entity, $entityID, $data, $eventID);
   }
 
   /**
@@ -104,10 +133,16 @@ class CRM_Civirules_Utils_PreData {
    * @static
    */
   public static function getPreData($entity, $entityId, $eventID) {
-    if (isset(self::$preData[$entity][$entityId][$eventID])) {
-      return self::$preData[$entity][$entityId][$eventID];
+    $entityNames = [$entity];
+    if ($entity === 'Contact') {
+      $entityNames = ['Contact', 'Individual', 'Organization', 'Household'];
     }
-    return array();
+    foreach ($entityNames as $entity) {
+      if (isset(self::$preData[$entity][$entityId][$eventID])) {
+        return self::$preData[$entity][$entityId][$eventID];
+      }
+    }
+    return [];
   }
 
 }

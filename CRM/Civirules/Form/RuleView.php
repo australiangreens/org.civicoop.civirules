@@ -78,7 +78,8 @@ class CRM_Civirules_Form_RuleView extends CRM_Core_Form {
       $row = [];
       $elements = ['rule_id', 'label', 'trigger_label', 'description', 'is_active',
         'help_text', 'created_date', 'created_by_name', 'modified_date', 'modified_by_name', 'last_trigger_date', 'last_trigger_contactname'];
-      $triggerDetail = $this->getRuleLogLatestTriggerDetail($dao->rule_id);
+      $triggerDetail = CRM_Civirules_Utils::getRuleLogLatestTriggerDetail($dao->rule_id, 1);
+      $triggerDetail = reset($triggerDetail);
 
       foreach ($elements as $element) {
         switch ($element) {
@@ -91,7 +92,7 @@ class CRM_Civirules_Form_RuleView extends CRM_Core_Form {
             break;
 
           case 'last_trigger_contactname':
-            $row['last_trigger_contact'] = CRM_Civirules_Utils::formatContactLink($triggerDetail['last_trigger_contactid'], $triggerDetail['last_trigger_contactname']);
+            $row['last_trigger_contact'] = $triggerDetail['last_trigger_contact_link'];
             break;
 
           case 'last_trigger_date':
@@ -173,27 +174,6 @@ LEFT JOIN civirule_rule_tag AS crt ON cr.id = crt.rule_id";
     else {
       $this->_filterQuery = "{$select} {$from}";
     }
-  }
-
-  /**
-   * @param $ruleID
-   *
-   * @return array
-   */
-  private function getRuleLogLatestTriggerDetail($ruleID) {
-    $sql = "SELECT log_date, contact_id, sort_name
-    FROM civirule_rule_log crl
-    LEFT JOIN civicrm_contact cc ON cc.id = crl.contact_id
-    WHERE rule_id = %1
-    ORDER BY log_date DESC LIMIT 1";
-    $queryParams = [1 => [$ruleID, 'Integer']];
-    $dao = CRM_Core_DAO::executeQuery($sql, $queryParams);
-    $dao->fetch();
-    return [
-      'last_trigger_date' => $dao->log_date ?? '',
-      'last_trigger_contactid' => $dao->contact_id ?? '',
-      'last_trigger_contactname' => $dao->sort_name ?? '',
-    ];
   }
 
   /**

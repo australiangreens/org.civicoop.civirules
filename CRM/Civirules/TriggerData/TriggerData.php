@@ -13,7 +13,7 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    *
    * @var array
    */
-  private $entity_data = array();
+  private $entity_data = [];
 
   /**
    * Entity ID of the primary trigger data e.g. the activity id
@@ -21,6 +21,13 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    * @var Int
    */
   protected $entity_id;
+
+  /**
+   * Entity name of the primary trigger data e.g. 'contact' or 'activity'
+   *
+   * @var string
+   */
+  protected $entity_name = NULL;
 
   /**
    * Contains data of custom fields.
@@ -31,7 +38,7 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    *
    * @var array
    */
-  private $custom_data = array();
+  private $custom_data = [];
 
   protected $contact_id = 0;
 
@@ -55,7 +62,34 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    * @return Int
    */
   public function getEntityId() {
-    return $this->entity_id;
+    if ($this->entity_id) {
+      return $this->entity_id;
+    } else if ($this->entity_data[$this->entity_name]['id'] ?? false) {
+      return $this->entity_data[$this->entity_name]['id'];
+    } else {
+      return NULL;
+    }
+  }
+
+  /**
+   * Set which entity from the entitydata is the primary one EntityName (eg. Contact).
+   * This MUST use the correct capitalisation eg. Contact, EntityTag
+   *
+   */
+  public function setEntity($entity_name) {
+    $this->entity_name = $entity_name;
+  }
+
+
+  /**
+   * For triggers that have a "primary" entity return the EntityName (eg. Contact).
+   * Otherwise return NULL
+   * This MUST return the correct capitalisation eg. Contact, EntityTag
+   *
+   * @return null|string
+   */
+  public function getEntity() {
+    return $this->entity_name;
   }
 
   /**
@@ -107,23 +141,21 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    * @return array
    */
   public function getEntityData($entity) {
-    $validContacts = array('contact', 'organization', 'individual', 'household');
-    //only lookup entities by their lower case name. Entity is now case insensitive
-    if (isset($this->entity_data[strtolower($entity)]) && is_array($this->entity_data[strtolower($entity)])) {
-      return $this->entity_data[strtolower($entity)];
-    //just for backwards compatibility also check case sensitive entity
-    } elseif (isset($this->entity_data[$entity]) && is_array($this->entity_data[$entity])) {
+    $validContacts = ['Contact', 'Organization', 'Individual', 'Household'];
+    if (isset($this->entity_data[$entity]) && is_array($this->entity_data[$entity])) {
       return $this->entity_data[$entity];
-    } elseif (in_array(strtolower($entity), $validContacts) && $this->getContactId()) {
+    } elseif (isset($this->entity_data[strtolower($entity)]) && is_array($this->entity_data[strtolower($entity)])) {
+      return $this->entity_data[strtolower($entity)];
+    } elseif (in_array($entity, $validContacts) && $this->getContactId()) {
       $contactObject = new CRM_Contact_BAO_Contact();
       $contactObject->id = $this->getContactId();
-      $contactData = array();
+      $contactData = [];
       if ($contactObject->find(true)) {
         CRM_Core_DAO::storeValues($contactObject, $contactData);
       }
       return $contactData;
     }
-    return array();
+    return [];
   }
 
   /**
@@ -148,7 +180,7 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    * @return array
    */
   public function getEntityCustomData() {
-    $customFields = array();
+    $customFields = [];
     if ( ! isset($this->custom_data) ) {
       return $customFields;
     } elseif ( ! is_array($this->custom_data) ) {
@@ -166,13 +198,16 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    *
    * @param string $entity
    * @param array $data
-   * @return CRM_CiviRules_Engine_TriggerData
+   * @param bool $is_primary
    */
-  public function setEntityData($entity, $data) {
+  public function setEntityData($entity, $data, $is_primary = false) {
     if (is_array($data)) {
-      $this->entity_data[strtolower($entity)] = $data;
+      $this->entity_data[$entity] = $data;
     }
-    return $this;
+
+    if ($is_primary) {
+      $this->setEntity($entity);
+    }
   }
 
   /**
@@ -180,7 +215,7 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    * The custom data usually comes from within the pre hook where it is available
    *
    * @param int $custom_field_id
-   * @param $id id of the record in the database -1 for new ones
+   * @param int $id id of the record in the database -1 for new ones
    * @param $value
    */
   public function setCustomFieldValue($custom_field_id, $id, $value) {
@@ -197,7 +232,7 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
     if (isset($this->custom_data[$custom_field_id])) {
       return $this->custom_data[$custom_field_id];
     }
-    return array();
+    return [];
   }
 
   /**

@@ -31,6 +31,7 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
     $this->add('select', 'activity_type_id', ts('Activity type'), array('' => ts('-- please select --')) + CRM_Core_OptionGroup::values('activity_type'), true);
     $this->add('select', 'status_id', ts('Status'), array('' => ts('-- please select --')) + CRM_Core_OptionGroup::values('activity_status'), true);
     $this->add('text', 'subject', ts('Subject'));
+    $this->add('wysiwyg', 'details', ts('Details'));
 
     $this->assign('use_old_contact_ref_fields', $this->use_old_contact_ref_fields);
     if ($this->use_old_contact_ref_fields) {
@@ -85,6 +86,9 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
     }
     if (!empty($data['subject'])) {
       $defaultValues['subject'] = $data['subject'];
+    }
+    if (!empty($data['details'])) {
+      $defaultValues['details'] = $data['details'];
     }
     if (!empty($data['assignee_contact_id'])) {
       $defaultValues['assignee_contact_id'] = $data['assignee_contact_id'];
@@ -169,6 +173,7 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
     $data['activity_type_id'] = $this->_submitValues['activity_type_id'];
     $data['status_id'] = $this->_submitValues['status_id'];
     $data['subject'] = $this->_submitValues['subject'];
+    $data['details'] = $this->_submitValues['details'];
     $data['assignee_contact_id'] = false;
 
     if ($this->use_old_contact_ref_fields) {

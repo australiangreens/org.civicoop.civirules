@@ -1,23 +1,19 @@
 <?php
 /**
  * BAO Rule for CiviRule Rule
- * 
+ *
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
 class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
 
-  private static $ruleCache = [];
-
   /**
    * Function to get values
-   * 
+   *
    * @return array $result found rows with data
-   * @access public
-   * @static
    */
   public static function getValues($params) {
-    $result = array();
+    $result = [];
     $rule = new CRM_Civirules_BAO_Rule();
     if (!empty($params)) {
       $fields = self::fields();
@@ -29,7 +25,7 @@ class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
     }
     $rule->find();
     while ($rule->fetch()) {
-      $row = array();
+      $row = [];
       self::storeValues($rule, $row);
       // add trigger label
       if (isset($rule->trigger_id) && !empty($rule->trigger_id)) {
@@ -42,15 +38,14 @@ class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
 
   /**
    * Function to add or update rule
-   * 
-   * @param array $params 
-   * @return array $result
-   * @access public
+   *
+   * @param array $params
+   *
+   * @return array
    * @throws Exception when params is empty
-   * @static
    */
   public static function add($params) {
-    $result = array();
+    $result = [];
     if (empty($params)) {
       throw new Exception(ts('Params can not be empty when adding or updating a civirule rule'));
     }
@@ -89,11 +84,10 @@ class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
 
   /**
    * Function to delete a rule with id
-   * 
+   *
    * @param int $ruleId
+   *
    * @throws Exception when ruleId is empty
-   * @access public
-   * @static
    */
   public static function deleteWithId($ruleId) {
     if (empty($ruleId)) {
@@ -109,16 +103,14 @@ class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
     $rule->id = $ruleId;
     $rule->delete();
     CRM_Utils_Hook::post('delete', 'CiviRuleRule', $ruleId, CRM_Core_DAO::$_nullArray);
-    return;
   }
 
   /**
    * Function to retrieve the label of a rule with ruleId
-   * 
+   *
    * @param int $ruleId
+   *
    * @return string $rule->label
-   * @access public
-   * @static
    */
   public static function getRuleLabelWithId($ruleId) {
     if (empty($ruleId)) {
@@ -135,8 +127,6 @@ class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
    *
    * @param $labelToBeChecked
    * @return bool
-   * @access public
-   * @static
    */
   public static function labelExists($labelToBeChecked) {
     $rule = new CRM_Civirules_BAO_Rule();
@@ -152,6 +142,7 @@ class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
    *
    * @param string $objectName ObjectName in the Post hook
    * @param string $op op in the Post hook
+   *
    * @return array
    */
   public static function findRulesByObjectNameAndOp($objectName, $op) {
@@ -188,8 +179,7 @@ class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
    *
    * @return array
    */
-  public static function findRulesForCron()
-  {
+  public static function findRulesForCron() {
     $cronTriggers = [];
     $sql = "SELECT r.id AS rule_id, t.id AS trigger_id, t.class_name, r.trigger_params
             FROM `civirule_rule` r
@@ -214,8 +204,7 @@ class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
    *
    * @return array
    */
-  public static function findRulesByClassname($classname)
-  {
+  public static function findRulesByClassname($classname) {
     $triggers = [];
     $sql = "SELECT r.id AS rule_id, t.id AS trigger_id, t.class_name, r.trigger_params
             FROM `civirule_rule` r
@@ -239,8 +228,6 @@ class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
    * Function to get latest rule id
    *
    * @return int $ruleId
-   * @access public
-   * @static
    */
   public static function getLatestRuleId() {
     $rule = new CRM_Civirules_BAO_Rule();
@@ -255,10 +242,9 @@ class CRM_Civirules_BAO_Rule extends CRM_Civirules_DAO_Rule {
    * Method to get all active rules with a specific trigger id
    *
    * @param int $triggerId
+   *
    * @return array $ruleIds
    * @throws Exception when triggerId not integer
-   * @access public
-   * @static
    */
   public static function getRuleIdsByTriggerId($triggerId) {
     if (!is_numeric($triggerId)) {

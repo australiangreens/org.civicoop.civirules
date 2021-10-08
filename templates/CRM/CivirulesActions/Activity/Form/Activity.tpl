@@ -15,6 +15,11 @@
         <div class="content">{$form.subject.html}</div>
         <div class="clear"></div>
     </div>
+    <div class="crm-section">
+        <div class="label">{$form.details.label}</div>
+        <div class="content">{$form.details.html}</div>
+        <div class="clear"></div>
+    </div>
 
     {if ($use_old_contact_ref_fields)}
         <div class="crm-section">
