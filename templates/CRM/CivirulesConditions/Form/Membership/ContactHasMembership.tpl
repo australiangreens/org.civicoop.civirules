@@ -12,6 +12,27 @@
         <div class="content">{$form.membership_status_id.html}</div>
         <div class="clear"></div>
     </div>
+    <div class="crm-section">
+        <div class="label">{$form.start_date_relative.label}</div>
+        <div class="content">
+          {include file="CRM/Core/DatePickerRangeWrapper.tpl" fieldName='start_date' hideRelativeLabel=1, from='_from' to='_to'}
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="crm-section">
+        <div class="label">{$form.join_date_relative.label}</div>
+        <div class="content">
+          {include file="CRM/Core/DatePickerRangeWrapper.tpl" fieldName='join_date' hideRelativeLabel=1, from='_from' to='_to'}
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="crm-section">
+        <div class="label">{$form.end_date_relative.label}</div>
+        <div class="content">
+          {include file="CRM/Core/DatePickerRangeWrapper.tpl" fieldName='end_date' hideRelativeLabel=1, from='_from' to='_to'}
+        </div>
+        <div class="clear"></div>
+    </div>
 </div>
 <div class="crm-submit-buttons">
     {include file="CRM/common/formButtons.tpl" location="bottom"}
