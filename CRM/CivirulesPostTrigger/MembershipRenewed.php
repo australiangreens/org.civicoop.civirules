@@ -38,6 +38,12 @@ class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_Civirules_Trigger_P
     $membership = $triggerData->getEntityData('Membership');
     $originalMembership = $triggerData->getOriginalData();
 
+    // Pure change of membership state, e.g. by scheduled job Update Membership Statuses
+    //   does not supply all required information, but is not a Renewal, so escape.
+	  if( !isset($membership['membership_type_id']) || !isset($membership['membership_join_date']) || !isset($membership['end_date']) ) {
+      return;
+    }
+
     // Check if the Membership has been renewed (end_date has been increased by one membership term)
     // As a membership runs from [date] to [date - 1 day] we need to check if the new end_date matches the
     //   calculated end_date based on the original end_date + 1 day.
