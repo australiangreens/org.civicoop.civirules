@@ -1,6 +1,7 @@
 # CHANGELOG
 
-## Version 2.38 (not yet released)
+## Version 2.38
+* Add cron trigger for next scheduled contribution date on recurring contribution, fixes #162
 
 ## Version 2.37
 

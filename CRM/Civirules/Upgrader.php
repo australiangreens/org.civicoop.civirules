@@ -877,6 +877,12 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
     return TRUE;
   }
 
+  public function upgrade_2079() {
+    $this->ctx->log->info('Applying update 2079 - Add cron trigger on next sched contribution date');
+    CRM_Civirules_Utils_Upgrader::insertTriggersFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/triggers.json');
+    return TRUE;
+  }
+
   /**
    * For developers:
    * since CiviRules 2.28 it is not needed to create an upgrade if you created a new condition, action or trigger.

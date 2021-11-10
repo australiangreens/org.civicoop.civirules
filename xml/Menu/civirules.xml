@@ -589,4 +589,10 @@
     <title>Related Participant when Activity Is Tagged</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/civirule/form/trigger/nextcontributiondate</path>
+    <page_callback>CRM_CivirulesCronTrigger_Form_NextContributionDate</page_callback>
+    <title>Next Scheduled Contribution Date</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
 </menu>
