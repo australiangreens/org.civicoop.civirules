@@ -289,6 +289,12 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/trigger/event</path>
+    <page_callback>CRM_CivirulesPostTrigger_Form_Event</page_callback>
+    <title>Event</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/trigger/activitydate</path>
     <page_callback>CRM_CivirulesCronTrigger_Form_ActivityDate</page_callback>
     <title>Activity date reached</title>

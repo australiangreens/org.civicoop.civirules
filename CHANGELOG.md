@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 2.39
+
+* Added configuration to the event trigger to use the logged in user as the contact for the trigger.
+
 ## Version 2.38
 * Add cron trigger for next scheduled contribution date on recurring contribution, fixes #162
 
