@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 2.40 (not yet released)
+
 ## Version 2.39
 
 * Added configuration to the event trigger to use the logged in user as the contact for the trigger.
