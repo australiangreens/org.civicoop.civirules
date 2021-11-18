@@ -89,6 +89,8 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
       case '<=':
       case 'contains string':
       case 'not contains string':
+      case 'matches regex':
+      case 'not matches regex':
         $key = 'value';
         break;
       case 'is one of':
@@ -318,6 +320,14 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
           }
         }
         return true;
+      case 'matches regex':
+        preg_match('/' . $rightValue . '/', $leftValue, $matches);
+        return (!empty($matches));
+        break;
+      case 'not matches regex':
+        preg_match('/' . $rightValue . '/', $leftValue, $matches);
+        return (empty($matches));
+        break;
       default:
         return false;
         break;
@@ -438,6 +448,8 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
       'not contains one of' => ts('Does not contain one of'),
       'contains all of' => ts('Does contain all of'),
       'not contains all of' => ts('Does not contain all of'),
+      'matches regex' => ts('Matches regular expression'),
+      'not matches regex' => ts('Does not match regular expression'),
     ];
   }
 
