@@ -1,7 +1,9 @@
 # CHANGELOG
 
 ## Version 2.40 (not yet released)
+
 * Added operators 'Matches regular expression' and 'Does not match regular expression' to Field Value condition.
+* Fix 'Contact has recurring contribution' condition
 
 ## Version 2.39
 
