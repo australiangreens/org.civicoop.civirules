@@ -39,7 +39,7 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
     if ($this->_dao->fetch()) {
       $data = [];
       CRM_Core_DAO::storeValues($this->_dao, $data);
-      return new CRM_Civirules_TriggerData_Cron($this->_dao->contact_id, 'ContributionRecur', $data);
+      return new CRM_Civirules_TriggerData_Cron($this->_dao->contact_id, 'ContributionRecur', $data, $data['contribution_recur_id']);
     }
     return FALSE;
   }
@@ -86,7 +86,7 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
         break;
     }
 
-    $sql = "SELECT *
+    $sql = "SELECT r.id AS `contribution_recur_id`, r.*
             FROM `civicrm_contribution_recur` `r`
             LEFT JOIN `civirule_rule_log` `rule_log` ON `rule_log`.entity_table = 'civicrm_contribution_recur' AND `rule_log`.entity_id = r.id AND `rule_log`.`contact_id` = `r`.`contact_id` AND DATE(`rule_log`.`log_date`) = DATE(NOW()) AND `rule_log`.`rule_id` = %3
             WHERE `r`.`is_test` = %1 AND (`r`.`next_sched_contribution_date` > CURRENT_DATE() OR `r`.`next_sched_contribution_date` IS NULL)

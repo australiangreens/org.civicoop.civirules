@@ -4,6 +4,7 @@
 
 * Added operators 'Matches regular expression' and 'Does not match regular expression' to Field Value condition.
 * Fix 'Contact has recurring contribution' condition
+* Fixed issue with contribution recur cron trigger: added ID to the trigger data.
 
 ## Version 2.39
 
