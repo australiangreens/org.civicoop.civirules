@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 2.40 (not yet released)
+
+
+
 ## Version 2.40
 
 * Added operators 'Matches regular expression' and 'Does not match regular expression' to Field Value condition.
