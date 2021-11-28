@@ -31,8 +31,12 @@ class CRM_CivirulesActions_Generic_SetCustomField extends CRM_Civirules_Action {
     }
 
     // Get the ID of the entity we're updating.
-    $entityId = $triggerData->getEntityId();
+    if (empty($entityData = $triggerData->getEntityData($entity))) {
+      throw new Exception("Custom field id $field_id is not compatible "
+        . "with the entity this rule was triggered for");
+    }
 
+    $entityId = $entityData['id'];
 
     // get the value from the configuration
     $new_value = $action_params['value'];
