@@ -2,7 +2,8 @@
 
 ## Version 2.40 (not yet released)
 
-* improved ContactHasMembership condition adding fields start_date, join_date, end_date to be part as condition's filters. By !159
+* Improved ContactHasMembership condition adding fields start_date, join_date, end_date to be part as condition's filters. By !159
+* Set the custom value on the correct entity by !160
 
 
 ## Version 2.40
