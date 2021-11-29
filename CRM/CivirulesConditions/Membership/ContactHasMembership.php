@@ -1,7 +1,7 @@
 <?php
 
 class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civirules_Condition {
-  
+
   private $conditionParams = array();
 
   /**
@@ -35,30 +35,56 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
     if (count($this->conditionParams['membership_type_id'])) {
       switch ($this->conditionParams['type_operator']) {
         case 'in':
-          $whereClauses[] = 'membership_type_id IN ('.implode($this->conditionParams['membership_type_id'], ','). ')';
+          $whereClauses[] = 'membership_type_id IN (' . implode($this->conditionParams['membership_type_id'], ',') . ')';
           break;
+
         case 'not in':
-          $whereClauses[] = 'membership_type_id NOT IN ('.implode($this->conditionParams['membership_type_id'], ','). ')';
+          $whereClauses[] = 'membership_type_id NOT IN (' . implode($this->conditionParams['membership_type_id'], ',') . ')';
           break;
       }
     }
     if (count($this->conditionParams['membership_status_id'])) {
       switch ($this->conditionParams['status_operator']) {
         case 'in':
-          $whereClauses[] = 'status_id IN ('.implode($this->conditionParams['membership_status_id'], ','). ')';
+          $whereClauses[] = 'status_id IN (' . implode($this->conditionParams['membership_status_id'], ',') . ')';
           break;
+
         case 'not in':
-          $whereClauses[] = 'status_id NOT IN ('.implode($this->conditionParams['membership_status_id'], ','). ')';
+          $whereClauses[] = 'status_id NOT IN (' . implode($this->conditionParams['membership_status_id'], ',') . ')';
           break;
       }
     }
-    
-    $sql = "SELECT COUNT(*) as total FROM civicrm_membership WHERE ".implode($whereClauses, ' AND ');
+
+    $dateFields = ['start_date', 'join_date', 'end_date'];
+    foreach ($dateFields as $dateField) {
+      $date_relative = CRM_Utils_Array::value($dateField . '_relative', $this->conditionParams);
+      $date_to = CRM_Utils_Array::value($dateField . '_to', $this->conditionParams);
+      $date_from = CRM_Utils_Array::value($dateField . '_from', $this->conditionParams);
+
+      if (!empty($date_relative) || !empty($date_from) || !empty($date_to)) {
+        [$from, $to] = CRM_Utils_Date::getFromTo($date_relative, $date_from, $date_to);
+        $dateOperator = NULL;
+        if (!empty($from) && !empty($to)) {
+          $dateOperator = "BETWEEN '{$from}' AND '{$to}'";
+        }
+        elseif (!empty($from) && empty($to)) {
+          $dateOperator = ">= '{$from}'";
+        }
+        elseif (empty($from) && !empty($to)) {
+          $dateOperator = "<= '{$to}'";
+        }
+        if (!empty($dateOperator)) {
+          $whereClauses[] = "($dateField $dateOperator)";
+        }
+      }
+    }
+
+    $sql = "SELECT COUNT(*) as total FROM civicrm_membership WHERE " . implode($whereClauses, ' AND ');
     $count = CRM_Core_DAO::singleValueQuery($sql, $sqlParams);
     if ($count) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -72,7 +98,7 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
    * @abstract
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/contacthasmembership', 'rule_condition_id=' .$ruleConditionId);
+    return CRM_Utils_System::url('civicrm/civirule/form/condition/contacthasmembership', 'rule_condition_id=' . $ruleConditionId);
   }
 
   /**
@@ -85,7 +111,7 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
   public function userFriendlyConditionParams() {
     $label = '';
     $operator_options = self::getOperatorOptions();
-    
+
     try {
       $params = array(
         'is_active' => 1,
@@ -104,13 +130,12 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
           }
           $values .= $membershipTypes['values'][$membershipTypeId]['name'];
         }
-        $label .= ts('Membership type %1 %2', [
-          1 => $operator,
-          2 => $values,
-        ]);
+        $label .= ts('Membership Type') . " {$operator} <b>{$values}</b> <br>";
       }
-    } catch (CiviCRM_API3_Exception $ex) {}
-    
+    }
+    catch (CiviCRM_API3_Exception $ex) {
+    }
+
     try {
       if (isset($this->conditionParams['membership_status_id']) && count($this->conditionParams['membership_status_id'])) {
         $params = [
@@ -128,16 +153,43 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
           }
           $values .= $membershipStatus['values'][$membershipStatusId]['name'];
         }
-        $label .= '<br> ' . ts('Membership status %1 %2', [
-            1 => $operator,
-            2 => $values,
-          ]);
+        $label .= ts('Membership Status') . " {$operator} <b>{$values}</b> <br>";
       }
-    } catch (CiviCRM_API3_Exception $ex) {}
-    
+    }
+    catch (CiviCRM_API3_Exception $ex) {
+    }
+
+    $dateFields = [
+      'start_date' => ts('Membership Start Date'),
+      'join_date' => ts('Membership Join Date'),
+      'end_date' => ts('Membership End Date'),
+    ];
+    $dateOperators = CRM_Core_OptionGroup::values('relative_date_filters');
+    $msg = [];
+    foreach ($dateFields as $dateField => $dateDesc) {
+      $date_relative = CRM_Utils_Array::value($dateField . '_relative', $this->conditionParams);
+      $date_to = CRM_Utils_Array::value($dateField . '_to', $this->conditionParams);
+      $date_from = CRM_Utils_Array::value($dateField . '_from', $this->conditionParams);
+
+      if (!empty($date_relative)) {
+        $msg[] = $dateDesc . " <b>{$dateOperators[$date_relative]}</b>";
+      }
+      elseif (!empty($date_from) || !empty($date_to)) {
+        $dateMsg = $dateDesc;
+        if (!empty($date_from)) {
+          $dateMsg .= ' ' . ts('From') . " <b>$date_from</b>";
+        }
+        if (!empty($date_to)) {
+          $dateMsg .= ' ' . ts('To') . " <b>$date_to</b>";
+        }
+        $msg[] = $dateMsg;
+      }
+    };
+    $label .= implode('<br>', $msg);
+
     return trim($label);
   }
-  
+
   /**
    * Method to get operators
    *

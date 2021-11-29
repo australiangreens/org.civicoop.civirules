@@ -5,9 +5,8 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Membership_ContactHasMembership extends CRM_CivirulesConditions_Form_Form {
-  
+
   /**
    * Method to get operators
    *
@@ -28,19 +27,24 @@ class CRM_CivirulesConditions_Form_Membership_ContactHasMembership extends CRM_C
 
     $membershipTypes = CRM_Civirules_Utils::getMembershipTypes();
     asort($membershipTypes);
-    $membership_type_id = $this->add('select', 'membership_type_id', ts('Membership Type'), $membershipTypes, true);
+    $membership_type_id = $this->add('select', 'membership_type_id', ts('Membership Type'), $membershipTypes, TRUE);
     $membership_type_id->setMultiple(TRUE);
-    $this->add('select', 'type_operator', ts('Operator'), $this->getOperators(), true);
-    
+    $this->add('select', 'type_operator', ts('Operator'), $this->getOperators(), TRUE);
+
     $membershipStatus = CRM_Civirules_Utils::getMembershipStatus(FALSE);
     asort($membershipStatus);
-    $membership_status_id = $this->add('select', 'membership_status_id', ts('Membership Status'), $membershipStatus, true);
+    $membership_status_id = $this->add('select', 'membership_status_id', ts('Membership Status'), $membershipStatus, TRUE);
     $membership_status_id->setMultiple(TRUE);
-    $this->add('select', 'status_operator', ts('Operator'), $this->getOperators(), true);
+    $this->add('select', 'status_operator', ts('Operator'), $this->getOperators(), TRUE);
+
+    $this->addDatePickerRange('start_date', ts('Membership Start Date'), FALSE, FALSE, 'From', 'To', NULL, '_to', '_from');
+    $this->addDatePickerRange('join_date', ts('Membership Join Date'), FALSE, FALSE, 'From', 'To', NULL, '_to', '_from');
+    $this->addDatePickerRange('end_date', ts('Membership End Date'), FALSE, FALSE, 'From', 'To', NULL, '_to', '_from');
 
     $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE),
+      array('type' => 'cancel', 'name' => ts('Cancel')),
+    ));
   }
 
   /**
@@ -64,6 +68,12 @@ class CRM_CivirulesConditions_Form_Membership_ContactHasMembership extends CRM_C
     if (!empty($data['status_operator'])) {
       $defaultValues['status_operator'] = $data['status_operator'];
     }
+    $dateFields = ['start_date', 'join_date', 'end_date'];
+    foreach ($dateFields as $dateField) {
+      $defaultValues[$dateField . '_relative'] = $data[$dateField . '_relative'];
+      $defaultValues[$dateField . '_to'] = $data[$dateField . '_to'];
+      $defaultValues[$dateField . '_from'] = $data[$dateField . '_from'];
+    }
     return $defaultValues;
   }
 
@@ -78,8 +88,15 @@ class CRM_CivirulesConditions_Form_Membership_ContactHasMembership extends CRM_C
     $data['type_operator'] = $this->_submitValues['type_operator'];
     $data['membership_status_id'] = $this->_submitValues['membership_status_id'];
     $data['status_operator'] = $this->_submitValues['status_operator'];
+    $dateFields = ['start_date', 'join_date', 'end_date'];
+    foreach ($dateFields as $dateField) {
+      $data[$dateField . '_relative'] = $this->_submitValues[$dateField . '_relative'];
+      $data[$dateField . '_to'] = empty($data[$dateField . '_relative']) ? $this->_submitValues[$dateField . '_to'] : NULL;
+      $data[$dateField . '_from'] = empty($data[$dateField . '_relative']) ? $this->_submitValues[$dateField . '_from'] : NULL;
+    }
     $this->ruleCondition->condition_params = serialize($data);
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }
