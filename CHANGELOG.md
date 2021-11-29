@@ -2,6 +2,7 @@
 
 ## Version 2.40 (not yet released)
 
+* improved ContactHasMembership condition adding fields start_date, join_date, end_date to be part as condition's filters. By !159
 
 
 ## Version 2.40
