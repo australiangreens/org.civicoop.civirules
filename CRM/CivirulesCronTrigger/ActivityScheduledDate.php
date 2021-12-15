@@ -144,7 +144,7 @@ class CRM_CivirulesCronTrigger_ActivityScheduledDate extends CRM_CivirulesCronTr
       'field' => "record_type_id",
     ]);
     $options[0] = E::ts('All contacts');
-    $options = array_merge($options, $result['values']);
+    $options = $options + $result['values'];
 
     return E::ts('%6 Types %1 and status %2 - %3 %4. Trigger for %5', [
       1 => $activityTypeLabel,
