@@ -4,6 +4,7 @@
 
 * Improved ContactHasMembership condition adding fields start_date, join_date, end_date to be part as condition's filters. By !159
 * Set the custom value on the correct entity by !160
+* Fixed activity Scheduled Date triggers for incorrect set of contacts with !161
 
 
 ## Version 2.40
