@@ -18,7 +18,7 @@ class CRM_CivirulesPostTrigger_CaseActivity extends CRM_CivirulesPostTrigger_Act
     $triggerData = parent::getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
 
     $case = new CRM_Case_BAO_Case();
-    if ($objectRef instanceof CRM_Activity_DAO_Activity && $objectRef->case_id) {
+    if ($objectRef instanceof CRM_Activity_DAO_Activity && !empty($objectRef->case_id)) {
       $case->id = $objectRef->case_id;
     } else {
       // Get the CaseActivity record.
