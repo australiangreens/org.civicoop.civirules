@@ -35,22 +35,22 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
     if (count($this->conditionParams['membership_type_id'])) {
       switch ($this->conditionParams['type_operator']) {
         case 'in':
-          $whereClauses[] = 'membership_type_id IN (' . implode($this->conditionParams['membership_type_id'], ',') . ')';
+          $whereClauses[] = 'membership_type_id IN (' . implode(',', $this->conditionParams['membership_type_id']) . ')';
           break;
 
         case 'not in':
-          $whereClauses[] = 'membership_type_id NOT IN (' . implode($this->conditionParams['membership_type_id'], ',') . ')';
+          $whereClauses[] = 'membership_type_id NOT IN (' . implode(',', $this->conditionParams['membership_type_id']) . ')';
           break;
       }
     }
     if (count($this->conditionParams['membership_status_id'])) {
       switch ($this->conditionParams['status_operator']) {
         case 'in':
-          $whereClauses[] = 'status_id IN (' . implode($this->conditionParams['membership_status_id'], ',') . ')';
+          $whereClauses[] = 'status_id IN (' . implode(',', $this->conditionParams['membership_status_id']) . ')';
           break;
 
         case 'not in':
-          $whereClauses[] = 'status_id NOT IN (' . implode($this->conditionParams['membership_status_id'], ',') . ')';
+          $whereClauses[] = 'status_id NOT IN (' . implode(',', $this->conditionParams['membership_status_id']) . ')';
           break;
       }
     }
