@@ -157,6 +157,12 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/condition/recurfrequency</path>
+    <page_callback>CRM_CivirulesConditions_Form_ContributionRecur_Frequency</page_callback>
+    <title>Recurring Contribution Frequency is</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/condition/recurringpaymentprocessor</path>
     <page_callback>CRM_CivirulesConditions_Form_ContributionRecur_PaymentProcessor</page_callback>
     <title>Recurring Contribution Payment Processor is</title>

@@ -43,6 +43,7 @@
   {"name":"contribution_recur_status","label":"Recurring Contribution Status is (not) one of","class_name":"CRM_CivirulesConditions_ContributionRecur_Status"},
   {"name":"contribution_recur_status_changed","label":"Compare Old Recurring Contribution Status to New Recurring Contribution Status","class_name":"CRM_CivirulesConditions_ContributionRecur_StatusChanged"},
   {"name":"contribution_recur_financial_type","label":"Recurring Contribution is (not) of Financial Type(s)","class_name":"CRM_CivirulesConditions_ContributionRecur_FinancialType"},
+  {"name": "contribution_recur_frequency", "label": "Recurring Contribution has Frequency", "class_name": "CRM_CivirulesConditions_ContributionRecur_Frequency"},
   {"name":"donor_has_recurring","label":"Contact has Recurring Contribution with future end date","class_name":"CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring"},
   {"name":"contact_has_recurring","label":"Contact has recurring contribution(s) with status","class_name":"CRM_CivirulesConditions_Contact_HasRecur"},
   {"name":"contribution_recur_end_date","label":"End Date of Recurring Contribution","class_name":"CRM_CivirulesConditions_ContributionRecur_EndDate"},

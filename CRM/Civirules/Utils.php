@@ -801,5 +801,46 @@ class CRM_Civirules_Utils {
     return $groups;
   }
 
+  /**
+   * Method to get list of active frequency units
+   *
+   * @return array
+   */
+  public static function getFrequencyUnits() {
+    $optionGroupName = "recur_frequency_units";
+    $units = [];
+    if (function_exists('civicrm_api4')) {
+      try {
+        $optionValues = \Civi\Api4\OptionValue::get()
+          ->addSelect('label', 'value')
+          ->addWhere('option_group_id:name', '=', $optionGroupName)
+          ->addWhere('is_active', '=', TRUE)
+          ->execute();
+        foreach ($optionValues as $optionValue) {
+          $units[$optionValue['value']] = $optionValue['label'];
+        }
+      }
+      catch (API_Exception $ex) {
+      }
+    }
+    else {
+      try {
+        $result = civicrm_api3('OptionValue', 'get', [
+          'options' => ['limit' => 0],
+          'sequential' => 1,
+          'option_group_id' => $optionGroupName,
+          'is_active' => TRUE,
+          'return' => ['label', 'value']
+        ]);
+        foreach ($result['values'] as $optionValue) {
+          $units[$optionValue['value']] = $optionValue['label'];
+        }
+      }
+      catch (CiviCRM_API3_Exception $ex) {
+      }
+    }
+    return $units;
+  }
+
 }
 

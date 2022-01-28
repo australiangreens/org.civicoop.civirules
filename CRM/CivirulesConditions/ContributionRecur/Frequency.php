@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Class CRM_CivirulesConditions_Contribution_Recur_EndDate
+ * Class CRM_CivirulesConditions_Contribution_Recur_Frequency
  *
- * This CiviRule condition will check if the end date of the recurring contribution is set or not set
+ * This CiviRule condition will check if the frequency unit and interval of the recurring contribution is OK
  *
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  */
 
-class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Condition {
+class CRM_CivirulesConditions_ContributionRecur_Frequency extends CRM_Civirules_Condition {
 
-  private $conditionParams = array();
+  private $_conditionParams = array();
 
   /**
    * Method to set the Rule Condition data
@@ -20,9 +20,9 @@ class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Co
    */
   public function setRuleConditionData($ruleCondition) {
     parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = array();
+    $this->_conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
     }
   }
 
@@ -32,15 +32,13 @@ class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Co
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
-    $recurring = $triggerData->getEntityData('ContributionRecur');
-    if ($this->conditionParams['end_date'] == 0 && empty($recurring['end_date'])) {
-      $isConditionValid = TRUE;
-    }
-    if ($this->conditionParams['end_date'] == 1 && !empty($recurring['end_date'])) {
-      $isConditionValid = TRUE;
+    $contributionRecur = $triggerData->getEntityData('ContributionRecur');
+    if ($contributionRecur['frequency_unit'] && $contributionRecur['frequency_interval']) {
+      if ($contributionRecur['frequency_unit'] == $this->_conditionParams['frequency_unit'] && $contributionRecur['frequency_interval'] == $this->_conditionParams['frequency_interval']) {
+        $isConditionValid = TRUE;
+      }
     }
     return $isConditionValid;
   }
@@ -56,7 +54,7 @@ class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Co
    * @abstract
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/contribution_recur_enddate/', 'rule_condition_id='.$ruleConditionId);
+    return CRM_Utils_System::url('civicrm/civirule/form/condition/recurfrequency/', 'rule_condition_id='.$ruleConditionId);
   }
 
   /**
@@ -67,12 +65,8 @@ class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Co
    * @access public
    */
   public function userFriendlyConditionParams() {
-    if (isset($this->conditionParams['end_date']) && $this->conditionParams['end_date'] == 1) {
-      $endDateString = 'is set';
-    } else {
-      $endDateString = 'is not set';
-    }
-    return 'End Date of Recurring Contribution '.$endDateString;
+    $frequencyUnits = CRM_Civirules_Utils::getFrequencyUnits();
+    return "Recurring contribution has frequency of " . $this->_conditionParams['frequency_interval'] . " " . $frequencyUnits[$this->_conditionParams['frequency_unit']];
   }
 
   /**
@@ -90,4 +84,5 @@ class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Co
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntity('ContributionRecur');
   }
+
 }
