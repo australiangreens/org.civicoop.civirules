@@ -42,5 +42,6 @@
   {"name":"contribution_financial_type","label":"Set the Financial Type for a Contribution","class_name":"CRM_CivirulesActions_Contribution_FinancialType"},
   {"name":"remove_contact_sub_type","label":"Remove one or more sub contact types","class_name":"CRM_CivirulesActions_Contact_RemoveSubtype"},
   {"name":"set_custom_field_generic","label":"Set Custom Field on any entity","class_name":"CRM_CivirulesActions_Generic_SetCustomField"},
-  {"name":"end_relationship","label":"Disable/end or delete a relationship","class_name":"CRM_CivirulesActions_Relationship_End"}
+  {"name":"end_relationship","label":"Disable/end or delete a relationship","class_name":"CRM_CivirulesActions_Relationship_End"},
+  {"name":"register_participant","label":"Register Event Participant","class_name":"CRM_CivirulesActions_Participant_Register"}
 ]

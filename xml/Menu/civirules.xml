@@ -530,6 +530,12 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/action/register</path>
+    <page_callback>CRM_CivirulesActions_Participant_Form_Register</page_callback>
+    <title>Register participant</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/condition/participant/statuschanged</path>
     <page_callback>CRM_CivirulesConditions_Form_Participant_StatusChanged</page_callback>
     <title>participant status changed</title>

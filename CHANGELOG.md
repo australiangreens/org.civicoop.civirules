@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 2.43 (not released yet)
+
+* Added action register participant, fixes #169
+
 ## Version 2.41
 
 * Improved ContactHasMembership condition adding fields start_date, join_date, end_date to be part as condition's filters. By !159

@@ -842,5 +842,68 @@ class CRM_Civirules_Utils {
     return $units;
   }
 
+  /**
+   * Method to get event title with name
+   *
+   * @param int $eventId
+   * @return array|false|mixed|null
+   */
+  public static function getEventTitle(int $eventId) {
+    if (!empty($eventId)) {
+      if (function_exists('civicrm_api4')) {
+        try {
+          $events = \Civi\Api4\Event::get()
+            ->addSelect('title')
+            ->addWhere('id', '=', 1)
+            ->execute();
+          $event = $events->first();
+          if ($event['title']) {
+            return $event['title'];
+          }
+        }
+        catch (API_Exception $ex) {
+        }
+      }
+      else {
+        try {
+          $eventTitle = civicrm_api3('Event', 'getvalue', [
+            'id' => $eventId,
+            'return' => 'title',
+          ]);
+          if ($eventTitle) {
+            return $eventTitle;
+          }
+        }
+        catch (CiviCRM_API3_Exception $ex) {
+        }
+
+      }
+    }
+    return NULL;
+  }
+
+  /**
+   * Method to get participant status label
+   *
+   * @param int $participantStatusId
+   * @return array|false|mixed|null
+   */
+  public static function getParticipantStatusLabel(int $participantStatusId) {
+    if (!empty($participantStatusId)) {
+      try {
+        $label = civicrm_api3('ParticipantStatusType', 'getvalue', [
+          'id' => $participantStatusId,
+          'return' => 'label',
+        ]);
+        if ($label) {
+          return $label;
+        }
+      }
+      catch (CiviCRM_API3_Exception $ex) {
+      }
+    }
+    return NULL;
+  }
+
 }
 
