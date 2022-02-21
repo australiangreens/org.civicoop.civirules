@@ -3,6 +3,7 @@
 ## Version 2.43 (not released yet)
 
 * Added action register participant, fixes #169
+* Avoid duplicate Contact Subtypes by !164
 
 ## Version 2.41
 
