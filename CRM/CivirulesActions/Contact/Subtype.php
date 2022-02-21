@@ -19,8 +19,10 @@ class CRM_CivirulesActions_Contact_Subtype extends CRM_Civirules_Action {
     $action_params = $this->getActionParameters();
     foreach($action_params['sub_type'] as $sub_type) {
       if (CRM_Contact_BAO_ContactType::isExtendsContactType($sub_type, $contactType)) {
-        $subTypes[] = $sub_type;
-        $changed = true;
+        if (!in_array($sub_type, $subTypes)) {
+          $subTypes[] = $sub_type;
+          $changed = true;
+        }
       }
     }
     if ($changed) {
