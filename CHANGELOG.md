@@ -5,6 +5,7 @@
 * Added action register participant, fixes #169
 * Avoid duplicate Contact Subtypes by !164
 * Fix ContactHasMembership condition !163
+* Fix display of group type label instead of group type ID !165
 
 ## Version 2.41
 
