@@ -6,6 +6,7 @@
 * Avoid duplicate Contact Subtypes by !164
 * Fix ContactHasMembership condition !163
 * Fix display of group type label instead of group type ID !165
+* Escape if simple change of Membership State, not a Renewal !156
 
 ## Version 2.41
 
