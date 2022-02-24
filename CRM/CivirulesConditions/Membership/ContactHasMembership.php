@@ -79,7 +79,7 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
       }
     }
 
-    $sql = "SELECT COUNT(*) as total FROM civicrm_membership WHERE " . implode($whereClauses, ' AND ');
+    $sql = "SELECT COUNT(*) as total FROM civicrm_membership WHERE " . implode(' AND ', $whereClauses);
     $count = CRM_Core_DAO::singleValueQuery($sql, $sqlParams);
     if ($count) {
       return TRUE;
