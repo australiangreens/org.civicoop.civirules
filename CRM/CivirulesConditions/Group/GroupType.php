@@ -2,17 +2,19 @@
 
 class CRM_CivirulesConditions_Group_GroupType extends CRM_Civirules_Condition {
 
-  private $conditionParams = array();
+  /**
+   * @var array
+   */
+  private $conditionParams = [];
 
   /**
    * Method to set the Rule Condition data
    *
    * @param array $ruleCondition
-   * @access public
    */
   public function setRuleConditionData($ruleCondition) {
     parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = array();
+    $this->conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
       $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
     }
@@ -22,6 +24,7 @@ class CRM_CivirulesConditions_Group_GroupType extends CRM_Civirules_Condition {
    * Method to determine if the condition is valid
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
+   *
    * @return bool
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
@@ -55,9 +58,8 @@ class CRM_CivirulesConditions_Group_GroupType extends CRM_Civirules_Condition {
    * Return false if you do not need extra data input
    *
    * @param int $ruleConditionId
+   *
    * @return bool|string
-   * @access public
-   * @abstract
    */
   public function getExtraDataInputUrl($ruleConditionId) {
     return CRM_Utils_System::url('civicrm/civirule/form/condition/group/grouptype', 'rule_condition_id='
@@ -69,7 +71,6 @@ class CRM_CivirulesConditions_Group_GroupType extends CRM_Civirules_Condition {
    * e.g. 'Older than 65'
    *
    * @return string
-   * @access public
    */
   public function userFriendlyConditionParams() {
     $groupTypes = self::getGroupTypes();
@@ -80,18 +81,18 @@ class CRM_CivirulesConditions_Group_GroupType extends CRM_Civirules_Condition {
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Group Type is NOT one of: ';
     }
-    $groupText = array();
-    $groupText[] = $this->conditionParams['group_type_id'];
-    if (!empty($groupText)) {
-      $friendlyText .= implode(", ", $groupText);
-    }
+    $friendlyText .= $groupTypes[$this->conditionParams['group_type_id']] ?? 'Unknown';
     return $friendlyText;
   }
 
+  /**
+   * @return array
+   * @throws \CiviCRM_API3_Exception
+   */
   public static function getGroupTypes() {
-    $return = array();
-    $option_group_id = civicrm_api3('OptionGroup', 'getvalue', array('return' => 'id', 'name' => 'group_type'));
-    $groupTypes = civicrm_api3('OptionValue', 'Get', array('option_group_id' => $option_group_id));
+    $return = [];
+    $option_group_id = civicrm_api3('OptionGroup', 'getvalue', ['return' => 'id', 'name' => 'group_type']);
+    $groupTypes = civicrm_api3('OptionValue', 'Get', ['option_group_id' => $option_group_id]);
     foreach ($groupTypes['values'] as $groupType) {
       $return[$groupType['value']] = $groupType['label'];
     }
@@ -108,6 +109,7 @@ class CRM_CivirulesConditions_Group_GroupType extends CRM_Civirules_Condition {
    *
    * @param CRM_Civirules_Trigger $trigger
    * @param CRM_Civirules_BAO_Rule $rule
+   *
    * @return bool
    */
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
