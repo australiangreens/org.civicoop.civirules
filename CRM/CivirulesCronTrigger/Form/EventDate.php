@@ -67,7 +67,7 @@ class CRM_CivirulesCronTrigger_Form_EventDate extends CRM_CivirulesTrigger_Form_
       $defaultValues['offset'] = $data['offset'];
       $defaultValues['enable_offset'] = 1;
     }
-    if (empty($date['offset'])) {
+    if (empty($data['offset'])) {
       $defaultValues['enable_offset'] = 0;
     }
     return $defaultValues;
