@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 2.42 (not released yet)
+## Version 2.42
 
 * Added action register participant, fixes #169
 * Avoid duplicate Contact Subtypes by !164
