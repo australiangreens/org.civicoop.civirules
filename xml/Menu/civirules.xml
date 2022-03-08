@@ -416,6 +416,12 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/action/activity/add_to_case</path>
+    <page_callback>CRM_CivirulesActions_Activity_Form_AddToCase</page_callback>
+    <title>Activity Add To Case</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/action/activity_update_status</path>
     <page_callback>CRM_CivirulesActions_Activity_Form_UpdateStatus</page_callback>
     <title>Update activity status</title>

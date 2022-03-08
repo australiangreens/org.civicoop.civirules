@@ -8,6 +8,7 @@
 * Fix display of group type label instead of group type ID !165
 * Escape if simple change of Membership State, not a Renewal !156
 * Fix cron triggers based on event date !168
+* Added action Create Case Activity
 
 ## Version 2.41
 

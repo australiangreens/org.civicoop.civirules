@@ -1,6 +1,7 @@
 [
   {"name":"activity_add","label":"Add activity to contact","class_name":"CRM_CivirulesActions_Activity_Add"},
   {"name":"activity_edit","label":"Edit triggering activity","class_name":"CRM_CivirulesActions_Activity_Edit"},
+  {"name":"activity_add_to_case","label":"Create case activity","class_name":"CRM_CivirulesActions_Activity_AddToCase"},
   {"name":"activity_assign_email","label":"Assign activity & email","class_name":"CRM_CivirulesActions_Activity_AssignNemail"},
   {"name":"activity_update_status","label":"Update activity status","class_name":"CRM_CivirulesActions_Activity_UpdateStatus"},
   {"name":"activity_add_target_contact","label":"Add target contact to activity","class_name":"CRM_CivirulesActions_Activity_AddTargetContact"},
