@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 2.43 (not yet released)
+
 ## Version 2.42
 
 * Added action register participant, fixes #169
