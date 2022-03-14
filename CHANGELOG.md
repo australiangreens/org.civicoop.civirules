@@ -2,6 +2,8 @@
 
 ## Version 2.43 (not yet released)
 
+* Add option to negate the "Contact has Active Membership of Type" condition 
+
 ## Version 2.42
 
 * Added action register participant, fixes #169
