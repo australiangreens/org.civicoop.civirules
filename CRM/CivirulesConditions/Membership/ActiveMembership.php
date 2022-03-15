@@ -76,18 +76,4 @@ class CRM_CivirulesConditions_Membership_ActiveMembership extends CRM_Civirules_
     return '';
   }
 
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->_conditionParams = array();
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
 }
