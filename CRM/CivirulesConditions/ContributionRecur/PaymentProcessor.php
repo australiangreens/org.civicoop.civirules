@@ -62,17 +62,17 @@ LEFT JOIN civicrm_contribution_recur ccr ON ccr.id = cm.contribution_recur_id WH
     if (count($this->conditionParams['payment_processor_id'])) {
       switch ($this->conditionParams['payment_processor_id_operator']) {
         case 'in':
-          $whereClauses[] = 'payment_processor_id IN ('.implode($this->conditionParams['payment_processor_id'], ','). ')';
+          $whereClauses[] = 'payment_processor_id IN (' . implode(',', $this->conditionParams['payment_processor_id']). ')';
           break;
         case 'not in':
           $whereClauses[] = '(payment_processor_id NOT IN ('
-            . implode($this->conditionParams['payment_processor_id'], ',')
+            . implode(',', $this->conditionParams['payment_processor_id'])
             . ') OR payment_processor_id IS NULL)';
           break;
       }
     }
 
-    $sql .= implode($whereClauses, ' AND ');
+    $sql .= implode(' AND ', $whereClauses);
     $result = CRM_Core_DAO::singleValueQuery($sql, $sqlParams);
     if ($result) {
       return TRUE;
