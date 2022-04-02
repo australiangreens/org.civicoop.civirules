@@ -3,50 +3,54 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
+
+use CRM_Civirules_ExtensionUtil as E;
+
 class CRM_CivirulesCronTrigger_Form_EventDate extends CRM_CivirulesTrigger_Form_Form {
 
+  /**
+   * @return array
+   */
   protected function getEventType() {
     return CRM_Civirules_Utils::getEventTypeList();
   }
 
   /**
    * Overridden parent method to build form
-   *
-   * @access public
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_id');
 
-    $this->add('select', 'event_type_id', ts('Event Type'), $this->getEventType(), true);
-    $this->add('select', 'date_field', ts('Date Field'), array(
-      'start_date' => ts('Start date'),
-      'end_date' => ts('End date')
-    ), true);
-    $this->add('select', 'offset_unit', ts('Offset Unit'), array(
-      'DAY' => ts('Day(s)'),
-      'WEEK' => ts('Week(s)'),
-      'MONTH' => ts('Month(s)'),
-      'YEAR' => ts('Year(s)'),
-    ), false);
-    $this->add('select', 'offset_type', ts('Offset type'), array(
-      '+' => ts('After'),
-      '-' => ts('Before'),
-    ), false);
-    $this->add('text', 'offset', ts('Offset'), array(
+    $this->add('select', 'event_type_id', E::ts('Event Type'), $this->getEventType(), TRUE);
+    $this->add('select', 'date_field', E::ts('Date Field'), [
+      'start_date' => E::ts('Start date'),
+      'end_date' => E::ts('End date')
+    ], TRUE);
+    $this->add('select', 'offset_unit', E::ts('Offset Unit'), [
+      'DAY' => E::ts('Day(s)'),
+      'WEEK' => E::ts('Week(s)'),
+      'MONTH' => E::ts('Month(s)'),
+      'YEAR' => E::ts('Year(s)'),
+    ], FALSE);
+    $this->add('select', 'offset_type', E::ts('Offset type'), [
+      '+' => E::ts('After'),
+      '-' => E::ts('Before'),
+    ], FALSE);
+    $this->add('text', 'offset', E::ts('Offset'), [
       'class' => 'six',
-    ), false);
-    $this->add('checkbox', 'enable_offset', ts('Give a date offset'), '', false);
+    ], FALSE);
+    $this->add('checkbox', 'enable_offset', E::ts('Give a date offset'), '', FALSE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+    ]);
   }
 
   /**
    * Overridden parent method to set default values
    *
    * @return array $defaultValues
-   * @access public
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
@@ -77,12 +81,10 @@ class CRM_CivirulesCronTrigger_Form_EventDate extends CRM_CivirulesTrigger_Form_
    * Overridden parent method to process form data after submission
    *
    * @throws Exception when rule condition not found
-   * @access public
    */
   public function postProcess() {
     $data['event_type_id'] = $this->_submitValues['event_type_id'];
     $data['date_field'] = $this->_submitValues['date_field'];
-    $data['offset'] = '';
     if ($this->_submitValues['enable_offset']) {
       $data['offset_unit'] = $this->_submitValues['offset_unit'];
       $data['offset_type'] = $this->_submitValues['offset_type'];
@@ -98,4 +100,5 @@ class CRM_CivirulesCronTrigger_Form_EventDate extends CRM_CivirulesTrigger_Form_
 
     parent::postProcess();
   }
+
 }
