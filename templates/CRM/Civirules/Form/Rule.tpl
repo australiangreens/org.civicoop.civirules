@@ -18,6 +18,7 @@
   {/if}
 {/if}
 
+{if $action ne 1}
   <div class="crm-accordion-wrapper collapsed">
     <div class="crm-accordion-header" id="civirule-trigger-history">
       {ts}Last 20 triggers for this rule{/ts}
@@ -48,6 +49,7 @@
       </div>
     </div>
   </div>
+{/if}
 
   <div class="crm-submit-buttons">
     {include file="CRM/common/formButtons.tpl" location="bottom"}
