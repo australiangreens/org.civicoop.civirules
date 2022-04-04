@@ -3,6 +3,7 @@
 ## Version 2.43 (not yet released)
 
 * Add option to negate the "Contact has Active Membership of Type" condition 
+* Allow 'any' event type and 'before/after X hours' for 'Event date reached' trigger 
 
 ## Version 2.42
 
