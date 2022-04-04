@@ -68,27 +68,42 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
       }
       $offset = CRM_Utils_Type::escape($this->triggerParams['offset'], 'Integer');
       if ($this->triggerParams['offset_type'] == '-') {
-        $dateExpression = "DATE(DATE_SUB(`e`.`".$dateField."`, INTERVAL ".$offset." ".$unit ."))";
+        // Trigger X units BEFORE the event date
+        $dateExpression = "DATE_SUB(`e`.`".$dateField."`, INTERVAL ".$offset." ".$unit .") > NOW()";
+        // Don't trigger for events with dates before this rule was created.
+        $dateExpression .= " AND `e`.`".$dateField."` > DATE_SUB(`rule`.`created_date`, INTERVAL ".$offset." ".$unit .")";
       } else {
-        $dateExpression = "DATE(DATE_ADD(`e`.`".$dateField."`, INTERVAL ".$offset." ".$unit ."))";
+        // Trigger X units AFTER the event date
+        $dateExpression = "DATE_ADD(`e`.`".$dateField."`, INTERVAL ".$offset." ".$unit .") < NOW()";
+        // Don't trigger for events with dates before this rule was created.
+        $dateExpression .= " AND `e`.`".$dateField."` > DATE_ADD(`rule`.`created_date`, INTERVAL ".$offset." ".$unit .")";
       }
     } else {
-      $dateExpression = "DATE(`e`.`".$dateField."`)";
+      // Trigger when the event date is reached
+      $dateExpression = "`e`.`".$dateField."` < NOW()";
+      // Don't trigger for events with dates before this rule was created.
+      $dateExpression .= " AND `e`.`".$dateField."` > `rule`.`created_date`";
     }
 
+    $sqlEventTypeID = '';
+    if (!empty($this->triggerParams['event_type_id'])) {
+      $sqlEventTypeID = 'AND `e`.`event_type_id` = %1';
+      $params[1] = [$this->triggerParams['event_type_id'], 'Integer'];
+    }
     $sql = "SELECT `p`.*
             FROM `civicrm_participant` `p`
             INNER JOIN `civicrm_event` `e` ON `e`.`id` = `p`.`event_id`
             LEFT JOIN `civirule_rule_log` `rule_log` ON `rule_log`.entity_table = 'civicrm_participant' AND `rule_log`.entity_id = p.id AND `rule_log`.`contact_id` = `p`.`contact_id` AND DATE(`rule_log`.`log_date`) = DATE(NOW())  AND `rule_log`.`rule_id` = %2
-            WHERE {$dateExpression} = CURDATE()
+            LEFT JOIN `civirule_rule` `rule` ON `rule`.`id` = %2
+            WHERE {$dateExpression}
             AND `rule_log`.`id` IS NULL
-            AND `e`.`event_type_id` = %1
+            {$sqlEventTypeID}
             AND `p`.`contact_id` NOT IN (
               SELECT `rule_log2`.`contact_id`
               FROM `civirule_rule_log` `rule_log2`
               WHERE `rule_log2`.`rule_id` = %2 AND DATE(`rule_log2`.`log_date`) = DATE(NOW()) and `rule_log2`.`entity_table` IS NULL AND `rule_log2`.`entity_id` IS NULL
             )";
-    $params[1] = [$this->triggerParams['event_type_id'], 'Integer'];
+
     $params[2] = [$this->ruleId, 'Integer'];
     $this->dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Event_DAO_Participant');
 
@@ -122,24 +137,34 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
       'start_date' => E::ts('Start Date'),
       'end_date' => E::ts('End Date'),
     ];
-    $eventTypeLabel = CRM_Civirules_Utils::getOptionLabelWithValue(CRM_Civirules_Utils::getOptionGroupIdWithName('event_type'),  $this->triggerParams['event_type_id']);
     $fieldLabel = $fields[$this->triggerParams['date_field']];
-    $offsetLabel = '';
+    $offsetLabel = 'on';
     if (!empty($this->triggerParams['offset'])) {
       $offsetTypes = [
         '-' => E::ts('before'),
         '+' => E::ts('after'),
       ];
       $offsetUnits = [
+        'HOUR' => E::ts('Hour(s)'),
         'DAY' => E::ts('Day(s)'),
         'WEEK' => E::ts('Week(s)'),
         'MONTH' => E::ts('Month(s)'),
         'YEAR' => E::ts('Year(s)')
       ];
-      $offsetLabel = $offsetTypes[$this->triggerParams['offset_type']].' '.$this->triggerParams['offset'].' '.$offsetUnits[$this->triggerParams['offset_unit']];
+      $offsetLabel = "{$this->triggerParams['offset']} {$offsetUnits[$this->triggerParams['offset_unit']]} {$offsetTypes[$this->triggerParams['offset_type']]}";
     }
 
-    return E::ts('Event with type %1 and field %2 date reached %3', [1 => $eventTypeLabel, 2 => $fieldLabel, 3 => $offsetLabel]);
+    $eventTypeLabel = 'any';
+    if (!empty($this->triggerParams['event_type_id'])) {
+      $eventTypeLabel = CRM_Civirules_Utils::getOptionLabelWithValue(CRM_Civirules_Utils::getOptionGroupIdWithName('event_type'), $this->triggerParams['event_type_id']);
+    }
+    $description = E::ts('Trigger for Event with type "%1" %3 "%2".', [
+        1 => $eventTypeLabel,
+        2 => $fieldLabel,
+        3 => $offsetLabel
+      ]);
+    $description .=  ' <br/><em>This rule will not trigger for event dates before the rule was created.</em>';
+    return $description;
   }
 
   /**

@@ -21,12 +21,13 @@ class CRM_CivirulesCronTrigger_Form_EventDate extends CRM_CivirulesTrigger_Form_
   public function buildQuickForm() {
     $this->add('hidden', 'rule_id');
 
-    $this->add('select', 'event_type_id', E::ts('Event Type'), $this->getEventType(), TRUE);
+    $this->add('select', 'event_type_id', E::ts('Event Type'), [E::ts(' - any -')] + $this->getEventType(), TRUE);
     $this->add('select', 'date_field', E::ts('Date Field'), [
       'start_date' => E::ts('Start date'),
       'end_date' => E::ts('End date')
     ], TRUE);
     $this->add('select', 'offset_unit', E::ts('Offset Unit'), [
+      'HOUR' => E::ts('Hour(s)'),
       'DAY' => E::ts('Day(s)'),
       'WEEK' => E::ts('Week(s)'),
       'MONTH' => E::ts('Month(s)'),
