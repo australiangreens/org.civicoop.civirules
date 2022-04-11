@@ -92,7 +92,6 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
     }
     $activityContact->find();
     while ($activityContact->fetch()) {
-      $data = [];
       CRM_Core_DAO::storeValues($activityContact, $data);
       $activityContacts[] = $data;
     }
