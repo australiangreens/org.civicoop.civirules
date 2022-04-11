@@ -1,9 +1,10 @@
 # CHANGELOG
 
-## Version 2.43 (not yet released)
+## Version 2.43
 
-* Add option to negate the "Contact has Active Membership of Type" condition 
-* Allow 'any' event type and 'before/after X hours' for 'Event date reached' trigger 
+* Add option to negate the "Contact has Active Membership of Type" condition
+* Allow 'any' event type and 'before/after X hours' for 'Event date reached' trigger
+* Fix error where original activity data is incomplete after alterPreData - fixes #176
 
 ## Version 2.42
 
