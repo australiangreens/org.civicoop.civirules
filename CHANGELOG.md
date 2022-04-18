@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 2.44 (not yet released)
+
+* Fixed #177: "Event reached date" trigger fires prematurely when setting a "before" offset
+
 ## Version 2.43
 
 * Add option to negate the "Contact has Active Membership of Type" condition
