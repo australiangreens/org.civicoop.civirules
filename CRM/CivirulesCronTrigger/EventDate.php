@@ -69,7 +69,7 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
       $offset = CRM_Utils_Type::escape($this->triggerParams['offset'], 'Integer');
       if ($this->triggerParams['offset_type'] == '-') {
         // Trigger X units BEFORE the event date
-        $dateExpression = "DATE_SUB(`e`.`".$dateField."`, INTERVAL ".$offset." ".$unit .") > NOW()";
+        $dateExpression = "DATE_SUB(`e`.`".$dateField."`, INTERVAL ".$offset." ".$unit .") < NOW()";
         // Don't trigger for events with dates before this rule was created.
         $dateExpression .= " AND `e`.`".$dateField."` > DATE_SUB(`rule`.`created_date`, INTERVAL ".$offset." ".$unit .")";
       } else {
