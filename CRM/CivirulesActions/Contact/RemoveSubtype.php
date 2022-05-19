@@ -53,12 +53,12 @@ class CRM_CivirulesActions_Contact_RemoveSubtype extends CRM_Civirules_Action {
   public function userFriendlyConditionParams() {
     $params = $this->getActionParameters();
     $label = ts('Remove contact subtype');
-    $subTypeLabels = array();
+    $subTypeLabels = [];
     $subTypes = CRM_Contact_BAO_ContactType::contactTypeInfo();
     foreach($params['sub_type'] as $subType) {
       $subTypeLabels[] = $subTypes[$subType]['parent_label'].' - '.$subTypes[$subType]['label'];
     }
-    $label .= implode(', ', $subTypeLabels);
+    $label .= ': ' . implode(', ', $subTypeLabels);
     return $label;
   }
 
