@@ -128,10 +128,18 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
       $value = implode(", ", $value);
     }
     $field = $this->conditionParams['field'];
+    if (substr($field, 0, 7) === 'custom_') {
+      $fieldID = substr($field, 7);
+      try {
+        $field = civicrm_api3('CustomField', 'getvalue', ['id' => $fieldID, 'return' => 'label']);
+      }
+      catch (Exception $e) {}
+    }
+
     if (!empty($this->conditionParams['original_data'])) {
       $field .= ' (original value)';
     }
-    return htmlentities($this->conditionParams['entity'].'.'.$field.' '.($this->getOperator())).' '.htmlentities($value);;
+    return htmlentities($this->conditionParams['entity']. '.' . $field . ' ' . ($this->getOperator())) . ' ' . htmlentities($value);
   }
 
 }
