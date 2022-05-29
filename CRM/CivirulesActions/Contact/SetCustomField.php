@@ -34,8 +34,8 @@ class CRM_CivirulesActions_Contact_SetCustomField extends CRM_Civirules_Action {
     $field_id = $action_params['field_id'];
     civicrm_api3('Contact', 'create', [
       'id'                 => $contactId,
-      "custom_{$field_id}" => $new_value]
-    );
+      "custom_{$field_id}" => $new_value
+    ]);
   }
 
   /**
@@ -49,4 +49,24 @@ class CRM_CivirulesActions_Contact_SetCustomField extends CRM_Civirules_Action {
   public function getExtraDataInputUrl($ruleActionId) {
     return CRM_Utils_System::url('civicrm/civirule/form/action/contact/setcustomvalue', 'rule_action_id='.$ruleActionId);
   }
+
+  /**
+   * Returns a user friendly text explaining the condition params
+   * e.g. 'Older than 65'
+   *
+   * @return string
+   * @access public
+   * @throws \CiviCRM_API3_Exception
+   */
+  public function userFriendlyConditionParams() {
+    $params = $this->getActionParameters();
+
+    $customField = \Civi\Api4\CustomField::get(FALSE)
+      ->addWhere('id', '=', $params['field_id'])
+      ->execute()
+      ->first();
+
+    return "Set '{$customField['label']}' to '{$params['value']}'";
+  }
+
 }
