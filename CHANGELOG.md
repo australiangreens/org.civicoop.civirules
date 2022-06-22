@@ -2,6 +2,7 @@
 
 ## Version 2.44 (not yet released)
 
+* !180 Replace deprecated function getTimeRaw() 
 * Fixed #177: "Event reached date" trigger fires prematurely when setting a "before" offset
 * Fixed #178: "Event reached date" trigger fires daily on the same participants
 
