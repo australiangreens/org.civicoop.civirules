@@ -39,6 +39,21 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
   }
 
   /**
+   * Returns an array with all possible options for the field, in
+   * case the field is a select field, e.g. gender, or financial type
+   * Return false when the field is a select field
+   *
+   * This method could be overridden by child classes to return the option
+   *
+   * The return is an array with the field option value as key and the option label as value
+   *
+   * @return bool
+   */
+  public function getFieldOptionsNames() {
+    return false;
+  }
+
+  /**
    * Returns true when the field is a select option with multiple select
    *
    * @see getFieldOptions

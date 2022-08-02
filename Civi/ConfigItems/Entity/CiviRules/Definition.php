@@ -19,8 +19,19 @@
 namespace Civi\ConfigItems\Entity\CiviRules;
 
 use Civi\ConfigItems\Entity\EntityDefinition;
+use CRM_Civirules_ExtensionUtil as E;
 
 class Definition extends EntityDefinition {
+
+  /**
+   * @return \Civi\ConfigItems\Entity\CiviRules\Exporter
+   */
+  protected $exporter;
+
+  /**
+   * @return \Civi\ConfigItems\Entity\CiviRules\Importer
+   */
+  protected $importer;
 
   /**
    * @param $name
@@ -33,12 +44,181 @@ class Definition extends EntityDefinition {
     $this->title_single = E::ts('CiviRules');
   }
 
+  /**
+   * @return \Civi\ConfigItems\Entity\EntityImporter
+   */
   public function getImporterClass() {
-    // TODO: Implement getImporterClass() method.
+    if (!$this->importer) {
+      $this->importer = new Importer($this);
+    }
+    return $this->importer;
   }
 
+  /**
+   * @return \Civi\ConfigItems\Entity\EntityExporter
+   */
   public function getExporterClass() {
-    // TODO: Implement getExporterClass() method.
+    if (!$this->exporter) {
+      $this->exporter = new Exporter($this);
+    }
+    return $this->exporter;
+  }
+
+  /**
+   * Returns the help text.
+   * Return an empty string if no help is available.
+   *
+   * @return string
+   */
+  public function getExportHelpText() {
+    return '';
+  }
+
+  /**
+   * Returns the help text.
+   * Return an empty string if no help is available.
+   *
+   * @return string
+   */
+  public function getImportHelpText() {
+    return '';
+  }
+
+  /**
+   * Returns the attribute in entity data for the name.
+   *
+   * @return string
+   */
+  public function getNameAttribute() {
+    return 'name';
+  }
+
+  /**
+   * Returns the attribute in entity data for the title.
+   *
+   * @return string
+   */
+  public function getTitleAttribute() {
+    return 'label';
+  }
+
+  /**
+   * Returns the attribute in entity data for the title.
+   *
+   * @return string
+   */
+  public function getIdAttribute() {
+    return 'id';
+  }
+
+  /**
+   * @return String
+   */
+  public function getApiEntityName() {
+    return 'CiviRuleRule';
+  }
+
+  /**
+   * @return String
+   */
+  public function getFileName() {
+    return 'CiviRule';
+  }
+
+  /**
+   * @param int $triggerId
+   *
+   * @return string
+   */
+  public function getTriggerName($triggerId) {
+    try {
+      return civicrm_api3('CiviRuleTrigger', 'getvalue', [
+        'return' => 'name',
+        'id' => $triggerId,
+      ]);
+    } catch (\CiviCRM_API3_Exception $e) {
+    }
+    return $triggerId;
+  }
+
+  /**
+   * @param int $conditionId
+   *
+   * @return string
+   */
+  public function getConditionName($conditionId) {
+    try {
+      return civicrm_api3('CiviRuleCondition', 'getvalue', [
+        'return' => 'name',
+        'id' => $conditionId,
+      ]);
+    } catch (\CiviCRM_API3_Exception $e) {
+    }
+    return $conditionId;
+  }
+
+  /**
+   * @param int $actionId
+   *
+   * @return string
+   */
+  public function getActionName($actionId) {
+    try {
+      return civicrm_api3('CiviRuleAction', 'getvalue', [
+        'return' => 'name',
+        'id' => $actionId,
+      ]);
+    } catch (\CiviCRM_API3_Exception $e) {
+    }
+    return $actionId;
+  }
+
+  /**
+   * @param int $triggerName
+   *
+   * @return string
+   */
+  public function getTriggerId($triggerName) {
+    try {
+      return civicrm_api3('CiviRuleTrigger', 'getvalue', [
+        'return' => 'id',
+        'name' => $triggerName,
+      ]);
+    } catch (\CiviCRM_API3_Exception $e) {
+    }
+    return $triggerName;
+  }
+
+  /**
+   * @param int $conditionName
+   *
+   * @return string
+   */
+  public function getConditionId($conditionName) {
+    try {
+      return civicrm_api3('CiviRuleCondition', 'getvalue', [
+        'return' => 'id',
+        'name' => $conditionName,
+      ]);
+    } catch (\CiviCRM_API3_Exception $e) {
+    }
+    return $conditionName;
+  }
+
+  /**
+   * @param int $actionName
+   *
+   * @return string
+   */
+  public function getActionId($actionName) {
+    try {
+      return civicrm_api3('CiviRuleAction', 'getvalue', [
+        'return' => 'id',
+        'name' => $actionName,
+      ]);
+    } catch (\CiviCRM_API3_Exception $e) {
+    }
+    return $actionName;
   }
 
 

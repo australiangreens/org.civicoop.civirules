@@ -25,6 +25,41 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
   }
 
   /**
+   * Returns condition data as an array and ready for export.
+   * E.g. replace ids for names.
+   *
+   * @return array
+   */
+  public function exportActionParameters() {
+    $action_params = parent::exportActionParameters();
+    try {
+      $action_params['role'] = civicrm_api3('RelationshipType', 'getvalue', [
+        'return' => 'name_a_b',
+        'id' => $action_params['role'],
+      ]);
+    } catch (CiviCRM_API3_Exception $e) {
+    }
+    return $action_params;
+  }
+
+  /**
+   * Returns condition data as an array and ready for import.
+   * E.g. replace name for ids.
+   *
+   * @return string
+   */
+  public function importActionParameters($action_params = NULL) {
+    try {
+      $action_params['role'] = civicrm_api3('RelationshipType', 'getvalue', [
+        'return' => 'id',
+        'name_a_b' => $action_params['role'],
+      ]);
+    } catch (CiviCRM_API3_Exception $e) {
+    }
+    return parent::importActionParameters($action_params);
+  }
+
+  /**
    * Returns a redirect url to extra data input from the user after adding a action
    *
    * @param int $ruleActionId

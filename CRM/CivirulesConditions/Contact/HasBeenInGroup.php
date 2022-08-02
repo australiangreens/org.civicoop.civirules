@@ -87,6 +87,49 @@ class CRM_CivirulesConditions_Contact_HasBeenInGroup extends CRM_Civirules_Condi
   }
 
   /**
+   * Returns condition data as an array and ready for export.
+   * E.g. replace ids for names.
+   *
+   * @return array
+   */
+  public function exportConditionParameters() {
+    $params = parent::exportConditionParameters();
+    if (!empty($params['group_id']) && is_array($params['group_id'])) {
+      foreach($params['group_id'] as $i => $gid) {
+        try {
+          $params['group_id'][$i] = civicrm_api3('Group', 'getvalue', [
+            'return' => 'name',
+            'id' => $gid,
+          ]);
+        } catch (CiviCRM_API3_Exception $e) {
+        }
+      }
+    }
+    return $params;
+  }
+
+  /**
+   * Returns condition data as an array and ready for import.
+   * E.g. replace name for ids.
+   *
+   * @return string
+   */
+  public function importConditionParameters($condition_params = NULL) {
+    if (!empty($condition_params['group_id']) && is_array($condition_params['group_id'])) {
+      foreach($condition_params['group_id'] as $i => $gid) {
+        try {
+          $condition_params['group_id'][$i] = civicrm_api3('Group', 'getvalue', [
+            'return' => 'id',
+            'name' => $gid,
+          ]);
+        } catch (CiviCRM_API3_Exception $e) {
+        }
+      }
+    }
+    return parent::importConditionParameters($condition_params);
+  }
+
+  /**
    * Returns a user friendly text explaining the condition params
    * e.g. 'Older than 65'
    *

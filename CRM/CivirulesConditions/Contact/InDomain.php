@@ -133,4 +133,45 @@ class CRM_CivirulesConditions_Contact_InDomain extends CRM_Civirules_Condition {
     }
   }
 
+  /**
+   * Returns condition data as an array and ready for export.
+   * E.g. replace ids for names.
+   *
+   * @return array
+   */
+  public function exportConditionParameters() {
+    $params = parent::exportConditionParameters();
+    if (!empty($params['domain_id'])) {
+      try {
+        $params['domain_id'] = civicrm_api3('Domain', 'getvalue', [
+          'return' => 'name',
+          'id' => $params['domain_id']
+        ]);
+      } catch (\CiviCRM_Api3_Exception $e) {
+        // Do nothing.
+      }
+    }
+    return $params;
+  }
+
+  /**
+   * Returns condition data as an array and ready for import.
+   * E.g. replace name for ids.
+   *
+   * @return string
+   */
+  public function importConditionParameters($condition_params = NULL) {
+    if (!empty($condition_params['domain_id'])) {
+      try {
+        $condition_params['domain_id'] = civicrm_api3('Domain', 'getvalue', [
+          'return' => 'id',
+          'name' => $condition_params['domain_id']
+        ]);
+      } catch (\CiviCRM_Api3_Exception $e) {
+        // Do nothing.
+      }
+    }
+    return parent::importConditionParameters($condition_params);
+  }
+
 }

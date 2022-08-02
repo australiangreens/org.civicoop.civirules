@@ -18,6 +18,7 @@ use CRM_Civirules_ExtensionUtil as E;
  * @throws \CRM_Core_Exception
  */
 function civirules_civicrm_container(\Symfony\Component\DependencyInjection\ContainerBuilder $container) {
+  $container->addCompilerPass(new \Civi\ConfigItems\CiviRulesCompilerPass());
   if (version_compare(CRM_Utils_System::version(), '5.34', '>=')) {
     // Add the symfony listeners.
     // We can do this after CiviCRM 5.34 because we need the eventID parameter on the
