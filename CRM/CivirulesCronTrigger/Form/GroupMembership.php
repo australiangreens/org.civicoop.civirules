@@ -45,7 +45,7 @@ class CRM_CivirulesCronTrigger_Form_GroupMembership extends CRM_CivirulesTrigger
     $data = unserialize($this->rule->trigger_params);
     if (!empty($data['group_id'])) {
       if (!is_array($data['group_id'])) {
-        $data['group_id'] = array($data['group_id']);
+        $data['group_id'] = [$data['group_id']];
       }
       $defaultValues['group_id'] = $data['group_id'];
     }

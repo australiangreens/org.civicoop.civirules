@@ -25,12 +25,12 @@ class CRM_CivirulesConditions_Form_GroupContact_GroupId extends CRM_CivirulesCon
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
+    $this->add('select', 'group_id', E::ts('Group'), $this->getGroups(), TRUE);
 
-    $this->add('select', 'group_id', ts('Group'), $this->getGroups(), true);
-
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+    ]);
   }
 
   /**

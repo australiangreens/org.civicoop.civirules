@@ -12,7 +12,6 @@ class CRM_CivirulesConditions_Form_Contact_InGroup extends CRM_CivirulesConditio
    * Method to get groups
    *
    * @return array
-   * @access protected
    */
   protected function getGroups() {
     return CRM_Contact_BAO_GroupContact::getGroupList();
@@ -22,7 +21,6 @@ class CRM_CivirulesConditions_Form_Contact_InGroup extends CRM_CivirulesConditio
    * Method to get operators
    *
    * @return array
-   * @access protected
    */
   protected function getOperators() {
     return CRM_CivirulesConditions_Contact_InGroup::getOperatorOptions();
@@ -31,7 +29,6 @@ class CRM_CivirulesConditions_Form_Contact_InGroup extends CRM_CivirulesConditio
   /**
    * Overridden parent method to build form
    *
-   * @access public
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
@@ -51,7 +48,6 @@ class CRM_CivirulesConditions_Form_Contact_InGroup extends CRM_CivirulesConditio
    * Overridden parent method to set default values
    *
    * @return array $defaultValues
-   * @access public
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
@@ -72,7 +68,6 @@ class CRM_CivirulesConditions_Form_Contact_InGroup extends CRM_CivirulesConditio
    * Overridden parent method to process form data after submission
    *
    * @throws Exception when rule condition not found
-   * @access public
    */
   public function postProcess() {
     $data['group_ids'] = $this->_submitValues['group_ids'];
@@ -83,4 +78,5 @@ class CRM_CivirulesConditions_Form_Contact_InGroup extends CRM_CivirulesConditio
 
     parent::postProcess();
   }
+
 }
