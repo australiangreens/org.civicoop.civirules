@@ -9,15 +9,6 @@
 class CRM_CivirulesConditions_Form_Contact_InGroup extends CRM_CivirulesConditions_Form_Form {
 
   /**
-   * Method to get groups
-   *
-   * @return array
-   */
-  protected function getGroups() {
-    return CRM_Contact_BAO_GroupContact::getGroupList();
-  }
-
-  /**
    * Method to get operators
    *
    * @return array
@@ -32,16 +23,15 @@ class CRM_CivirulesConditions_Form_Contact_InGroup extends CRM_CivirulesConditio
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
-
-    $group = $this->add('select', 'group_ids', ts('Groups'), $this->getGroups(), TRUE);
+    $group = $this->add('select', 'group_ids', ts('Groups'), CRM_Civirules_Utils::getGroupList(), TRUE);
     $group->setMultiple(TRUE);
     $this->add('select', 'operator', ts('Operator'), $this->getOperators(), TRUE);
     $this->addYesNo('check_group_tree', ts('Check Group Tree?'), FALSE, TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
       ['type' => 'cancel', 'name' => ts('Cancel')],
-      ]);
+    ]);
   }
 
   /**
