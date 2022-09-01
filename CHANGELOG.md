@@ -2,9 +2,16 @@
 
 ## Version 2.44 (not yet released)
 
-* !180 Replace deprecated function getTimeRaw() 
-* Fixed #177: "Event reached date" trigger fires prematurely when setting a "before" offset
-* Fixed #178: "Event reached date" trigger fires daily on the same participants
+* !180 Replace deprecated function getTimeRaw().
+* Fixed #177: "Event reached date" trigger fires prematurely when setting a "before" offset.
+* Fixed #178: "Event reached date" trigger fires daily on the same participants.
+* Implemented integration with config item extension. For importing and exporting civirules configuration.
+* Fix !178: Api4 tag remove/add action for non-admins.
+* !179: Add an Activity Subject condition.
+* !181: Show label for 'Field value comparison' description. Add description to SetCustomField action.
+* !182: Support multiple membership types for "Contact has active membership of type".
+* Fix #182 by !183: Domain conditional selection shows a maximum of 25 domains.
+* Fix #183 by !184: Only show active/visible groups in group conditions / actions.
 
 ## Version 2.43
 
