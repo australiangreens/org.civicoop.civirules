@@ -90,7 +90,7 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
     $field = $this->conditionParams['field'];
 
     if ( $this->isDateField( $entity, $field ) ) {
-      $this->conditionParams['value'] = Date( 'Y-m-d',
+      $this->conditionParams['value'] = Date( 'YmdHis',
         strtotime( $this->conditionParams['value'] ) );
     }
 
