@@ -13,6 +13,7 @@
 * Fix #182 by !183: Domain conditional selection shows a maximum of 25 domains.
 * Fix #183 by !184: Only show active/visible groups in group conditions / actions.
 * Changed date format for comparison value to YmdHis to fix #186 by !185
+* Always use ymd format for dates in field value comparisons  by !186
 
 ## Version 2.43
 
