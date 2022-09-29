@@ -98,8 +98,14 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
     if ($value === null) {
       return null;
     }
-
     //@todo normalize value based on the field
+
+    $entity = $this->conditionParams['entity'];
+    $field = $this->conditionParams['field'];  
+    if ( $this->isDateField( $entity, $field ) ) {
+      $value = Date('Ymd', strtotime($value));
+    }
+
     return $value;
   }
 
