@@ -86,14 +86,6 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
       return '';
     }
 
-    $entity = $this->conditionParams['entity'];
-    $field = $this->conditionParams['field'];
-
-    if ( $this->isDateField( $entity, $field ) ) {
-      $this->conditionParams['value'] = Date( 'Y-m-d',
-        strtotime( $this->conditionParams['value'] ) );
-    }
-
     $key = false;
     switch ($this->getOperator()) {
       case '=':
