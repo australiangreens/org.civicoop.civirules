@@ -168,7 +168,7 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
 
     // Check if we need to send any emails
     if (!empty($this->apiParams['send_email']) && !empty($this->activityId) && !empty($this->asignedContacts)) {
-      foreach ($this->asignedContacts as $contactId) {
+      foreach (array_unique($this->asignedContacts) as $contactId) {
 
         $contact = civicrm_api3('Contact', 'getsingle', ['id' => $contactId]);
 
