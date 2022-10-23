@@ -65,17 +65,6 @@ function civirules_civicrm_config(&$config) {
 }
 
 /**
- * Implementation of hook_civicrm_xmlMenu
- *
- * @param $files array(string)
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
- */
-function civirules_civicrm_xmlMenu(&$files) {
-  _civirules_civix_civicrm_xmlMenu($files);
-}
-
-/**
  * Implementation of hook_civicrm_install
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
@@ -151,7 +140,6 @@ function civirules_civicrm_managed(&$entities) {
   CRM_Civirules_Utils_Upgrader::insertTriggersFromJson(E::path('sql/triggers.json'));
   CRM_Civirules_Utils_Upgrader::insertActionsFromJson(E::path('sql/actions.json'));
   CRM_Civirules_Utils_Upgrader::insertConditionsFromJson(E::path('sql/conditions.json'));
-  _civirules_civix_civicrm_managed($entities);
 }
 
 /**
@@ -184,28 +172,6 @@ function _civirules_upgrade_to_2x_backup() {
       INNER JOIN `civirule_condition` ON `civirule_rule_condition`.`condition_id` = `civirule_condition`.`id`
     ");
   }
-}
-
-/**
- * Implementation of hook_civicrm_caseTypes
- *
- * Generate a list of case-types
- *
- * Note: This hook only runs in CiviCRM 4.4+.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
- */
-function civirules_civicrm_caseTypes(&$caseTypes) {
-  _civirules_civix_civicrm_caseTypes($caseTypes);
-}
-
-/**
- * Implementation of hook_civicrm_alterSettingsFolders
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
- */
-function civirules_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _civirules_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
 
 /**
