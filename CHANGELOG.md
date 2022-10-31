@@ -15,6 +15,7 @@
 * Changed date format for comparison value to YmdHis to fix #186 by !185
 * Always use ymd format for dates in field value comparisons  by !186
 * #188 activity action: condition target/assignee on relationship contacts by !187
+* !188 For CRON date triggers don't trigger on deleted(is_deleted=1) or disabled (is_active=0) cases,activities,events.
 
 ## Version 2.43
 
