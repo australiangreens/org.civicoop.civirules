@@ -26,6 +26,8 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
     $action_params = $this->getActionParameters();
     $caseParams['contact_id'] = $parameters['target_contact_id'];
     $caseParams['case_type_id'] = $action_params['case_type_id'];
+    // ensure deleted cases are not selected
+    $caseParams['is_deleted'] = FALSE;
     if (!empty($action_params['case_status_id'])) {
       $caseParams['status_id'] = $action_params['case_status_id'];
     }
@@ -39,7 +41,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
         }
         $formattedCaseParams .= "{$key}=\"$param\"";
       }
-      $message = "Civirules could not fund case: {$ex->getMessage()}. API call: Case.getsingle with params: {$formattedCaseParams}";
+      $message = "Civirules could not find case: {$ex->getMessage()}. API call: Case.getsingle with params: {$formattedCaseParams}";
       \Civi::log()->error($message);
       throw new Exception($message);
     }
