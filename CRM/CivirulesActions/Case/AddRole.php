@@ -79,8 +79,11 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
   public function userFriendlyConditionParams() {
     $params = $this->getActionParameters();
     $roles = self::getCaseRoles();
-    $display_name = civicrm_api3('Contact', 'getvalue', ['id' => $params['cid'], 'return' => 'display_name']);
-    return E::ts('Add %2 to the case with role <em>%1</em>', array(1 => $roles[$params['role']], 2 =>$display_name));
+    $contactDisplayName = \Civi\Api4\Contact::get(FALSE)
+      ->addWhere('id', '=', $params['cid'])
+      ->execute()
+      ->first()['display_name'] ?? '';
+    return E::ts('Add %2 to the case with role <em>%1</em>', [1 => $roles[$params['role']], 2 => $contactDisplayName]);
   }
 
   /**
