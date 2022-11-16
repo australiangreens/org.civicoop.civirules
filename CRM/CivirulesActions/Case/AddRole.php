@@ -8,7 +8,6 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
    * Process the action
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
-   * @access public
    */
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $case = $triggerData->getEntityData("Case");
@@ -76,7 +75,6 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
    * e.g. 'Older than 65'
    *
    * @return string
-   * @access public
    */
   public function userFriendlyConditionParams() {
     $params = $this->getActionParameters();
@@ -84,7 +82,6 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
     $display_name = civicrm_api3('Contact', 'getvalue', ['id' => $params['cid'], 'return' => 'display_name']);
     return E::ts('Add %2 to the case with role <em>%1</em>', array(1 => $roles[$params['role']], 2 =>$display_name));
   }
-
 
   /**
    * Validates whether this action works with the selected trigger.
@@ -106,7 +103,7 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
    */
   public static function getCaseRoles() {
     $relationshipTypesApi = civicrm_api3('RelationshipType', 'get', ['options' => ['limit' => 0]]);
-    $caseRoles = array();
+    $caseRoles = [];
     foreach($relationshipTypesApi['values'] as $relType) {
       $caseRoles[$relType['id']] = $relType['label_a_b'];
     }
