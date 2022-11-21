@@ -539,3 +539,15 @@ function civirules_civicrm_apiWrappers(&$wrappers, $apiRequest) {
     $wrappers[] = new CRM_Civirules_TrashRestoreApiWrapper();
   }
 }
+
+/**
+ * Implements hook_civicrm_xmlMenu().
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_xmlMenu
+ * (fix for mixin issue with older versions of CiviCRM)
+ */
+function civirules_civicrm_xmlMenu(&$files) {
+  foreach (glob(__DIR__ . '/xml/Menu/*.xml') as $file) {
+    $files[] = $file;
+  }
+}
