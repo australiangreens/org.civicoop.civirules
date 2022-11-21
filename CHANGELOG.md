@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 2.46 (not yet released)
+
+* Add Activity action: remember send_email "no" selection with !191
+
 ## Version 2.45
 * add xmlMenu function to civirules.php (mixin issue with older CiviCRM versions)
 * !190: Don't crash if contact ID does not exist (eg. was deleted) and code cleanup caseaddrole
