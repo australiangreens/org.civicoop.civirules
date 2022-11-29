@@ -43,7 +43,7 @@ class CRM_CivirulesPostTrigger_Form_Activity extends CRM_CivirulesTrigger_Form_F
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
     $data = unserialize($this->rule->trigger_params);
-    $defaultValues['record_type'] = $data['record_type'] ?? 0;
+    $defaultValues['record_type'] = $data['record_type'] ?? 0; // Default to all record types. This creates backwards compatibility.
 
     return $defaultValues;
   }
