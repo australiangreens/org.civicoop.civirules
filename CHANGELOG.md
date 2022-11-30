@@ -3,6 +3,7 @@
 ## Version 2.46 (not yet released)
 
 * Add Activity action: remember send_email "no" selection with !191
+* Fix Activity trigger when triggered for all contacts with !192
 
 ## Version 2.45
 * add xmlMenu function to civirules.php (mixin issue with older CiviCRM versions)
