@@ -2,6 +2,7 @@
 
 ## Version 2.46 (not yet released)
 
+* Fix action AddToCase -> error on api3 getvalue with limit => 0, changed to 1
 * Add Activity action: remember send_email "no" selection with !191
 * Fix Activity trigger when triggered for all contacts with !192
 
