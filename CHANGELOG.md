@@ -5,6 +5,8 @@
 * Fix action AddToCase -> error on api3 getvalue with limit => 0, changed to 1
 * Add Activity action: remember send_email "no" selection with !191
 * Fix Activity trigger when triggered for all contacts with !192
+* Added hours and minutes option to the Activity Scheduled Date trigger (#191)
+* When trigger is scheduled before the activity date/time it triggers now _after_ the trigger time is reached (See #191)
 
 ## Version 2.45
 * add xmlMenu function to civirules.php (mixin issue with older CiviCRM versions)
