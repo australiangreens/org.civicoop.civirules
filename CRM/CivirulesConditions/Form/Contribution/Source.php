@@ -2,7 +2,7 @@
 /**
  * Form controller class
  */
-class CRM_CivirulesConditions_Form_Contribution_IsPayLater extends CRM_CivirulesConditions_Form_Form {
+class CRM_CivirulesConditions_Form_Contribution_Source extends CRM_CivirulesConditions_Form_Form {
 
   /**
    * Overridden parent method to build form
@@ -11,12 +11,9 @@ class CRM_CivirulesConditions_Form_Contribution_IsPayLater extends CRM_Civirules
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
-
-    $radioOptions = [
-      'is pay later' => ts('is pay later'),
-      'is not pay later' => ts('is not pay later'),
-    ];
-    $this->addRadio('test', ts('Contribution') . ': ', $radioOptions);
+    $this->add('select', 'operator', ts('Operator'),
+      ['contains' => ts('Contains the text'), 'exact_match' => ts('is an exact match to')], true);
+    $this->add('textarea', 'text', ts('Text to match'), null, true);
 
     $this->addButtons([
       ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
@@ -33,8 +30,11 @@ class CRM_CivirulesConditions_Form_Contribution_IsPayLater extends CRM_Civirules
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
     $data = unserialize($this->ruleCondition->condition_params);
-    if (!empty($data['test'])) {
-      $defaultValues['test'] = $data['test'];
+    if (!empty($data['text'])) {
+      $defaultValues['text'] = $data['text'];
+    }
+    if (!empty($data['operator'])) {
+      $defaultValues['operator'] = $data['operator'];
     }
     return $defaultValues;
   }
@@ -47,7 +47,8 @@ class CRM_CivirulesConditions_Form_Contribution_IsPayLater extends CRM_Civirules
    * @access public
    */
   public function postProcess() {
-    $data['test'] = $this->_submitValues['test'];
+    $data['operator'] = $this->_submitValues['operator'];
+    $data['text'] = $this->_submitValues['text'];
     $this->ruleCondition->condition_params = serialize($data);
     $this->ruleCondition->save();
 
