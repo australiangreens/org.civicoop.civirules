@@ -625,4 +625,10 @@
     <title>Next Scheduled Contribution Date</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/civirule/form/condition/contribution_is_pay_later</path>
+    <page_callback>CRM_CivirulesConditions_Form_Contribution_IsPayLater</page_callback>
+    <title>Is a Pay Later Contribution?</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
 </menu>
