@@ -224,6 +224,14 @@ class CRM_Civirules_Utils_Upgrader {
         'label' => 'First Contribution of a Contact',
         'name' => 'first_contribution_of_contact',
       ),
+      'CRM_CivirulesConditions_Contribution_IsPayLater' => array(
+        'label' => 'Is (not) a Pay Later Contribution',
+        'name' => 'contribution_pay_later',
+      ),
+      'CRM_CivirulesConditions_Contribution_Source' => array(
+        'label' => 'Contribution Source',
+        'name' => 'contribution_source',
+      ),
       'CRM_CivirulesConditions_Contribution_LastContribution' => array(
         'label' => 'Last Contribution of a Contact',
         'name' => 'last_contribution_of_contact',
