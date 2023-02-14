@@ -180,6 +180,10 @@ class CRM_Civirules_Utils_Upgrader {
         'label' => 'Contact Has Phone',
         'name' => 'contact_has_phone',
       ),
+      'CRM_CivirulesConditions_Contact_HasType' => array(
+        'label' => 'Contact is (not) of Type(s)',
+        'name' => 'contact_has_type',
+      ),
       'CRM_CivirulesConditions_Contact_HasSubtype' => array(
         'label' => 'Contact is (not) of Subtype(s)',
         'name' => 'contact_has_subtype',
