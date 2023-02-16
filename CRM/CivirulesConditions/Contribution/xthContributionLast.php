@@ -1,14 +1,13 @@
 <?php
 
 /**
- * Class for CiviRule Condition xth Contribution
+ * Class for CiviRule Condition xth Contribution in last time interval
  *
- * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
- * @date 12 Nov 2018
- * @funded by Amnesty International Vlaanderen
+ * @author Sandor Semsey <sandor@es-progress.hu>
+ * @date 16 Feb 2023
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules_Condition {
+class CRM_CivirulesConditions_Contribution_xthContributionLast extends CRM_Civirules_Condition {
 
   private $_conditionParams = [];
 
@@ -84,7 +83,8 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
       $apiParams = [
         'financial_type_id' => ['IN' => $this->_conditionParams['financial_type']],
         'contact_id' => $contactId,
-        'contribution_status_id' => 'Completed',
+        'contribution_status_id' => ['IN' => $this->_conditionParams['contribution_status']],
+        'receive_date' => ['>=' => date('Y-m-d', strtotime("-{$this->_conditionParams['interval']} {$this->_conditionParams['interval_unit']}"))],
       ];
       $count = (int) civicrm_api3('Contribution', 'getcount', $apiParams);
       switch ($this->_conditionParams['operator']) {
@@ -136,7 +136,7 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
    * @access public
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/contribution/xthcontribution/', 'rule_condition_id='.$ruleConditionId);
+    return CRM_Utils_System::url('civicrm/civirule/form/condition/contribution/xthcontributionlast/', 'rule_condition_id='.$ruleConditionId);
   }
 
   /**
@@ -159,6 +159,7 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
    * Overridden parent method to set user friendly condition text in form
    *
    * @return string
+   * @throws \Exception
    */
   public function userFriendlyConditionParams() {
     $operators = CRM_Civirules_Utils::getGenericComparisonOperatorOptions();
@@ -167,7 +168,15 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
     foreach ($this->_conditionParams['financial_type'] as $financialType) {
       $finTypesTxt[] = $financialTypes[$financialType];
     }
-    return ts('Number of contributions of financial type ') . implode(' or ', $finTypesTxt)
+    $statuses = CRM_Civirules_Utils_OptionGroup::getActiveValues(CRM_Civirules_Utils::getOptionGroupIdWithName('contribution_status'));
+    $statusesTxt = [];
+    foreach ($this->_conditionParams['contribution_status'] as $status) {
+      $statusesTxt[] = $statuses[$status];
+    }
+    $units = CRM_CivirulesConditions_Form_Contribution_xthContributionLast::getIntervalUnits();
+    return ts('Number of '). implode(' or ', $statusesTxt) . ts(' contributions in the last ')
+      . $this->_conditionParams['interval'] . ' ' . $units[$this->_conditionParams['interval_unit']]
+      . ts(' of financial type ') . implode(' or ', $finTypesTxt)
       . ' ' .  $operators[$this->_conditionParams['operator']] . ' '
       . $this->_conditionParams['number_contributions'];
   }
