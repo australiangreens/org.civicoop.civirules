@@ -9,6 +9,7 @@
 * When trigger is scheduled before the activity date/time it triggers now _after_ the trigger time is reached (See #191)
 * Add `Contribution Source` and `Contribution Is Pay Later` conditions  (See !194)
 * Add `Contact is (not) of Type(s)` condition (See !195)
+* Add condition `xth Contribution in Last Time Interval` (see !196)
 
 
 ## Version 2.45
