@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 2.46 (not yet released)
+## Version 2.46
 
 * Fix action AddToCase -> error on api3 getvalue with limit => 0, changed to 1
 * Add Activity action: remember send_email "no" selection with !191
@@ -10,6 +10,7 @@
 * Add `Contribution Source` and `Contribution Is Pay Later` conditions  (See !194)
 * Add `Contact is (not) of Type(s)` condition (See !195)
 * Add condition `xth Contribution in Last Time Interval` (see !196)
+* Fix #163: retrieve custom field if needed for activity add action when delayed date in custom field is used
 
 
 ## Version 2.45
