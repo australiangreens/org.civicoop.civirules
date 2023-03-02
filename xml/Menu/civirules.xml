@@ -211,6 +211,12 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/condition/contribution_recur_xth_contribution</path>
+    <page_callback>CRM_CivirulesConditions_Form_ContributionRecur_xthContribution</page_callback>
+    <title>xth recurring contribution</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>  
+  <item>
     <path>civicrm/civirule/form/condition/contribution_recur_donorisrecurring</path>
     <page_callback>CRM_CivirulesConditions_Form_ContributionRecur_DonorIsRecurring</page_callback>
     <title>donor has recurring contributions</title>
