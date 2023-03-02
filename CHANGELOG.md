@@ -11,6 +11,7 @@
 * Add `Contact is (not) of Type(s)` condition (See !195)
 * Add condition `xth Contribution in Last Time Interval` (see !196)
 * Fix #163: retrieve custom field if needed for activity add action when delayed date in custom field is used
+* Add "inclusion operator" for condition ContactHasMembership  (See !197)
 
 
 ## Version 2.45
