@@ -33,6 +33,7 @@ class CRM_CivirulesConditions_ContributionRecur_xthContribution extends CRM_Civi
       ->addSelect('COUNT(*) AS count')
       ->addWhere('contribution_recur_id', '=', $contribution['contribution_recur_id'])
       ->addWhere('contribution_status_id:name', '=', 'Completed')
+      ->addClause('OR', ['is_test', '=', TRUE], ['is_test', '=', FALSE])
       ->execute()
       ->first();
 
