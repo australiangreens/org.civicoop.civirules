@@ -3,6 +3,7 @@
 ## Version 2.48 (not yet released)
 
 * Fixed preventing of delayed tasks never being executed by !199
+* Add action 'Add related contact to group' by !201
 
 ## Version 2.47
 * issue #163: also fix for activity
