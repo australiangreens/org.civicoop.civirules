@@ -4,6 +4,7 @@
 
 * Fixed preventing of delayed tasks never being executed by !199
 * Add action 'Add related contact to group' by !201
+* Add cleanup API for rule triggers/conditions/actions (to fix duplicates) by !200
 
 ## Version 2.47
 * issue #163: also fix for activity
