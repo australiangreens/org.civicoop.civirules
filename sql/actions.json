@@ -22,6 +22,7 @@
   {"name":"copy_custom_field","label":"Set Custom Field on a contact with data from another Custom Field","class_name":"CRM_CivirulesActions_Contact_CopyCustomField"},
   {"name":"set_contribution_thank_date","label":"Set Thank You Date for a Contribution","class_name":"CRM_CivirulesActions_Contribution_ThankYouDate"},
   {"name":"add_contact_group","label":"Add Contact to a Group","class_name":"CRM_CivirulesActions_GroupContact_Add"},
+  {"name":"add_related_contact_group","label":"Add Related Contact to a Group","class_name":"CRM_CivirulesActions_GroupContact_AddRelated"},
   {"name":"subscribe_contact_group","label":"Create Pending Group Subscription","class_name":"CRM_CivirulesActions_GroupContact_Subscribe"},
   {"name":"remove_contact_group","label":"Remove Contact from a Group","class_name":"CRM_CivirulesActions_GroupContact_Remove"},
   {"name":"add_tag_contact","label":"Add Tag to Entity","class_name":"CRM_CivirulesActions_Tag_Add"},

@@ -283,6 +283,12 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/action/groupcontact/addrelated</path>
+    <page_callback>CRM_CivirulesActions_GroupContact_Form_AddRelated</page_callback>
+    <title>Related Group contact</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/action/contribution/financialtype</path>
     <page_callback>CRM_CivirulesActions_Contribution_Form_FinancialType</page_callback>
     <title>Financial Type</title>
