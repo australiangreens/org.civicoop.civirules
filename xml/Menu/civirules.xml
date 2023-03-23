@@ -145,6 +145,12 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/condition/recurhasmembership</path>
+    <page_callback>CRM_CivirulesConditions_Form_ContributionRecur_Membership</page_callback>
+    <title>recurring contribution has membership</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/condition/status</path>
     <page_callback>CRM_CivirulesConditions_Form_Status</page_callback>
     <title>Status</title>
