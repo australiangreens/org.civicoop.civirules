@@ -37,6 +37,7 @@ class CRM_CivirulesActions_Activity_Edit extends CRM_CivirulesActions_Activity_A
           'activity_type_id',
           'status_id',
           'subject',
+          'details',
           'assignee_contact_id',
           'activity_date_time',
         ],
@@ -46,13 +47,13 @@ class CRM_CivirulesActions_Activity_Edit extends CRM_CivirulesActions_Activity_A
       \Civi::log()->error($message);
       throw new Exception($message);
     }
-    
+
     // Store Triggering activity id to use when sending a notification email
     $this->activityId = $activity['id'];
 
     // New list of params to return containing only what has changed
     $updateParams = [ 'id' => $activity['id'] ];
-    
+
     if (!empty($params['activity_type_id']) && $params['activity_type_id']!=$activity['activity_type_id'])
       $updateParams['activity_type_id'] = $params['activity_type_id'];
 
@@ -62,6 +63,8 @@ class CRM_CivirulesActions_Activity_Edit extends CRM_CivirulesActions_Activity_A
     if (!empty($params['subject']) && $params['subject']!=$activity['subject'])
       $updateParams['subject'] = $params['subject'];
 
+    if (!empty($params['details']) && $params['details']!=$activity['details'])
+      $updateParams['details'] = $params['details'];
 
     if (!empty($params['assignee_contact_id'])) {
 

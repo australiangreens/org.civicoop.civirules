@@ -8,9 +8,33 @@
 
 class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
 
+  /**
+   * @var string
+   */
   protected $objectName;
 
+  /**
+   * @var string
+   */
   protected $op;
+
+  /**
+   * Getter for object name
+   *
+   * @return mixed
+   */
+  public function getObjectName() {
+    return $this->objectName;
+  }
+
+  /**
+   * Getter for op(eration)
+   *
+   * @return String
+   */
+  public function getOp() {
+    return $this->op;
+  }
 
   /**
    * Returns the name of the trigger data class.
@@ -59,23 +83,13 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
   }
 
   /**
-   * Getter for object name
-   *
-   * @return mixed
-   */
-  public function getObjectName() {
-    return $this->objectName;
-  }
-
-  /**
    * Method post
    *
    * @param string $op
    * @param string $objectName
    * @param int $objectId
    * @param object $objectRef
-   * @access public
-   * @static
+   * @param string $eventID
    */
   public static function post($op, $objectName, $objectId, &$objectRef, $eventID) {
     // Do not trigger when objectName is empty. See issue #19
@@ -83,7 +97,7 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
       return;
     }
     $extensionConfig = CRM_Civirules_Config::singleton();
-    if (!in_array($op,$extensionConfig->getValidTriggerOperations())) {
+    if (!in_array($op, $extensionConfig->getValidTriggerOperations())) {
       return;
     }
     //find matching rules for this objectName and op
@@ -98,10 +112,11 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
   /**
    * Trigger a rule for this trigger
    *
-   * @param $op
-   * @param $objectName
-   * @param $objectId
-   * @param $objectRef
+   * @param string $op
+   * @param string $objectName
+   * @param int $objectId
+   * @param object $objectRef
+   * @param string $eventID
    */
   public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
     $triggerData = $this->getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
@@ -114,18 +129,19 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
    * Sub classes could override this method. E.g. a post on GroupContact doesn't give on object of GroupContact
    * it rather gives an array with contact Id's
    *
-   * @param $op
-   * @param $objectName
-   * @param $objectId
-   * @param $objectRef
+   * @param string $op
+   * @param string $objectName
+   * @param int $objectId
+   * @param object $objectRef
    * @param string $eventID
    *
    * @return CRM_Civirules_TriggerData_Edit|CRM_Civirules_TriggerData_Post
    */
   protected function getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID = NULL) {
     $entity = CRM_Civirules_Utils_ObjectName::convertToEntity($objectName);
+
     $data = $this->convertObjectRefToDataArray($entity, $objectRef, $objectId);
-    if ($op == 'edit') {
+    if ($op == 'edit' || 'delete') {
       //set also original data with an edit event
       $oldData = CRM_Civirules_Utils_PreData::getPreData($entity, $objectId, $eventID);
       $triggerData = new CRM_Civirules_TriggerData_Edit($entity, $objectId, $data, $oldData);
@@ -138,9 +154,16 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
     return $triggerData;
   }
 
+  /**
+   * @param string $entity
+   * @param object $objectRef
+   * @param int $id
+   *
+   * @return array
+   */
   protected function convertObjectRefToDataArray($entity, $objectRef, $id) {
     //set data
-    $data = array();
+    $data = [];
     if (is_object($objectRef)) {
       CRM_Core_DAO::storeValues($objectRef, $data);
     } elseif (is_array($objectRef)) {
@@ -150,5 +173,22 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
     return $data;
   }
 
+  /**
+   * Alter the pre data
+   *
+   * Could be overridden by child classes.
+   *
+   * @param $data
+   * @param $op
+   * @param $objectName
+   * @param $objectId
+   * @param $params
+   * @param $eventID
+   *
+   * @return mixed
+   */
+  public function alterPreData($data, $op, $objectName, $objectId, $params, $eventID) {
+    return $data;
+  }
 
 }

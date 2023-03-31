@@ -26,17 +26,18 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
    * @access protected
    */
   protected function alterApiParameters($params, CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    
+
     // Store params
     $this->apiParams = $params;
 
     $action_params = $this->getActionParameters();
-    
+
     //this function could be overridden in subclasses to alter parameters to meet certain criteraia
     $params['target_contact_id'] = $triggerData->getContactId();
     $params['activity_type_id'] = $action_params['activity_type_id'];
     $params['status_id'] = $action_params['status_id'];
     $params['subject'] = $action_params['subject'];
+    $params['details'] = $action_params['details'];
 
     if (!empty($action_params['assignee_contact_id'])) {
       $assignee = array();
@@ -95,20 +96,20 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
    * @access public
    */
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    
+
     // Process the action, may throw Exceptions
     parent::processAction($triggerData);
 
     // Check if we need to send any emails
     if (!empty($this->apiParams['send_email']) && !empty($this->activityId) && !empty($this->asignedContacts)) {
       foreach ($this->asignedContacts as $contactId) {
-        
+
         $contact = civicrm_api3('Contact', 'getsingle', ['id' => $contactId]);
-        
+
         // check contact has an email
         if (empty($contact['email']))
           continue;
-        
+
         CRM_Case_BAO_Case::sendActivityCopy(NULL, $this->activityId, [$contact['email'] => $contact], NULL, NULL);
       }
     }
@@ -209,7 +210,7 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
 
       $return .= '<br>';
       $return .= ts("Assignee(s): %1", array(1 => $assignees));
-      
+
     }
 
     if (!empty($params['activity_date_time'])) {

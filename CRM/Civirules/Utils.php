@@ -325,6 +325,30 @@ class CRM_Civirules_Utils {
    * @param bool $onlyActive
    * @return array
    */
+  public static function getRelationshipTypes($onlyActive = TRUE) {
+    $return = array();
+    if ($onlyActive) {
+      $params = array('is_active' => 1);
+    } else {
+      $params = array();
+    }
+    $params['options'] = array('limit' => 0);
+    try {
+      $relationshipTypes = civicrm_api3("RelationshipType", "Get", $params);
+      foreach ($relationshipTypes['values'] as $relationshipType) {
+        $return['a_b_' . $relationshipType['id']] = $relationshipType['label_a_b'] . ' (A-B)';
+        $return['b_a_' . $relationshipType['id']] = $relationshipType['label_b_a'] . ' (B-A)';
+      }
+    } catch (CiviCRM_API3_Exception $ex) {}
+    asort($return);
+    return $return;
+  }
+
+  /**
+   * Method to get the membership types
+   * @param bool $onlyActive
+   * @return array
+   */
   public static function getMembershipTypes($onlyActive = TRUE) {
     $return = array();
     if ($onlyActive) {
@@ -625,6 +649,156 @@ class CRM_Civirules_Utils {
       }
     }
     return $columns;
+  }
+
+  /**
+   * Returns the object name of a certain object.
+   * When the object is contact it will try to retrieve the contact type
+   * and use this as the object name.
+   *
+   * @param \CRM_Core_DAO $object
+   *
+   * @return array|string|NULL
+   */
+  public static function getObjectNameFromObject(\CRM_Core_DAO $object)
+  {
+    static $contact_types = []; // Array with contact ID and value the contact type.
+    $objectName = CRM_Core_DAO_AllCoreTables::getBriefName(get_class($object));
+    if ($objectName == 'Contact' && isset($object->contact_type)) {
+      $objectName = $object->contact_type;
+    } elseif ($objectName == 'Contact' && isset($contact_types[$object->id])) {
+      $objectName = $contact_types[$object->id];
+    } elseif ($objectName == 'Contact' && isset($object->id)) {
+      try {
+        $contact_types[$object->id] = civicrm_api3('Contact', 'getvalue', ['return' => 'contact_type', 'id' => $object->id]);
+        $objectName = $contact_types[$object->id];
+      } catch (\Exception $e) {
+        // Do nothing
+      }
+    }
+    return $objectName;
+  }
+
+  /**
+   * Method to check if Api4 is active in the current installation
+   *
+   * @return bool
+   */
+  public static function isApi4Active() {
+    if (function_exists('civicrm_api4')) {
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Get the history of when the rule was triggered. Returns an array in reverse date order
+   *
+   * @param int $ruleID
+   * @param int $count
+   *
+   * @return array
+   */
+  public static function getRuleLogLatestTriggerDetail($ruleID, $count = 1) {
+    $triggerHistory = [];
+    $sql = "SELECT log_date, contact_id, sort_name
+    FROM civirule_rule_log crl
+    LEFT JOIN civicrm_contact cc ON cc.id = crl.contact_id
+    WHERE rule_id = %1
+    ORDER BY log_date DESC LIMIT %2";
+    $queryParams = [
+      1 => [$ruleID, 'Integer'],
+      2 => [$count, 'Integer']
+    ];
+    $dao = CRM_Core_DAO::executeQuery($sql, $queryParams);
+    while ($dao->fetch()) {
+      $triggerHistory[] = [
+        'last_trigger_date' => $dao->log_date ?? '',
+        'last_trigger_contactid' => $dao->contact_id ?? '',
+        'last_trigger_contactname' => $dao->sort_name ?? '',
+        'last_trigger_contact_link' => CRM_Civirules_Utils::formatContactLink($dao->contact_id ?? '', $dao->sort_name ?? '')
+      ];
+    }
+    return $triggerHistory;
+  }
+
+  /**
+   * Method to get the group title with group id
+   *
+   * @param int $groupId
+   * @return array|int|mixed
+   */
+  public static function getGroupTitleWithId(int $groupId) {
+    if (function_exists('civicrm_api4')) {
+      try {
+        $groups = \Civi\Api4\Group::get()
+          ->addSelect('title')
+          ->addWhere('id', '=', $groupId)
+          ->execute();
+        $group = $groups->first();
+        if ($group['title']) {
+          return $group['title'];
+        }
+      }
+      catch (API_Exception $ex) {
+      }
+    }
+    else {
+      try {
+        return civicrm_api3('Group', 'getvalue', [
+          'return' => 'title',
+          'id' => $groupId,
+        ]);
+      }
+      catch (CiviCRM_API3_Exception $ex) {
+      }
+    }
+    return $groupId;
+  }
+  /**
+   * Method to get the periods available
+   *
+   * @return string[]
+   */
+  public static function getPeriods() {
+    return ['years', 'quarters', 'months', 'weeks', 'days'];
+  }
+
+  /**
+   * Method to get the list of active groups
+   *
+   * @return array
+   */
+  public static function getGroupList() {
+    $groups = [];
+    if (function_exists('civicrm_api4')) {
+      try {
+        $apiGroups = \Civi\Api4\Group::get()
+          ->addSelect('title')
+          ->addWhere('is_active', '=', TRUE)
+          ->execute();
+        foreach ($apiGroups as $apiGroup) {
+          $groups[$apiGroup['id']] = $apiGroup['title'];
+        }
+      }
+      catch (API_Exception $ex) {
+      }
+    }
+    else {
+      try {
+        $apiGroups = civicrm_api3('Group', 'get', [
+          'return' => ['title'],
+           'is_active' => TRUE,
+          'options' => ['limit' => 0],
+        ]);
+        foreach ($apiGroups['result'] as $groupId => $groupData) {
+          $groups[$groupId] = $groupData['title'];
+        }
+      }
+      catch (CiviCRM_API3_Exception $ex) {
+      }
+    }
+    return $groups;
   }
 
 }

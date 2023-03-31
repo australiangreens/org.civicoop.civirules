@@ -1,8 +1,121 @@
 # CHANGELOG
-## Version 2.22 (not yet released)
 
-* Fix #112 call to undefined getObjectName() for HasTag condition when used with CRON trigger !116
+## Version 2.38 (not yet released)
+
+## Version 2.37
+
+* Add an option to set activity details for 'add activity to contact' action
+* Fixed #157: Base delay on date field in trigger: Field select doesn't filter by data type and excludes some valid fields by !153
+* Fixed #158: add condition contact has been in group since
+* Merged https://lab.civicrm.org/extensions/civirules/-/merge_requests/151 (code cleanup)
+
+## Version 2.36
+
+* Fixed issue with CiviRules and deleting entities.
+* Added function to retrieve the operation (create, edit, delete) from the post trigger.
+
+## Version 2.35
+
+* Fixed #152 - Action "End Relationship" added
+* CiviRules, field value comparison will fail when checking a value of '0' in custom field by !149
+
+## Version 2.34
+
+* Fixed #151: Activity is Deleted trigger does not work
+* Added condition 'Recurring Contribution is (not) financial type'.
+* Handle contact subtypes when retrieving preData/originalData for Contacts (affects customdata) by !148
+
+## Version 2.33
+
+* Added conditions for relationship has ended / is activated (issue https://lab.civicrm.org/extensions/civirules/-/issues/150)
+
+## Version 2.32
+
+* Added Trigger which is fired when an activity is tagged and for all related participants of the related event (when the activity is connected to an event).
+
+## Version 2.31
+
+* Fixed issue with Condition Activity Has Tag.
+* Added configuration options to Create Activity from Event Action.
+
+## Version 2.30
+
+* Fixed typos with action Create Activity from Event.
+
+## Version 2.29
+
+* Add recent triggers to rule detail view by !134
+* Added action to create activity from an event
+* Added trigger which is fired when an activity is changed for all related participants of the related event (when the activity is connected to an event).
+
+## Version 2.28
+
+* improve update warning/error message (#147) by !147
+* Fixed #149. Contact is tagged trigger and condition tag is works again.
+* Fixed issue with removing tags at the action: Synchronize Tags with related contact
+
+## Version 2.27
+
+* Fixed issue !144. Contact is tagged and is untagged works again.
+* Fixed issue #145. Contact has tag not saved. By !146
+* Added action: Add Target Contact to activity so that additional contacts could be added to the activity.
+* Added action: Synchronize Tags with related contact
+
+## Version 2.26
+
+* Fix Issue With Class Not Found Error by !145
+* Added action to set a custom field with data from another custom field.
+
+## Version 2.25
+
+* Fix 139: retrieve campaign data because entity data is not empty for type and status conditions. Add generic condition class for campaign.
+* Added action Create Pending Group Subscription #141
+
+## Version 2.24
+
+**CiviCRM version compatibility** >= 5.28.0
+
+* Removed unit tests.
+* Fix #132: GroupContact entity missing from Tag Conditions and Actions by !142
+* Added comments in the code and error handling in `civirules.php`.
+* Added action to update custom fields on a case. Needed to test #96.
+* Fixed #96: Custom Data on case changed trigger also works with a condition field is changed. Requires `hook_civicrm_customPre`. Available since CiviCRM version 5.28
+* Added condition Contact Custom Field Changed. Need to test #133.
+* Fixed #133: Contact Custom Data changed trigger works now with pre data. Requires `hook_civicrm_customPre`. Available since CiviCRM version 5.28.
+* Fixed #134: Made the GroupContact trigger compatible with all signatures.
+* Fixed #135: When custom data on a contact changes then also fire the contact is changed trigger.
+* Fixed regression bug from !96 and refactored cleaned up the code.
+* Fixed activity trigger configuration. The activity assignee and activity target values weren't set correctly.
+* Fixed #128: by adding a generic set custom field action. Based on !68
+* Fixed #43: Conditions and action who check for Contact also work Individual, Household or Organization Changed triggers.
+* Fix #116: Introduce actions Add Tag to / Remove Tag from Activity/Case/Contact/File + add method to check if API4 active in CRM_Civirules_Utils + add conditions Contact Has Tag, Case Has Tag, Activity Has Tag and File Has Tag
+  (please note: when using action Add Tag to Activity the tags will be removed immediately because of a core issue! Check )
+* Restore sending emails to trigger contact in Action Assign and email !144
+
+## Version 2.23
+
+* Fixed #116: Problems with HasTag Condition and Add/Remove Tag Actions by !120
+* Fix HasTag Condition and Tag Added/Removed Actions for the Contact Tagged/Untagged Triggers with !123 fixes partially #120
+* Fixed #126: Fatal Error in Has Tag Condition by !132
+* Added `getEntity` to `TriggerData` base class !122 fixes partially #121
+* Code cleanup !126
+* Fix #124 Cannot use object of type CRM_Core_DAO_EntityTag  by !127
+* Fix #120 error 500 with newer PHP versions  by !130
+* Fix #123 Some triggers don't fire anymore (delete triggers, GroupContact create trigger)
+* Fix #125 Set contact_id for membership edit trigger. Also fix inconsistencies with capitals/lowercase of entity name
+* Fix #108 Hook function for `hook_civirules_alter_trigger_data` is never called by !99
+* Extend 'Assign & Email' activity functionallity by !133
+* Fix #129 trigger for Individual, Organization or Household by !135
+* Fix #130 and simplify permissions by !136
+* Fix routing after edit rule action 'Assign and email' not correct by !137
+* Fix #64 Update Participant StatusChanged to generic, enable multiselect  by !138
+
+
+## Version 2.22
+
+* Fixed #112: call to undefined getObjectName() for HasTag condition when used with CRON trigger by !116
 * Make sure entityID and contactID is always set when a rule is executed !117
+* Fixed #119: DeDupe rules fail on Version 2.21+ by !119
 
 ## Version 2.21
 

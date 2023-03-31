@@ -57,8 +57,7 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
     if (CRM_Core_DAO::checkTableExists("civirule_event")) {
       CRM_Core_DAO::executeQuery("RENAME TABLE civirule_event TO civirule_trigger");
     } else {
-      $this->executeSqlFile('sql/createCiviruleTrigger.sql');
-      $this->executeSqlFile('sql/insertCiviruleTrigger.sql');
+      $this->executeSqlFile('sql/upgrade_1002.sql');
     }
     // rename columns event_id and event_params in civirule_rule
     if (CRM_Core_DAO::checkTableExists("civirule_rule")) {
@@ -213,7 +212,7 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
    * Update for rule tag (check <https://github.com/CiviCooP/org.civicoop.civirules/issues/98>)
    */
   public function upgrade_1020() {
-    $this->executeSqlFile('sql/createCiviruleRuleTag.sql');
+    $this->executeSqlFile('sql/upgrade_1020.sql');
     $ruleTagOptionGroup = CRM_Civirules_Utils_OptionGroup::getSingleWithName('civirule_rule_tag');
     if (empty($ruleTagOptionGroup)) {
       CRM_Civirules_Utils_OptionGroup::create('civirule_rule_tag', 'Tags for CiviRules', 'Tags used to filter CiviRules on the CiviRules page');
@@ -271,8 +270,9 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
     }
 
     // now insert all Civirules Actions and Conditions
-    $this->executeSqlFile('sql/insertCivirulesActions.sql');
-    $this->executeSqlFile('sql/insertCivirulesConditions.sql');
+    // commented obsolete insert actions
+    // $this->executeSqlFile('sql/insertCivirulesActions.sql');
+    // $this->executeSqlFile('sql/insertCivirulesConditions.sql');
 
     // Now check whether we have a backup and restore the backup
     if (CRM_Core_DAO::checkTableExists('civirule_rule_action_backup')) {
@@ -785,6 +785,103 @@ class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
     }
     return TRUE;
   }
+
+  public function upgrade_2068() {
+    $this->ctx->log->info('Applying update 2068 - Added new action Set Custom Data on a case.');
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/actions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2069() {
+    $this->ctx->log->info('Applying update 2068 - Added new condition.');
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2070() {
+    $this->ctx->log->info('Applying update 2068 - Added new genric action Set Custom Data.');
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/actions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2071() {
+    $this->ctx->log->info('Applying update 2071 - Add actions add tag to contact, add tag to activity, add tag to case, add tag to file');
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/actions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2072() {
+    $this->ctx->log->info('Applying update 2071 - Add conditions contact has tag, activity has tag, case has tag, file has tag');
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
+    // rename existing contact has tag and warn user of changes
+    $conditionName = "contact_has_tag";
+    $className = "CRM_CivirulesConditions_Contact_HasTag";
+    $conditionId = CRM_Core_DAO::singleValueQuery("SELECT id FROM civirule_condition WHERE name = %1", [
+      1 => [$conditionName, "String"],
+      2 => [$className, "String"],
+      ]);
+    if ($conditionId) {
+      // check if there are any usages of this condition and if so, warn user
+      $query = "SELECT a.rule_id, b.label FROM civirule_rule_condition AS a
+        JOIN civirule_rule AS b ON a.rule_id = b.id WHERE a.condition_id = %1";
+      $dao = CRM_Core_DAO::executeQuery($query, [1 => [(int) $conditionId, "Integer"]]);
+      while ($dao->fetch()) {
+        $message = E::ts("The condition Entity Has/Does Not Have Tag is used in the rule ") . $dao->label . E::ts(" (rule ID ") . $dao->rule_id
+          . E::ts(") but this condition is now changed to Contact Has/Does Not Have Tag. Please inspect this rule to see if the configuration is still applicable");
+        Civi::log()->warning($message);
+        CRM_Core_Session::setStatus($message, E::ts("Condition on rule [%1] changed", [1 => $dao->rule_id]), 'error');
+      }
+      $update = "UPDATE civirule_condition SET class_name = %1, label = %2 WHERE id = %3";
+      CRM_Core_DAO::executeQuery($update, [
+        1 => [$className, "String"],
+        2 => ["Contact Has/Does Not Have Tag", "String"],
+        3 => [(int) $conditionId, "Integer"],
+      ]);
+    }
+    return TRUE;
+  }
+
+  public function upgrade_2073() {
+    $this->ctx->log->info('Applying update 2073 - Add actions: Create pending group subscription');
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/actions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2074() {
+    $this->ctx->log->info('Applying update 2074 - Add actions add set custom field with data from another custom field');
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/actions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2075() {
+    $this->ctx->log->info('Applying update 2075 - Add actions: add target contact to activity');
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/actions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2076() {
+    $this->ctx->log->info('Applying update 2076 - Add condition relationship has ended');
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2077() {
+    $this->ctx->log->info('Applying update 2077 - Add action relationship end');
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/actions.json');
+    return TRUE;
+  }
+
+  public function upgrade_2078() {
+    $this->ctx->log->info('Applying update 2078 - Add condition contact in group since');
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
+    return TRUE;
+  }
+
+  /**
+   * For developers:
+   * since CiviRules 2.28 it is not needed to create an upgrade if you created a new condition, action or trigger.
+   * This is done in the function civirules_civicrm_managed which is called as soon as the cached is cleared.
+   */
 
 }
 
