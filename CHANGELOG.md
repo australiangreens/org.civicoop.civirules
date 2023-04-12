@@ -1,7 +1,16 @@
 # CHANGELOG
 
-## Version 2.46
+## Version 2.48 (not yet released)
 
+* Fixed preventing of delayed tasks never being executed by !199
+* Add action 'Add related contact to group' by !201
+* Add cleanup API for rule triggers/conditions/actions (to fix duplicates) by !200
+* ConfigItems: fixed when CiviRules is enabled importing a configuration set throws an error (#196)
+
+## Version 2.47
+* issue #163: also fix for activity
+
+## Version 2.46
 * Fix action AddToCase -> error on api3 getvalue with limit => 0, changed to 1
 * Add Activity action: remember send_email "no" selection with !191
 * Fix Activity trigger when triggered for all contacts with !192
@@ -11,6 +20,7 @@
 * Add `Contact is (not) of Type(s)` condition (See !195)
 * Add condition `xth Contribution in Last Time Interval` (see !196)
 * Fix #163: retrieve custom field if needed for activity add action when delayed date in custom field is used
+* Add "inclusion operator" for condition ContactHasMembership  (See !197)
 
 
 ## Version 2.45
