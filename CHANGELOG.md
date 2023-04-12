@@ -6,6 +6,7 @@
 * Add action 'Add related contact to group' by !201
 * Add cleanup API for rule triggers/conditions/actions (to fix duplicates) by !200
 * ConfigItems: fixed when CiviRules is enabled importing a configuration set throws an error (#196)
+* Add `xth recurring contribution` condition. See !204
 
 ## Version 2.47
 * issue #163: also fix for activity
