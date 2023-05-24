@@ -7,6 +7,7 @@
 * Add cleanup API for rule triggers/conditions/actions (to fix duplicates) by !200
 * ConfigItems: fixed when CiviRules is enabled importing a configuration set throws an error (#196)
 * Add `xth recurring contribution` condition. See !204
+* Performance improvement by caching the custom groups in a cached php file container.
 
 ## Version 2.47
 * issue #163: also fix for activity
