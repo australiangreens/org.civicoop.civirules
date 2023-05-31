@@ -1,4 +1,6 @@
 <?php
+use CRM_Civirules_ExtensionUtil as E;
+
 /**
  * Class for CiviRules Condition Contact has Membership Form
  *
@@ -90,6 +92,16 @@ class CRM_CivirulesConditions_Form_ContributionRecur_Membership
     $this->ruleCondition->condition_params = serialize($data);
     $this->ruleCondition->save();
     parent::postProcess();
+  }
+
+  /**
+   * Returns a help text for this condition.
+   * The help text is shown to the administrator who is configuring the condition.
+   *
+   * @return string
+   */
+  protected function getHelpText() {
+    return E::ts('This condition checks if the recurring contribution pays for a membership, optionally of certain type(s) and statuses.');
   }
 }
 
