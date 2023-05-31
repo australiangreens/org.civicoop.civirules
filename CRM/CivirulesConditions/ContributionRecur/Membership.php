@@ -27,7 +27,7 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
 
-    $recurringID = $triggerData->getEntityData('ContributionRecur')['id'] ?? null;
+    $recurringID = $triggerData->getEntityData('ContributionRecur')['id'] ?? NULL;
     if (!$recurringID) {
       // Just in case
       return FALSE;
