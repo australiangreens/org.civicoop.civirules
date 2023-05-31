@@ -35,7 +35,7 @@ class CRM_CivirulesActions_Relationship_End extends CRM_Civirules_Action {
   }
 
   /**
-   * Method to delete the relationships with either API3 or API4
+   * Method to delete the relationships
    *
    * @param array $actionParams
    * @param int $contactId
@@ -44,8 +44,8 @@ class CRM_CivirulesActions_Relationship_End extends CRM_Civirules_Action {
    */
   private function deleteRelationship(array $actionParams, int $contactId) {
     try {
-      Relationship::delete()
-        ->addWhere('contact_id_a', '=', $contactId)
+      Relationship::delete(FALSE)
+        ->addClause('OR', ['contact_id_a', '=', $contactId], ['contact_id_b', '=', $contactId])
         ->addWhere('relationship_type_id', '=', (int) $actionParams['relationship_type_id'])
         ->execute();
     }
@@ -55,7 +55,7 @@ class CRM_CivirulesActions_Relationship_End extends CRM_Civirules_Action {
   }
 
   /**
-   * Method to disable the relationships with either API3 or API4
+   * Method to disable the relationships
    *
    * @param array $actionParams
    * @param int $contactId
@@ -70,11 +70,11 @@ class CRM_CivirulesActions_Relationship_End extends CRM_Civirules_Action {
       $endDate = new DateTime();
     }
     try {
-      Relationship::update()
+      Relationship::update(FALSE)
         ->addValue('end_date', $endDate->format('Y-m-d'))
         ->addValue('is_active', FALSE)
         ->addWhere('relationship_type_id', '=', (int) $actionParams['relationship_type_id'])
-        ->addWhere('contact_id_a', '=', $contactId)
+        ->addClause('OR', ['contact_id_a', '=', $contactId], ['contact_id_b', '=', $contactId])
         ->execute();
     }
     catch (\Exception $ex) {
