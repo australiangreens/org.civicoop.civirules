@@ -673,4 +673,10 @@
     <title>Has Type</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/civirule/form/condition/contact_loggedin</path>
+    <page_callback>CRM_CivirulesConditions_Form_Contact_LoggedIn</page_callback>
+    <title>User is Logged In</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
 </menu>
