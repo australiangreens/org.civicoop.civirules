@@ -1,7 +1,7 @@
 <?php
 class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules_Condition {
 
-  private $conditionParams = array();
+  private $conditionParams = [];
 
   /**
    * Method to set the Rule Condition data
