@@ -12,6 +12,7 @@
 * !203 Add condition: Recurring pays for Membership
 * !206 Add action: Set Custom Field on an entiy with data from another Custom Field
 * Fix action disable/delete relationship when contact is on the 'b' side of the relationship
+* !202 Condition: User is logged in
 
 ## Version 2.47
 * issue #163: also fix for activity
