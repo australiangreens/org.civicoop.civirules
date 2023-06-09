@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 2.49 (not yet released)
+
 ## Version 2.48
 
 * Fixed preventing of delayed tasks never being executed by !199
