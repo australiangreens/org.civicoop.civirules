@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 2.48 (not yet released)
+## Version 2.48
 
 * Fixed preventing of delayed tasks never being executed by !199
 * Add action 'Add related contact to group' by !201
