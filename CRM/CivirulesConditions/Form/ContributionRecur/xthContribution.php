@@ -19,9 +19,9 @@ class CRM_CivirulesConditions_Form_ContributionRecur_xthContribution extends CRM
 
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'operator', ts('Operator'), $operatorList, true);
-    $this->add('text', 'no_of_recurring', ts('Number of Recurring Contribution of the Contribution'), array(), true);
-    $this->addRule('no_of_recurring','Number of Recurring Contribution of the Contribution must be a whole number','numeric');
-    $this->addRule('no_of_recurring','Number of Recurring Contribution of the Contribution must be a whole number','nopunctuation');
+    $this->add('text', 'no_of_recurring', ts('Number of the Contribution of the Recurring Contribution'), array(), true);
+    $this->addRule('no_of_recurring', 'Number of the Contribution of the Recurring Contribution must be a whole number', 'numeric');
+    $this->addRule('no_of_recurring', 'Number of the Contribution of the Recurring Contribution must be a whole number', 'nopunctuation');
 
     $this->addButtons(array(
       array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
