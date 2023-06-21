@@ -269,7 +269,7 @@ class CRM_Civirules_Utils_Upgrader {
         'name' => 'contribution_recur_count',
       ),
       'CRM_CivirulesConditions_ContributionRecur_xthContribution' => array(
-        'label' => 'xth Recurring Contribution of the Contribution',
+        'label' => 'xth Contribution of the Recurring Contribution',
         'name' => 'contribution_recur_xth_contribution',
       ),      
       'CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring' => array(
