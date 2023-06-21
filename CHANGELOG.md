@@ -1,6 +1,8 @@
 # CHANGELOG
 
-## Version 2.49 (not yet released)
+## Version 2.49
+
+* Fixed deprecation warning in Upgrader class.
 
 ## Version 2.48
 
