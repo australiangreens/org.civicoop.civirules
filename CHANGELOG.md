@@ -2,6 +2,8 @@
 
 ## Version 2.50 (not yet released)
 
+* Fixed `xth recurring contribution` condition not appearing.
+
 ## Version 2.49
 
 * Fixed deprecation warning in Upgrader class.
