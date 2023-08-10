@@ -5,7 +5,7 @@ use CRM_Civirules_ExtensionUtil as E;
  * Copyright (C) 2015 Coöperatieve CiviCooP U.A. <http://www.civicoop.org>
  * Licensed to CiviCRM under the AGPL-3.0
  */
-class CRM_Civirules_Upgrader extends CRM_Civirules_Upgrader_Base {
+class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
 
   /**
    * Create CiviRules tables on extension install. Do not change the
