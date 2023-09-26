@@ -102,8 +102,8 @@ class CRM_Civirules_Utils_PreData {
     $config = \Civi\CiviRules\Config\ConfigContainer::getInstance();
     $custom_group = $config->getCustomGroupById($groupID);
     $entity = $custom_group['extends'];
+    $data = [];
     if (!isset(self::$preData[$entity][$entityID][$eventID])) {
-      $data = [];
       try {
         $data = civicrm_api3($entity, 'getsingle', ['id' => $entityID]);
       } catch (Exception $e) {
