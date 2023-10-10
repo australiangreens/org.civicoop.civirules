@@ -185,7 +185,7 @@ function civirules_civicrm_navigationMenu(&$menu) {
     'label' => E::ts('CiviRules'),
     'name' => 'CiviRules',
     'url' => NULL,
-    'permission' => 'administer CiviCRM',
+    'permission' => 'administer CiviCRM, administer CiviRules',
     'operator' => NULL,
     'separator' => NULL,
   ]);
@@ -194,7 +194,7 @@ function civirules_civicrm_navigationMenu(&$menu) {
     'label' => E::ts('Manage Rules'),
     'name' => 'Manage Rules',
     'url' => CRM_Utils_System::url('civicrm/civirules/form/rulesview', 'reset=1', TRUE),
-    'permission' => 'administer CiviCRM',
+    'permission' => 'administer CiviCRM, administer CiviRules',
     'operator' => NULL,
     'separator' => 0,
   ]);
@@ -203,7 +203,7 @@ function civirules_civicrm_navigationMenu(&$menu) {
     'label' => E::ts('New Rule'),
     'name' => 'New Rule',
     'url' => CRM_Utils_System::url('civicrm/civirule/form/rule', 'reset=1&action=add', TRUE),
-    'permission' => 'administer CiviCRM',
+    'permission' => 'administer CiviCRM, administer CiviRules',
     'operator' => NULL,
     'separator' => 0,
   ]);
@@ -215,7 +215,7 @@ function civirules_civicrm_navigationMenu(&$menu) {
       'label' => E::ts('CiviRule Tags'),
       'name' => E::ts('CiviRules Tags'),
       'url' => $ruleTagUrl,
-      'permission' => 'administer CiviCRM',
+      'permission' => 'administer CiviCRM, administer CiviRules',
       'operator' => NULL,
       'separator' => 0,
     ]);
@@ -550,4 +550,16 @@ function civirules_civicrm_xmlMenu(&$files) {
   foreach (glob(__DIR__ . '/xml/Menu/*.xml') as $file) {
     $files[] = $file;
   }
+}
+
+/**
+ * Implements hook_civicrm_permission().
+ */
+function civirules_civicrm_permission(&$permissions) {
+  $permissions += [
+    'administer CiviRules' => [
+      E::ts('CiviRules: administer CiviRules extension'),
+      E::ts('Perform all CiviRules administration tasks in CiviCRM'),
+    ],
+  ];
 }
