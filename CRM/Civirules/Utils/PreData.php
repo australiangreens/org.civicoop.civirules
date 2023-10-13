@@ -1,5 +1,7 @@
 <?php
 
+use Civi\Api4\Service\Schema\Joinable\CustomGroupJoinable;
+
 class CRM_Civirules_Utils_PreData {
 
   /**
@@ -101,7 +103,7 @@ class CRM_Civirules_Utils_PreData {
     }
     $config = \Civi\CiviRules\Config\ConfigContainer::getInstance();
     $custom_group = $config->getCustomGroupById($groupID);
-    $entity = $custom_group['extends'];
+    $entity = CustomGroupJoinable::getEntityFromExtends($custom_group['extends']);
     $data = [];
     if (!isset(self::$preData[$entity][$entityID][$eventID])) {
       try {
