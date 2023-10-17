@@ -80,7 +80,7 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
         if (!empty($field['custom_field_id'])) {
           $contact['custom_' . $field['custom_field_id']] = $field['value'];
           $contact['custom_' . $field['custom_field_id'] . '_group_id'] = $field['custom_group_id'];
-          $contact['custom_' . $field['custom_field_id'] . '_entry_id'] = $field['id'];
+          $contact['custom_' . $field['custom_field_id'] . '_entry_id'] = $field['id'] ?? null;
         }
       }
     }
