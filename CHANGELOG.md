@@ -4,6 +4,7 @@
 
 * Fixed `xth recurring contribution` condition not appearing.
 * Add `administer CiviRules` permission
+* Fixed issue #202 by !223
 
 ## Version 2.49
 
