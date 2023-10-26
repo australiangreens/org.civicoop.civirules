@@ -2,6 +2,7 @@
 
 ## Version 2.50 (not yet released)
 
+* Fixed issue #206
 * Fixed `xth recurring contribution` condition not appearing.
 * Add `administer CiviRules` permission
 * Fixed issue #202 by !223
