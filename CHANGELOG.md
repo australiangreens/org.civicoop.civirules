@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 2.50 (not yet released)
+## Version 2.50
 
 * Fixed issue #206
 * Fixed `xth recurring contribution` condition not appearing.
