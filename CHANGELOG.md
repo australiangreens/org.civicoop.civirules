@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 2.51 (not yet released)
+
 ## Version 2.50
 
 * Fixed issue #206
