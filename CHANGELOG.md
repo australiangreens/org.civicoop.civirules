@@ -2,6 +2,8 @@
 
 ## Version 2.51 (not yet released)
 
+*  Fix preData custom field collection on CiviCRM 5.67+  See !224
+
 ## Version 2.50
 
 * Fixed issue #206
