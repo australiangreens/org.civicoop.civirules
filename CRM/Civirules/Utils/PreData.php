@@ -103,7 +103,12 @@ class CRM_Civirules_Utils_PreData {
     }
     $config = \Civi\CiviRules\Config\ConfigContainer::getInstance();
     $custom_group = $config->getCustomGroupById($groupID);
-    $entity = CustomGroupJoinable::getEntityFromExtends($custom_group['extends']);
+    if (version_compare(CRM_Utils_System::version(), '5.67', '<')) {
+      $entity = CustomGroupJoinable::getEntityFromExtends($custom_group['extends']);
+    }
+    else {
+      $entity = CRM_Core_BAO_CustomGroup::getEntityFromExtends($custom_group['extends']);
+    }
     $data = [];
     if (!isset(self::$preData[$entity][$entityID][$eventID])) {
       try {
