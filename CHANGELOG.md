@@ -1,6 +1,8 @@
 # CHANGELOG
 
-## Version 2.52 (not yet released)
+## Version 3.0 (not yet released)
+
+* Searchkit / Formbuilder UI for rules overview.
 
 ## Version 2.51
 
