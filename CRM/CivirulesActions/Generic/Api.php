@@ -5,37 +5,34 @@ abstract class CRM_CivirulesActions_Generic_Api extends CRM_Civirules_Action {
   /**
    * Method to get the api entity to process in this CiviRule action
    *
-   * @access protected
-   * @abstract
+   * @return string
    */
   protected abstract function getApiEntity();
 
   /**
    * Method to get the api action to process in this CiviRule action
    *
-   * @access protected
-   * @abstract
+   * @return string
    */
   protected abstract function getApiAction();
 
   /**
    * Returns an array with parameters used for processing an action
    *
-   * @param array $parameters
+   * @param array $params
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
+   *
    * @return array
-   * @access protected
    */
-  protected function alterApiParameters($parameters, CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    //this method could be overridden in subclasses to alter parameters to meet certain criteria
-    return $parameters;
+  protected function alterApiParameters(array $params, CRM_Civirules_TriggerData_TriggerData $triggerData) {
+    // This method could be overridden in subclasses to alter parameters to meet certain criteria
+    return $params;
   }
 
   /**
    * Process the action
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
-   * @access public
    */
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $entity = $this->getApiEntity();
@@ -55,25 +52,25 @@ abstract class CRM_CivirulesActions_Generic_Api extends CRM_Civirules_Action {
    *
    * This method could be overridden if needed
    *
-   * @param $entity
-   * @param $action
-   * @param $parameters
-   * @access protected
+   * @param string $entity
+   * @param string $action
+   * @param array $params
+
    * @throws Exception on api error
    */
-  protected function executeApiAction($entity, $action, $parameters) {
+  protected function executeApiAction(string $entity, string $action, array $params) {
     try {
-      civicrm_api3($entity, $action, $parameters);
+      civicrm_api3($entity, $action, $params);
     } catch (Exception $e) {
       $formattedParams = '';
-      foreach($parameters as $key => $param) {
+      foreach($params as $key => $param) {
         if (strlen($formattedParams)) {
           $formattedParams .= ', ';
         }
         $formattedParams .= "{$key}=\"$param\"";
       }
       $message = "Civirules api action exception: {$e->getMessage()}. API call: {$entity}.{$action} with params: {$formattedParams}";
-      \Civi::log()->error($message);
+      \Civi::log('civirules')->error($message);
       throw new Exception($message);
     }
   }
