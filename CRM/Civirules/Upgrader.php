@@ -925,6 +925,12 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
     }
 
     if (!CRM_Core_BAO_SchemaHandler::checkFKExists('civirule_rule_log', 'FK_civirule_rule_log_rule_id')) {
+      CRM_Core_DAO::executeQuery("
+UPDATE civirule_rule_log SET rule_id = NULL
+WHERE id IN (SELECT crl.id FROM civirule_rule_log crl
+LEFT JOIN civirule_rule cr ON crl.rule_id = cr.id
+WHERE cr.id IS NULL);
+      ");
       CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_log ADD CONSTRAINT FK_civirule_rule_log_rule_id FOREIGN KEY (`rule_id`) REFERENCES `civirule_rule`(`id`) ON DELETE SET NULL");
     }
 
@@ -934,7 +940,7 @@ UPDATE civirule_rule_log SET contact_id = NULL
 WHERE id IN (SELECT crl.id FROM civirule_rule_log crl
 LEFT JOIN civicrm_contact cc ON crl.contact_id = cc.id
 WHERE cc.id IS NULL)
-    ");
+      ");
       CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_log ADD CONSTRAINT FK_civirule_rule_log_contact_id FOREIGN KEY (`contact_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE SET NULL");
     }
 
