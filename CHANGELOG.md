@@ -3,6 +3,7 @@
 ## Version 3.0 (not yet released)
 
 * Searchkit / Formbuilder UI for rules overview.
+* The condition "Case has tags/does not have tags" now can be selected for cases.
 
 ## Version 2.51
 
