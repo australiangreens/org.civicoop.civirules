@@ -4,6 +4,7 @@
 
 * Searchkit / Formbuilder UI for rules overview.
 * The condition "Case has tags/does not have tags" now can be selected for cases.
+* "Is Client of the Case" now checks really if the contact is a client.
 
 ## Version 2.51
 
