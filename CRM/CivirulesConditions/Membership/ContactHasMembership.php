@@ -1,18 +1,22 @@
 <?php
 
+use CRM_Civirules_ExtensionUtil as E;
+
 class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civirules_Condition {
 
-  private $conditionParams = array();
+  /**
+   * @var array
+   */
+  private $conditionParams = [];
 
   /**
    * Method to set the Rule Condition data
    *
    * @param array $ruleCondition
-   * @access public
    */
   public function setRuleConditionData($ruleCondition) {
     parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = array();
+    $this->conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
       $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
     }
@@ -22,17 +26,16 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
    * This method returns true or false when an condition is valid or not
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
+   *
    * @return bool
-   * @access public
-   * @abstract
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     // To do add condition checking
-    $sqlParams = array();
-    $whereClauses = array();
+    $sqlParams = [];
+    $whereClauses = [];
     $whereClauses[] = "contact_id = %1";
-    $sqlParams[1] = array($triggerData->getContactId(), 'Integer');
-    $inclusion_operator = CRM_Utils_Array::value('inclusion_operator', $this->conditionParams, 0);
+    $sqlParams[1] = [$triggerData->getContactId(), 'Integer'];
+    $inclusion_operator = $this->conditionParams['inclusion_operator'] ?? 0;
     if (count($this->conditionParams['membership_type_id'])) {
       switch ($this->conditionParams['type_operator']) {
         case 'in':
@@ -58,9 +61,9 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
 
     $dateFields = ['start_date', 'join_date', 'end_date'];
     foreach ($dateFields as $dateField) {
-      $date_relative = CRM_Utils_Array::value($dateField . '_relative', $this->conditionParams);
-      $date_to = CRM_Utils_Array::value($dateField . '_to', $this->conditionParams);
-      $date_from = CRM_Utils_Array::value($dateField . '_from', $this->conditionParams);
+      $date_relative = $this->conditionParams[$dateField . '_relative'] ?? NULL;
+      $date_to = $this->conditionParams[$dateField . '_to'] ?? NULL;
+      $date_from = $this->conditionParams[$dateField . '_from'] ?? NULL;
 
       if (!empty($date_relative) || !empty($date_from) || !empty($date_to)) {
         [$from, $to] = CRM_Utils_Date::getFromTo($date_relative, $date_from, $date_to);
@@ -125,6 +128,8 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
    * Returns condition data as an array and ready for import.
    * E.g. replace name for ids.
    *
+   * @param $condition_params
+   *
    * @return string
    */
   public function importConditionParameters($condition_params = NULL) {
@@ -159,9 +164,8 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
    * Return false if you do not need extra data input
    *
    * @param int $ruleConditionId
+   *
    * @return bool|string
-   * @access public
-   * @abstract
    */
   public function getExtraDataInputUrl($ruleConditionId) {
     return CRM_Utils_System::url('civicrm/civirule/form/condition/contacthasmembership', 'rule_condition_id=' . $ruleConditionId);
@@ -172,7 +176,6 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
    * e.g. 'Older than 65'
    *
    * @return string
-   * @access public
    */
   public function userFriendlyConditionParams() {
     $operator_options = self::getOperatorOptions();
@@ -193,7 +196,7 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
         }
         $values .= $membershipTypes[$membershipTypeId];
       }
-      $label .= "<li>" . ts('Membership Type') . " {$operator} <b>{$values}</b> <br>";
+      $label .= "<li>" . E::ts('Membership Type') . " {$operator} <b>{$values}</b> <br>";
     }
 
     if (isset($this->conditionParams['membership_status_id']) && count($this->conditionParams['membership_status_id'])) {
@@ -209,13 +212,13 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
         }
         $values .= $membershipStatus[$membershipStatusId];
       }
-      $label .= "<li>" . ts('Membership Status') . " {$operator} <b>{$values}</b> <br>";
+      $label .= "<li>" . E::ts('Membership Status') . " {$operator} <b>{$values}</b> <br>";
     }
 
     $dateFields = [
-      'start_date' => ts('Membership Start Date'),
-      'join_date' => ts('Membership Join Date'),
-      'end_date' => ts('Membership End Date'),
+      'start_date' => E::ts('Membership Start Date'),
+      'join_date' => E::ts('Membership Join Date'),
+      'end_date' => E::ts('Membership End Date'),
     ];
     $dateOperators = CRM_Core_OptionGroup::values('relative_date_filters');
     $msg = [];
@@ -230,10 +233,10 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
       elseif (!empty($date_from) || !empty($date_to)) {
         $dateMsg = $dateDesc;
         if (!empty($date_from)) {
-          $dateMsg .= ' ' . ts('From') . " <b>$date_from</b>";
+          $dateMsg .= ' ' . E::ts('From') . " <b>$date_from</b>";
         }
         if (!empty($date_to)) {
-          $dateMsg .= ' ' . ts('To') . " <b>$date_to</b>";
+          $dateMsg .= ' ' . E::ts('To') . " <b>$date_to</b>";
         }
         $msg[] = $dateMsg;
       }
@@ -247,27 +250,25 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
    * Method to get operators
    *
    * @return array
-   * @access protected
    */
   public static function getOperatorOptions() {
-    return array(
-      'in' => ts('Is one of'),
-      'not in' => ts('Is not one of'),
-    );
+    return [
+      'in' => E::ts('Is one of'),
+      'not in' => E::ts('Is not one of'),
+    ];
   }
 
   /**
    * Method to get operators
    *
    * @return array
-   * @access protected
    */
   public static function getInclusionOptions() {
     // Contact HAS Membership is value '0', for backwards-compatibility for existing rules where this condition will be empty
-    return array(
-      '0' => ts('Contact HAS Membership'),
-      '1' => ts('Contact DOES NOT HAVE Membership'),
-    );
+    return [
+      '0' => E::ts('Contact HAS Membership'),
+      '1' => E::ts('Contact DOES NOT HAVE Membership'),
+    ];
   }
 
 }
