@@ -5,6 +5,8 @@
 * Searchkit / Formbuilder UI for rules overview.
 * The condition "Case has tags/does not have tags" now can be selected for cases.
 * "Is Client of the Case" now checks really if the contact is a client.
+* [!225](https://lab.civicrm.org/extensions/civirules/-/merge_requests/225) Display membership status label instead of name in conditions.
+
 
 ## Version 2.51
 
