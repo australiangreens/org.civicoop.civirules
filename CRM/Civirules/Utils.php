@@ -369,22 +369,26 @@ class CRM_Civirules_Utils {
   /**
    * Method to get the membership status
    * @param bool $onlyActive
+   *
    * @return array
    */
-  public static function getMembershipStatus($onlyActive = TRUE) {
-    $return = array();
-    if ($onlyActive) {
-      $params = array('is_active' => 1);
-    } else {
-      $params = array();
-    }
+  public static function getMembershipStatus(bool $onlyActive = TRUE): array {
+    $membershipStatuses = [];
+
     try {
-      $apiMembershipStatus = civicrm_api3("MembershipStatus", "Get", $params);
-      foreach ($apiMembershipStatus['values'] as $membershipStatus) {
-        $return[$membershipStatus['id']] = $membershipStatus['name'];
+      $membershipStatusesAPI = \Civi\Api4\MembershipStatus::get(FALSE)
+        ->addSelect('id', 'label');
+      if ($onlyActive) {
+        $membershipStatusesAPI->addWhere('is_active', '=', TRUE);
       }
-    } catch (CiviCRM_API3_Exception $ex) {}
-    return $return;
+      $membershipStatuses = $membershipStatusesAPI
+        ->execute()
+        ->indexBy('id')
+        ->column('label');
+    } catch (Exception $e) {
+      \Civi::log('civirules')->error('Error getting membership statuses: ' . $e->getMessage());
+    }
+    return $membershipStatuses;
   }
 
   /**
