@@ -350,20 +350,23 @@ class CRM_Civirules_Utils {
    * @return array
    */
   public static function getMembershipTypes($onlyActive = TRUE) {
-    $return = array();
-    if ($onlyActive) {
-      $params = array('is_active' => 1);
-    } else {
-      $params = array();
-    }
-    $params['options'] = array('limit' => 0, 'sort' => "name ASC");
+    $membershipTypes = [];
+
     try {
-      $membershipTypes = civicrm_api3("MembershipType", "Get", $params);
-      foreach ($membershipTypes['values'] as $membershipType) {
-        $return[$membershipType['id']] = $membershipType['name'];
+      $membershipTypesAPI = \Civi\Api4\MembershipType::get(FALSE)
+        ->addWhere('is_active', '=', TRUE)
+        ->addOrderBy('name', 'ASC');
+      if ($onlyActive) {
+        $membershipTypesAPI->addWhere('is_active', '=', TRUE);
       }
-    } catch (CiviCRM_API3_Exception $ex) {}
-    return $return;
+      $membershipTypes = $membershipTypesAPI
+        ->execute()
+        ->indexBy('id')
+        ->column('name');
+    } catch (Exception $e) {
+      \Civi::log('civirules')->error('Error getting membership types: ' . $e->getMessage());
+    }
+    return $membershipTypes;
   }
 
   /**

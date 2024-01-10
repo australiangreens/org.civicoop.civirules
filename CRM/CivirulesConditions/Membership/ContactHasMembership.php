@@ -175,57 +175,41 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
    * @access public
    */
   public function userFriendlyConditionParams() {
-    $label = '';
     $operator_options = self::getOperatorOptions();
     $inclusionOperators = $this->getInclusionOptions();
-    $selectedInclusionOperator = CRM_Utils_Array::value('inclusion_operator', $this->conditionParams, 0);
+    $selectedInclusionOperator = $this->conditionParams['inclusion_operator'] ?? 0;
     $label = $inclusionOperators[$selectedInclusionOperator] . "<ul>";
 
-    try {
-      $params = array(
-        'is_active' => 1,
-        'options' => array('limit' => 0, 'sort' => "name ASC"),
-      );
-      $membershipTypes = civicrm_api3('MembershipType', 'Get', $params);
-      if (isset($this->conditionParams['membership_type_id']) && count($this->conditionParams['membership_type_id'])) {
-        $operator = $operator_options[$this->conditionParams['type_operator']];
-        $values = '';
-        foreach ($this->conditionParams['membership_type_id'] as $membershipTypeId) {
-          if (!isset($membershipTypes['values'][$membershipTypeId])) {
-            continue;
-          }
-          if (strlen($values)) {
-            $values .= ', ';
-          }
-          $values .= $membershipTypes['values'][$membershipTypeId]['name'];
+    $membershipTypes = CRM_Civirules_Utils::getMembershipTypes(FALSE);
+    if (isset($this->conditionParams['membership_type_id']) && count($this->conditionParams['membership_type_id'])) {
+      $operator = $operator_options[$this->conditionParams['type_operator']];
+      $values = '';
+      foreach ($this->conditionParams['membership_type_id'] as $membershipTypeId) {
+        if (!isset($membershipTypes[$membershipTypeId])) {
+          continue;
         }
-        $label .= "<li>" . ts('Membership Type') . " {$operator} <b>{$values}</b> <br>";
+        if (strlen($values)) {
+          $values .= ', ';
+        }
+        $values .= $membershipTypes[$membershipTypeId];
       }
-    }
-    catch (CiviCRM_API3_Exception $ex) {
+      $label .= "<li>" . ts('Membership Type') . " {$operator} <b>{$values}</b> <br>";
     }
 
-    try {
-      if (isset($this->conditionParams['membership_status_id']) && count($this->conditionParams['membership_status_id'])) {
-        $params = [
-          'options' => ['limit' => 0],
-        ];
-        $membershipStatus = civicrm_api3('MembershipStatus', 'Get', $params);
-        $operator = $operator_options[$this->conditionParams['status_operator']];
-        $values = '';
-        foreach ($this->conditionParams['membership_status_id'] as $membershipStatusId) {
-          if (!isset($membershipStatus['values'][$membershipStatusId])) {
-            continue;
-          }
-          if (strlen($values)) {
-            $values .= ', ';
-          }
-          $values .= $membershipStatus['values'][$membershipStatusId]['name'];
+    if (isset($this->conditionParams['membership_status_id']) && count($this->conditionParams['membership_status_id'])) {
+      $membershipStatus = CRM_Civirules_Utils::getMembershipStatus(FALSE);
+      $operator = $operator_options[$this->conditionParams['status_operator']];
+      $values = '';
+      foreach ($this->conditionParams['membership_status_id'] as $membershipStatusId) {
+        if (!isset($membershipStatus[$membershipStatusId])) {
+          continue;
         }
-        $label .= "<li>" . ts('Membership Status') . " {$operator} <b>{$values}</b> <br>";
+        if (strlen($values)) {
+          $values .= ', ';
+        }
+        $values .= $membershipStatus[$membershipStatusId];
       }
-    }
-    catch (CiviCRM_API3_Exception $ex) {
+      $label .= "<li>" . ts('Membership Status') . " {$operator} <b>{$values}</b> <br>";
     }
 
     $dateFields = [
@@ -236,9 +220,9 @@ class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civiru
     $dateOperators = CRM_Core_OptionGroup::values('relative_date_filters');
     $msg = [];
     foreach ($dateFields as $dateField => $dateDesc) {
-      $date_relative = CRM_Utils_Array::value($dateField . '_relative', $this->conditionParams);
-      $date_to = CRM_Utils_Array::value($dateField . '_to', $this->conditionParams);
-      $date_from = CRM_Utils_Array::value($dateField . '_from', $this->conditionParams);
+      $date_relative = $this->conditionParams[$dateField . '_relative'] ?? NULL;
+      $date_to = $this->conditionParams[$dateField . '_to'] ?? NULL;
+      $date_from = $this->conditionParams[$dateField . '_from'] ?? NULL;
 
       if (!empty($date_relative)) {
         $msg[] = $dateDesc . " <b>{$dateOperators[$date_relative]}</b>";
