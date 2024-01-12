@@ -17,7 +17,7 @@ class CRM_CivirulesActions_Membership_Form_Add extends CRM_CivirulesActions_Form
     $this->add('hidden', 'rule_action_id');
 
     $membershipTypeOptions = array('' => ts('-- please select --'));
-    $membershipTypeApi = civicrm_api3('MembershipType', 'get', array('option' => array('limit' => 0)));
+    $membershipTypeApi = civicrm_api3('MembershipType', 'get', array('options' => array('limit' => 0)));
     foreach($membershipTypeApi['values'] as $membershipType) {
       $membershipTypeOptions[$membershipType['id']] = $membershipType['name'];
     }
