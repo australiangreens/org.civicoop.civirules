@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 3.0 (not yet released)
+## Version 3.0
 
 * Added action rebuild smart group
 * Searchkit / Formbuilder UI for rules overview.
