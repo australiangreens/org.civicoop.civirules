@@ -2,6 +2,7 @@
 
 ## Version 3.0 (not yet released)
 
+* Added action rebuild smart group
 * Searchkit / Formbuilder UI for rules overview.
 * The condition "Case has tags/does not have tags" now can be selected for cases.
 * "Is Client of the Case" now checks really if the contact is a client.
