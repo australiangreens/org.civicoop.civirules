@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 3.1 (not yet released)
+
 ## Version 3.0
 
 * Added action rebuild smart group
