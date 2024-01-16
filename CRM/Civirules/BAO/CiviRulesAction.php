@@ -5,7 +5,7 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-class CRM_Civirules_BAO_CiviRulesAction extends CRM_Civirules_DAO_Action {
+class CRM_Civirules_BAO_CiviRulesAction extends CRM_Civirules_DAO_CiviRulesAction {
 
   /**
    * Function to get values
