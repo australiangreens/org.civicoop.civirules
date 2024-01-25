@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Daily trigger for case activity
+ */
 class CRM_CivirulesCronTrigger_CaseActivity extends CRM_Civirules_Trigger_Cron {
 
   private $dao = FALSE;
@@ -42,8 +45,7 @@ class CRM_CivirulesCronTrigger_CaseActivity extends CRM_Civirules_Trigger_Cron {
   private function queryForTriggerEntities() {
     $sql = "SELECT c.*
             FROM `civicrm_case` `c`
-            WHERE c.status_id = 1
-            AND `c`.`is_deleted` = 0
+            WHERE `c`.`is_deleted` = 0
             ";
     $this->dao = CRM_Core_DAO::executeQuery($sql, [], TRUE, 'CRM_Case_DAO_Case');
 
