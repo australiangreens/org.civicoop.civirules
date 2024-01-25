@@ -2,7 +2,7 @@
 
 class CRM_CivirulesCronTrigger_CaseActivity extends CRM_Civirules_Trigger_Cron {
 
-  private $dao = false;
+  private $dao = FALSE;
 
   /**
    * This function returns a CRM_Civirules_TriggerData_TriggerData this entity is used for triggering the rule
@@ -14,16 +14,16 @@ class CRM_CivirulesCronTrigger_CaseActivity extends CRM_Civirules_Trigger_Cron {
   protected function getNextEntityTriggerData() {
     if (!$this->dao) {
       if (!$this->queryForTriggerEntities()) {
-        return false;
+        return FALSE;
       }
     }
     if ($this->dao->fetch()) {
-      $data = array();
+      $data = [];
       CRM_Core_DAO::storeValues($this->dao, $data);
       $triggerData = new CRM_Civirules_TriggerData_Cron(0, 'Case', $data);
       return $triggerData;
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -38,17 +38,15 @@ class CRM_CivirulesCronTrigger_CaseActivity extends CRM_Civirules_Trigger_Cron {
   /**
    * Method to query trigger entities
    *
-   * @access private
    */
   private function queryForTriggerEntities() {
-
     $sql = "SELECT c.*
             FROM `civicrm_case` `c`
             WHERE c.status_id = 1
             AND `c`.`is_deleted` = 0
             ";
-    $this->dao = CRM_Core_DAO::executeQuery($sql, array(), true, 'CRM_Case_DAO_Case');
+    $this->dao = CRM_Core_DAO::executeQuery($sql, [], TRUE, 'CRM_Case_DAO_Case');
 
-    return true;
+    return TRUE;
   }
 }
