@@ -503,10 +503,8 @@ function civirules_civicrm_xmlMenu(&$files) {
  * Implements hook_civicrm_permission().
  */
 function civirules_civicrm_permission(&$permissions) {
-  $permissions += [
-    'administer CiviRules' => [
-      E::ts('CiviRules: administer CiviRules extension'),
-      E::ts('Perform all CiviRules administration tasks in CiviCRM'),
-    ],
+  $permissions['administer CiviRules'] = [
+      'label' => E::ts('CiviRules: administer CiviRules extension'),
+      'description' => E::ts('Perform all CiviRules administration tasks in CiviCRM'),
   ];
 }
