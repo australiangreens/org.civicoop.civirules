@@ -918,9 +918,13 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
     CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule MODIFY COLUMN modified_user_id int unsigned DEFAULT NULL COMMENT 'FK to Contact ID'");
 
     if (!CRM_Core_BAO_SchemaHandler::checkFKExists('civirule_rule', 'FK_civirule_rule_created_user_id')) {
+      CRM_Core_DAO::executeQuery("UPDATE civirule_rule rl SET created_user_id  = NULL
+WHERE created_user_id NOT IN (select id from civicrm_contact cc where rl.created_user_id = cc.id)");
       CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule ADD CONSTRAINT FK_civirule_rule_created_user_id FOREIGN KEY (`created_user_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE SET NULL");
     }
     if (!CRM_Core_BAO_SchemaHandler::checkFKExists('civirule_rule', 'FK_civirule_rule_modified_user_id')) {
+      CRM_Core_DAO::executeQuery("UPDATE civirule_rule rl SET modified_user_id  = NULL
+WHERE modified_user_id NOT IN (select id from civicrm_contact cc where rl.modified_user_id = cc.id)");
       CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule ADD CONSTRAINT FK_civirule_rule_modified_user_id FOREIGN KEY (`modified_user_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE SET NULL");
     }
 
