@@ -2,6 +2,8 @@
 
 ## Version 3.1 (not yet released)
 
+* Fix editing custom fields on certain CiviCRM versions. See !228
+
 ## Version 3.0
 
 * Added action rebuild smart group
