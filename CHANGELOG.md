@@ -3,6 +3,8 @@
 ## Version 3.1 (not yet released)
 
 * Fix editing custom fields on certain CiviCRM versions. See !228
+* Compatibility with CiviCRM 5.72.
+* Fix class entity names (fixes error on delete rule).
 
 ## Version 3.0
 
