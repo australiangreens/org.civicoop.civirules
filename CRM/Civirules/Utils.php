@@ -138,22 +138,6 @@ class CRM_Civirules_Utils {
   }
 
   /**
-   * Function to build the action list
-   *
-   * @return array $actionList
-   * @access public
-   * @static
-   */
-  public static function buildActionList() {
-    $actionList = array();
-    $actions = CRM_Civirules_BAO_Action::getValues(array());
-    foreach ($actions as $actionId => $action) {
-      $actionList[$actionId] = $action['label'];
-    }
-    return $actionList;
-  }
-
-  /**
    * Function to return activity status list
    *
    * @return array $activityStatusList

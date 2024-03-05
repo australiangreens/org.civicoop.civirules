@@ -128,13 +128,15 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     if ($this->ruleActionId) {
       $this->add('hidden', 'id');
     }
-    $actionList = array(' - select - ') + CRM_Civirules_Utils::buildActionList();
+    $actionList = array(' - select - ') + \Civi\Api4\CiviRulesAction::get(FALSE)
+        ->execute()
+        ->indexBy('id')
+        ->column('label');
     asort($actionList);
     $attributes = array('class' => 'crm-select2 huge');
     if (empty($this->ruleActionId)) {
       $this->add('select', 'rule_action_select', ts('Select Action'), $actionList, true, $attributes);
     }
-
 
     $delayList = array(' - No Delay - ') + CRM_Civirules_Delay_Factory::getOptionList();
     $this->add('select', 'delay_select', ts('Delay action to'), $delayList);
