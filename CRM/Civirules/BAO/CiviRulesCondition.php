@@ -15,7 +15,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
    * @static
    */
   public static function getValues($params) {
-    $result = array();
+    $result = [];
     $condition = new CRM_Civirules_BAO_Condition();
     if (!empty($params)) {
       $fields = self::fields();
@@ -27,7 +27,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
     }
     $condition->find();
     while ($condition->fetch()) {
-      $row = array();
+      $row = [];
       self::storeValues($condition, $row);
       $result[$row['id']] = $row;
     }
@@ -44,7 +44,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
    * @static
    */
   public static function add($params) {
-    $result = array();
+    $result = [];
     if (empty($params)) {
       throw new Exception('Params can not be empty when adding or updating a civirule condition');
     }
@@ -83,7 +83,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
     }
 
     //delete rows from rule_condition to prevent a foreign key constraint error
-    CRM_Core_DAO::executeQuery("DELETE FROM `civirule_rule_condition` where `condition_id` = %1", array(1 => array($conditionId, 'Integer')));
+    CRM_Core_DAO::executeQuery("DELETE FROM `civirule_rule_condition` where `condition_id` = %1", [1 => [$conditionId, 'Integer']]);
 
     $condition = new CRM_Civirules_BAO_Condition();
     $condition->id = $conditionId;
@@ -106,7 +106,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
     $condition = new CRM_Civirules_BAO_Condition();
     $condition->id = $conditionId;
     $condition->find(true);
-    self::add(array('id' => $condition->id, 'is_active' => 0));
+    self::add(['id' => $condition->id, 'is_active' => 0]);
   }
 
   /**
@@ -124,7 +124,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
     $condition = new CRM_Civirules_BAO_Condition();
     $condition->id = $conditionId;
     $condition->find(true);
-    self::add(array('id' => $condition->id, 'is_active' => 1));
+    self::add(['id' => $condition->id, 'is_active' => 1]);
   }
 
   /**
