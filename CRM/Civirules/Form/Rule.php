@@ -8,6 +8,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
 
+use Civi\Api4\CiviRulesTrigger;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_Civirules_Form_Rule extends CRM_Core_Form {
@@ -265,8 +266,13 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $this->add('checkbox', 'rule_is_active', ts('Enabled'));
       $this->add('text', 'rule_created_date', ts('Created Date'));
       $this->add('text', 'rule_created_contact', ts('Created By'));
-      $triggerList = array(' - select - ') + CRM_Civirules_Utils::buildTriggerList();
-      asort($triggerList);
+
+      $triggerList = [' - select - '] + CiviRulesTrigger::get(FALSE)
+        ->addOrderBy('label', 'ASC')
+        ->execute()
+        ->indexBy('id')
+        ->column('label');
+
       $this->add('select', 'rule_trigger_select', ts('Select Trigger'), $triggerList, false, array('class' => 'crm-select2 huge'));
       if ($this->_action == CRM_Core_Action::UPDATE) {
         $this->createUpdateFormElements();

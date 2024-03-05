@@ -106,38 +106,6 @@ class CRM_Civirules_Utils {
   }
 
   /**
-   * Function to build the trigger list
-   *
-   * @return array $triggerList
-   * @access public
-   * @static
-   */
-  public static function buildTriggerList() {
-    $triggerList = array();
-    $triggers = CRM_Civirules_BAO_Trigger::getValues(array());
-    foreach ($triggers as $triggerId => $trigger) {
-      $triggerList[$triggerId] = $trigger['label'];
-    }
-    return $triggerList;
-  }
-
-  /**
-   * Function to build the conditions list
-   *
-   * @return array $conditionList
-   * @access public
-   * @static
-   */
-  public static function buildConditionList() {
-    $conditionList = array();
-    $conditions = CRM_Civirules_BAO_Condition::getValues(array());
-    foreach ($conditions as $conditionId => $condition) {
-      $conditionList[$conditionId] = $condition['label'];
-    }
-    return $conditionList;
-  }
-
-  /**
    * Function to return activity status list
    *
    * @return array $activityStatusList
