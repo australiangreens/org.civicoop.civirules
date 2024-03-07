@@ -106,22 +106,23 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
   /**
    * Returns whether the condition works with the trigger
    *
-   * @param $condition_id
+   * @param int $conditionID
+   *
    * @return bool
    */
-  protected function doesConditionWorkWithTrigger($condition) {
+  protected function doesConditionWorkWithTrigger(int $conditionID): bool {
     try {
-      $conditionClass = CRM_Civirules_BAO_Condition::getConditionObjectById($condition['id'], FALSE);
+      $conditionClass = CRM_Civirules_BAO_Condition::getConditionObjectById($conditionID, FALSE);
       if (!$conditionClass) {
         return FALSE;
       }
     } catch (Exception $e) {
-      return false;
+      return FALSE;
     }
     if (!$conditionClass->doesWorkWithTrigger($this->triggerObject, $this->rule)) {
-      return false;
+      return FALSE;
     }
-    return true;
+    return TRUE;
   }
 
   /**
