@@ -37,49 +37,18 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
   }
 
   /**
-   * Function to add or update rule
+   * Deprecated add function
    *
    * @param array $params
    *
-   * @return array
+   * @return \CRM_Civirules_DAO_CiviRulesRule
    * @throws Exception when params is empty
+   *
+   * @deprecated
    */
   public static function add($params) {
-    $result = [];
-    if (empty($params)) {
-      throw new Exception(ts('Params can not be empty when adding or updating a civirule rule'));
-    }
-
-    if (!empty($params['id'])) {
-      CRM_Utils_Hook::pre('edit', 'CiviRuleRule', $params['id'], $params);
-    }
-    else {
-      CRM_Utils_Hook::pre('create', 'CiviRuleRule', NULL, $params);
-    }
-
-    $rule = new CRM_Civirules_BAO_Rule();
-    $fields = self::fields();
-    foreach ($params as $key => $value) {
-      if (isset($fields[$key])) {
-        $rule->$key = $value;
-      }
-    }
-    if (!isset($rule->name) || empty($rule->name)) {
-      if (isset($rule->label)) {
-        $rule->name = CRM_Civirules_Utils::buildNameFromLabel($rule->label);
-      }
-    }
-    $rule->save();
-    self::storeValues($rule, $result);
-
-    if (!empty($params['id'])) {
-      CRM_Utils_Hook::post('edit', 'CiviRuleRule', $rule->id, $rule);
-    }
-    else {
-      CRM_Utils_Hook::post('create', 'CiviRuleRule', $rule->id, $rule);
-    }
-
-    return $result;
+    CRM_Core_Error::deprecatedFunctionWarning('writeRecord');
+    return self::writeRecord($params);
   }
 
   /**

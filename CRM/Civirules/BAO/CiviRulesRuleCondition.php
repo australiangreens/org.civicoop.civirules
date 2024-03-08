@@ -40,29 +40,18 @@ class CRM_Civirules_BAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_RuleCon
   }
 
   /**
-   * Function to add or update rule condition
+   * Deprecated function to add or update rule condition
    *
    * @param array $params
-   * @return array $result
-   * @access public
+   *
+   * @return \CRM_Civirules_DAO_CiviRulesRuleCondition
    * @throws Exception when params is empty
-   * @static
+   *
+   * @deprecated
    */
   public static function add($params) {
-    $result = array();
-    if (empty($params)) {
-      throw new Exception('Params can not be empty when adding or updating a civirule rule condition');
-    }
-    $ruleCondition = new CRM_Civirules_BAO_RuleCondition();
-    $fields = self::fields();
-    foreach ($params as $key => $value) {
-      if (isset($fields[$key])) {
-        $ruleCondition->$key = $value;
-      }
-    }
-    $ruleCondition->save();
-    self::storeValues($ruleCondition, $result);
-    return $result;
+    CRM_Core_Error::deprecatedFunctionWarning('writeRecord');
+    return self::writeRecord($params);
   }
 
   /**
@@ -95,7 +84,7 @@ class CRM_Civirules_BAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_RuleCon
     if (count($ruleConditions)) {
       $ruleCondition = reset($ruleConditions);
       $ruleCondition['condition_link'] = 'null';
-      CRM_Civirules_BAO_RuleCondition::add($ruleCondition);
+      CRM_Civirules_BAO_RuleCondition::writeRecord($ruleCondition);
     }
   }
 
@@ -114,7 +103,7 @@ class CRM_Civirules_BAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_RuleCon
     $ruleCondition = new CRM_Civirules_BAO_RuleCondition();
     $ruleCondition->id = $ruleConditionId;
     $ruleCondition->find(true);
-    self::add(array('id' => $ruleCondition->id, 'is_active' => 0));
+    self::writeRecord(['id' => $ruleCondition->id, 'is_active' => 0]);
   }
 
   /**
@@ -132,7 +121,7 @@ class CRM_Civirules_BAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_RuleCon
     $ruleCondition = new CRM_Civirules_BAO_RuleCondition();
     $ruleCondition->id = $ruleConditionId;
     $ruleCondition->find(true);
-    self::add(array('id' => $ruleCondition->id, 'is_active' => 1));
+    self::writeRecord(['id' => $ruleCondition->id, 'is_active' => 1]);
   }
 
   /**

@@ -494,8 +494,8 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     $ruleParams['label'] = CRM_Utils_Array::value('rule_label', $formValues);
     $ruleParams['name'] = CRM_Civirules_Utils::buildNameFromLabel($formValues['rule_label']);
     $ruleParams['is_active'] = CRM_Utils_Array::value('rule_is_active', $formValues, 0);
-    $savedRule = CRM_Civirules_BAO_Rule::add($ruleParams);
-    $this->ruleId = $savedRule['id'];
+    $savedRule = CRM_Civirules_BAO_Rule::writeRecord($ruleParams);
+    $this->ruleId = $savedRule->id;
     // first delete all tags for the rule if required then save new ones
     CRM_Civirules_BAO_RuleTag::deleteWithRuleId($this->ruleId);
     if (isset($formValues['rule_tag_id'])) {
@@ -504,7 +504,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
           'rule_id' => $this->ruleId,
           'rule_tag_id' => $ruleTagId
         );
-        CRM_Civirules_BAO_RuleTag::add($ruleTagParams);
+        CRM_Civirules_BAO_RuleTag::writeRecord($ruleTagParams);
       }
     }
   }
@@ -520,7 +520,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
         'id' => $this->ruleId,
         'trigger_id' => $formValues['rule_trigger_select']
       );
-      CRM_Civirules_BAO_Rule::add($ruleParams);
+      CRM_Civirules_BAO_Rule::writeRecord($ruleParams);
     }
   }
 

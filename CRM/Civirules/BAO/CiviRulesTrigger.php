@@ -35,32 +35,18 @@ class CRM_Civirules_BAO_CiviRulesTrigger extends CRM_Civirules_DAO_Trigger {
   }
 
   /**
-   * Function to add or update trigger
+   * Deprecated function to add or update trigger
    *
    * @param array $params
-   * @return array $result
-   * @access public
+   *
+   * @return \CRM_Civirules_DAO_CiviRulesTrigger
    * @throws Exception when params is empty
-   * @static
+   *
+   * @deprecated
    */
   public static function add($params) {
-    $result = array();
-    if (empty($params)) {
-      throw new Exception('Params can not be empty when adding or updating a civirule trigger');
-    }
-    $trigger = new CRM_Civirules_BAO_Trigger();
-    $fields = self::fields();
-    foreach ($params as $key => $value) {
-      if (isset($fields[$key])) {
-        $trigger->$key = $value;
-      }
-    }
-    if (!isset($trigger->name) || empty($trigger->name)) {
-      $trigger->name = CRM_Civirules_Utils::buildNameFromLabel($trigger->label);
-    }
-    $trigger->save();
-    self::storeValues($trigger, $result);
-    return $result;
+    CRM_Core_Error::deprecatedFunctionWarning('writeRecord');
+    return self::writeRecord($params);
   }
 
   /**
@@ -96,7 +82,7 @@ class CRM_Civirules_BAO_CiviRulesTrigger extends CRM_Civirules_DAO_Trigger {
     $trigger = new CRM_Civirules_BAO_Trigger();
     $trigger->id = $triggerId;
     $trigger->find(true);
-    self::add(array('id' => $trigger->id, 'is_active' => 0));
+    self::writeRecord(['id' => $trigger->id, 'is_active' => 0]);
   }
 
   /**
@@ -114,7 +100,7 @@ class CRM_Civirules_BAO_CiviRulesTrigger extends CRM_Civirules_DAO_Trigger {
     $trigger = new CRM_Civirules_BAO_Trigger();
     $trigger->id = $triggerId;
     $trigger->find(true);
-    self::add(array('id' => $trigger->id, 'is_active' => 1));
+    self::writeRecord(['id' => $trigger->id, 'is_active' => 1]);
   }
 
   /**

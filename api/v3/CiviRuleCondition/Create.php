@@ -41,7 +41,7 @@ function civicrm_api3_civi_rule_condition_create($params) {
     $params['created_date'] = date('Ymd');
     $params['created_user_id'] = $userId;
   }
-  $returnValues = CRM_Civirules_BAO_Condition::add($params);
-  return civicrm_api3_create_success($returnValues, $params, 'CiviRuleCondition', 'Create');
+  $returnValues = CRM_Civirules_BAO_Condition::writeRecord($params);
+  return civicrm_api3_create_success($returnValues->toArray(), $params, 'CiviRuleCondition', 'Create');
 }
 
