@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 3.1 (not yet released)
+## Version 3.1 (2024-03-08)
 
 * Fix editing custom fields on certain CiviCRM versions. See !228
 * Compatibility with CiviCRM 5.72.
