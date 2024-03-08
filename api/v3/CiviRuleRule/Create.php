@@ -43,8 +43,8 @@ function civicrm_api3_civi_rule_rule_create($params) {
     $params['created_date'] = date('Ymd');
     $params['created_user_id'] = $userId;
   }
-  $returnValues = CRM_Civirules_BAO_Rule::add($params);
-  $keyedReturnValues = [$returnValues['id']=>$returnValues];
+  $returnValues = CRM_Civirules_BAO_Rule::writeRecord($params);
+  $keyedReturnValues = [$returnValues->id => $returnValues->toArray()];
   return civicrm_api3_create_success($keyedReturnValues, $params, 'CiviRuleRule', 'Create');
 }
 

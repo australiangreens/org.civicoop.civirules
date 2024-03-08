@@ -40,29 +40,18 @@ class CRM_Civirules_BAO_CiviRulesRuleAction extends CRM_Civirules_DAO_RuleAction
   }
 
   /**
-   * Function to add or update rule action
+   * Deprecated function to add or update rule action
    *
    * @param array $params
-   * @return array $result
-   * @access public
+   *
+   * @return \CRM_Civirules_DAO_CiviRulesRuleAction
    * @throws Exception when params is empty
-   * @static
+   *
+   * @deprecated
    */
   public static function add($params) {
-    $result = array();
-    if (empty($params)) {
-      throw new Exception('Params can not be empty when adding or updating a civirule rule action');
-    }
-    $ruleAction = new CRM_Civirules_BAO_RuleAction();
-    $fields = self::fields();
-    foreach ($params as $key => $value) {
-      if (isset($fields[$key])) {
-        $ruleAction->$key = $value;
-      }
-    }
-    $ruleAction->save();
-    self::storeValues($ruleAction, $result);
-    return $result;
+    CRM_Core_Error::deprecatedFunctionWarning('writeRecord');
+    return self::writeRecord($params);
   }
 
   /**
@@ -98,7 +87,7 @@ class CRM_Civirules_BAO_CiviRulesRuleAction extends CRM_Civirules_DAO_RuleAction
     $ruleAction = new CRM_Civirules_BAO_RuleAction();
     $ruleAction->id = $ruleActionId;
     $ruleAction->find(true);
-    self::add(array('id' => $ruleAction->id, 'is_active' => 0));
+    self::writeRecord(['id' => $ruleAction->id, 'is_active' => 0]);
   }
 
   /**
@@ -116,7 +105,7 @@ class CRM_Civirules_BAO_CiviRulesRuleAction extends CRM_Civirules_DAO_RuleAction
     $ruleAction = new CRM_Civirules_BAO_RuleAction();
     $ruleAction->id = $ruleActionId;
     $ruleAction->find(true);
-    self::add(array('id' => $ruleAction->id, 'is_active' => 1));
+    self::writeRecord(['id' => $ruleAction->id, 'is_active' => 1]);
   }
 
   /**

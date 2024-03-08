@@ -35,34 +35,18 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
   }
 
   /**
-   * Function to add or update condition
+   * Deprecated add or update condition
    *
    * @param array $params
-   * @return array $result
-   * @access public
+   *
+   * @return \CRM_Civirules_DAO_CiviRulesCondition
    * @throws Exception when params is empty
-   * @static
+   *
+   * @deprecated
    */
   public static function add($params) {
-    $result = [];
-    if (empty($params)) {
-      throw new Exception('Params can not be empty when adding or updating a civirule condition');
-    }
-    $condition = new CRM_Civirules_BAO_Condition();
-    $fields = self::fields();
-    foreach ($params as $key => $value) {
-      if (isset($fields[$key])) {
-        $condition->$key = $value;
-      }
-    }
-    if (!isset($condition->name) || empty($condition->name)) {
-      if (isset($condition->label)) {
-        $condition->name = CRM_Civirules_Utils::buildNameFromLabel($condition->label);
-      }
-    }
-    $condition->save();
-    self::storeValues($condition, $result);
-    return $result;
+    CRM_Core_Error::deprecatedFunctionWarning('writeRecord');
+    return self::writeRecord($params);
   }
 
   /**
@@ -106,7 +90,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
     $condition = new CRM_Civirules_BAO_Condition();
     $condition->id = $conditionId;
     $condition->find(true);
-    self::add(['id' => $condition->id, 'is_active' => 0]);
+    self::writeRecord(['id' => $condition->id, 'is_active' => 0]);
   }
 
   /**
@@ -124,7 +108,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
     $condition = new CRM_Civirules_BAO_Condition();
     $condition->id = $conditionId;
     $condition->find(true);
-    self::add(['id' => $condition->id, 'is_active' => 1]);
+    self::writeRecord(['id' => $condition->id, 'is_active' => 1]);
   }
 
   /**

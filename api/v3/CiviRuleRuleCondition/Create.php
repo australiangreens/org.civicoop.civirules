@@ -25,7 +25,7 @@ function _civicrm_api3_civi_rule_rule_condition_Create_spec(&$spec) {
  * @throws API_Exception
  */
 function civicrm_api3_civi_rule_rule_condition_Create($params) {
-  $returnValues = CRM_Civirules_BAO_RuleCondition::add($params);
-  $keyedReturnValues = [$returnValues['id']=>$returnValues];
+  $returnValues = CRM_Civirules_BAO_RuleCondition::writeRecord($params);
+  $keyedReturnValues = [$returnValues->id => $returnValues->toArray()];
   return civicrm_api3_create_success($keyedReturnValues, $params,'CiviRuleRuleCondition', 'create');
 }

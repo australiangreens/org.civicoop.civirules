@@ -40,29 +40,18 @@ class CRM_Civirules_BAO_CiviRulesRuleTag extends CRM_Civirules_DAO_RuleTag  {
   }
 
   /**
-   * Function to add or update rule tag
+   * Deprecated unction to add or update rule tag
    *
    * @param array $params
-   * @return array $result
-   * @access public
+   *
+   * @return \CRM_Civirules_DAO_CiviRulesRuleTag
    * @throws Exception when params is empty
-   * @static
+   *
+   * @deprecated
    */
   public static function add($params) {
-    $result = array();
-    if (empty($params)) {
-      throw new Exception('Params can not be empty when adding or updating a civirule rule tag');
-    }
-    $ruleTag = new CRM_Civirules_BAO_RuleTag();
-    $fields = self::fields();
-    foreach ($params as $key => $value) {
-      if (isset($fields[$key])) {
-        $ruleTag->$key = $value;
-      }
-    }
-    $ruleTag->save();
-    self::storeValues($ruleTag, $result);
-    return $result;
+    CRM_Core_Error::deprecatedFunctionWarning('writeRecord');
+    return self::writeRecord($params);
   }
 
   /**

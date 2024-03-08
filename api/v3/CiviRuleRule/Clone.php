@@ -28,7 +28,7 @@ function civicrm_api3_civi_rule_rule_Clone($params) {
   $Id = $params['id'];
   $rule = civicrm_api3('CiviRuleRule', 'getsingle',['id' => $Id]);
   $userId = CRM_Core_Session::singleton()->getLoggedInContactID();
-  $cloneRule = CRM_Civirules_BAO_Rule::add([
+  $cloneRule = CRM_Civirules_BAO_Rule::writeRecord([
     'name' => substr('clone_of_'.$rule['name'], 0, 80),
     'label' => substr('Clone of '.$rule['label'], 0, 128),
     'trigger_id' => $rule['trigger_id'],
@@ -40,7 +40,7 @@ function civicrm_api3_civi_rule_rule_Clone($params) {
     'created_date' => date('Ymd'),
     'created_user_id' => $userId
   ]);
-  $cloneId = $cloneRule['id'];
+  $cloneId = $cloneRule->id;
 
   $ruleConditions = CRM_Civirules_BAO_RuleCondition::getValues(['rule_id' => $Id ]);
   foreach ($ruleConditions as $ruleCondition) {
@@ -54,7 +54,7 @@ function civicrm_api3_civi_rule_rule_Clone($params) {
     if(isset($ruleCondition['condition_params'])){
       $newCondition['condition_params'] = $ruleCondition['condition_params'];
     }
-    CRM_Civirules_BAO_RuleCondition::add($newCondition);
+    CRM_Civirules_BAO_RuleCondition::writeRecord($newCondition);
   }
 
   $ruleActions = CRM_Civirules_BAO_RuleAction::getValues(['rule_id' => $Id]);
@@ -70,12 +70,12 @@ function civicrm_api3_civi_rule_rule_Clone($params) {
     if(isset($ruleAction['delay'])) {
       $newAction['delay'] = $ruleAction['delay'];
     }
-    CRM_Civirules_BAO_RuleAction::add($newAction);
+    CRM_Civirules_BAO_RuleAction::writeRecord($newAction);
   }
 
   $ruleTags = CRM_Civirules_BAO_RuleTag::getValues(['rule_id' => $Id]);
   foreach($ruleTags as $ruleTag) {
-    CRM_Civirules_BAO_RuleTag::add([
+    CRM_Civirules_BAO_RuleTag::writeRecord([
       'rule_id' => $cloneId,
       'rule_tag_id' => $ruleTag['rule_tag_id'],
     ]);
