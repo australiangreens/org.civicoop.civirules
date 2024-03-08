@@ -5,6 +5,10 @@
 * Fix editing custom fields on certain CiviCRM versions. See !228
 * Compatibility with CiviCRM 5.72.
 * Fix class entity names (fixes error on delete rule).
+* Replace deprecated DAO add functions with writeRecord (fixes error on disable rule).
+* Don't hardcode status for 'Daily trigger for case activity' (now you can use case status condition to trigger for cases with any status).
+* Fix 'Set Case Status' action when used with 'Daily case activity trigger'.
+* Update permissions hook format per https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_permission/#parameters.
 
 ## Version 3.0
 
