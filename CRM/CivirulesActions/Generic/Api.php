@@ -43,7 +43,7 @@ abstract class CRM_CivirulesActions_Generic_Api extends CRM_Civirules_Action {
     //alter parameters by subclass
     $params = $this->alterApiParameters($params, $triggerData);
 
-    //execute the action
+    // execute the action
     $this->executeApiAction($entity, $action, $params);
   }
 

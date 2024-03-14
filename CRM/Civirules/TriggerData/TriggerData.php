@@ -48,7 +48,6 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
   protected $trigger;
 
   public function __construct() {
-
   }
 
   /**

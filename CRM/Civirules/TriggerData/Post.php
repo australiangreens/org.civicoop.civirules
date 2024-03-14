@@ -2,6 +2,14 @@
 
 class CRM_Civirules_TriggerData_Post extends CRM_Civirules_TriggerData_TriggerData {
 
+  /**
+   * @param string $entity
+   * @param int $objectId
+   * @param array $data
+   *
+   * @throws \CRM_Core_Exception
+   * @throws \Civi\API\Exception\UnauthorizedException
+   */
   public function __construct($entity, $objectId, $data) {
     parent::__construct();
     $this->setEntity($entity);
