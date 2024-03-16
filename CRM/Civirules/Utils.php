@@ -503,39 +503,14 @@ class CRM_Civirules_Utils {
   }
 
   /**
-   * Method to get the CiviCRM version
-   *
-   * @return float
-   * @throws CiviCRM_API3_Exception
-   */
-  public static function getCiviVersion() {
-    $apiVersion = (string) civicrm_api3('Domain', 'getvalue', array('current_domain' => "TRUE", 'return' => 'version'));
-    $civiVersion = (float) substr($apiVersion, 0, 3);
-    return $civiVersion;
-  }
-
-  /**
    * Method to get the civirules base path
    *
    * @return string
    * @throws CiviCRM_API3_Exception
    */
   public static function getCivirulesPath() {
-    $version = CRM_Core_BAO_Domain::version();
-    if ($version >= 4.7) {
-      $container = CRM_Extension_System::singleton()->getFullContainer();
-      return $container->getPath('org.civicoop.civirules');
-    }
-    else {
-      $settings = civicrm_api3('Setting', 'getsingle', []);
-      $path = $settings['extensionsDir'].'/civirules/';
-      if (is_dir($path)) {
-        return $path;
-      }
-      else {
-        return $settings['extensionsDir'].'/org.civicoop/civirules/';
-      }
-    }
+    $container = CRM_Extension_System::singleton()->getFullContainer();
+    return $container->getPath('org.civicoop.civirules');
   }
 
 
