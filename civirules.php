@@ -128,55 +128,6 @@ function _civirules_upgrade_to_2x_backup() {
 }
 
 /**
- * Implementation of hook civicrm_navigationMenu
- * to create a CiviRules menu item in the Administer menu
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
- */
-function civirules_civicrm_navigationMenu(&$menu) {
-  _civirules_civix_insert_navigation_menu($menu, 'Administer', [
-    'label' => E::ts('CiviRules'),
-    'name' => 'CiviRules',
-    'url' => NULL,
-    'permission' => 'administer CiviCRM, administer CiviRules',
-    'operator' => NULL,
-    'separator' => NULL,
-  ]);
-
-  _civirules_civix_insert_navigation_menu($menu, 'Administer/CiviRules', [
-    'label' => E::ts('Manage Rules'),
-    'name' => 'Manage Rules',
-    'url' => CRM_Utils_System::url('civicrm/civirules/form/rulesview', 'reset=1', TRUE),
-    'permission' => 'administer CiviCRM, administer CiviRules',
-    'operator' => NULL,
-    'separator' => 0,
-  ]);
-
-  _civirules_civix_insert_navigation_menu($menu, 'Administer/CiviRules', [
-    'label' => E::ts('New Rule'),
-    'name' => 'New Rule',
-    'url' => CRM_Utils_System::url('civicrm/civirule/form/rule', 'reset=1&action=add', TRUE),
-    'permission' => 'administer CiviCRM, administer CiviRules',
-    'operator' => NULL,
-    'separator' => 0,
-  ]);
-
-  $optionGroup = CRM_Civirules_Utils_OptionGroup::getSingleWithName('civirule_rule_tag');
-  if (isset($optionGroup['id']) && !empty($optionGroup['id'])) {
-    $ruleTagUrl = CRM_Utils_System::url('civicrm/admin/options', 'reset=1&gid=' . $optionGroup['id'], TRUE);
-    _civirules_civix_insert_navigation_menu($menu, 'Administer/CiviRules', [
-      'label' => E::ts('CiviRule Tags'),
-      'name' => E::ts('CiviRules Tags'),
-      'url' => $ruleTagUrl,
-      'permission' => 'administer CiviCRM, administer CiviRules',
-      'operator' => NULL,
-      'separator' => 0,
-    ]);
-  }
-  _civirules_civix_navigationMenu($menu);
-}
-
-/**
  * By default we use the Symfony event for preInsert, preUpdate, postInsert etc.
  * However there a couple of entities which do not work yet with the symfony events.
  *
