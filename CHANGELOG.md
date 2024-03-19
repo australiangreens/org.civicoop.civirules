@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 3.2 (2024-03-19)
+
+* Add 'Update Recurring Contribution Status' action and make it work with Membership trigger.
+* Support API4 for generic API action class.
+* Migrate 'Manage Tags' to searchkit and menu items to managed entities.
+
 ## Version 3.1 (2024-03-08)
 
 * Fix editing custom fields on certain CiviCRM versions. See !228
