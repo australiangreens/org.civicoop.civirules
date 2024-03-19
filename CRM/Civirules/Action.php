@@ -102,7 +102,7 @@ abstract class CRM_Civirules_Action {
   }
 
   /**
-   * Returns wether we should ignore rechecking of the conditions when an action
+   * Returns whether we should ignore rechecking of the conditions when an action
    * is executed with a delay
    *
    * @return bool
