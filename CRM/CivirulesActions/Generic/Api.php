@@ -3,6 +3,37 @@
 abstract class CRM_CivirulesActions_Generic_Api extends CRM_Civirules_Action {
 
   /**
+   * The API version. We default to 3 for compatibility but new actions should set this to 4.
+   *
+   * @var int $apiVersion
+   */
+  private int $apiVersion = 3;
+
+  /**
+   * Set the API version to use
+   *
+   * @param int $apiVersion
+   *
+   * @return void
+   * @throws \CRM_Core_Exception
+   */
+  protected function setApiVersion(int $apiVersion = 3) {
+    if (!in_array($apiVersion, [3, 4])) {
+      throw new CRM_Core_Exception('Unknown API version: ' . $apiVersion);
+    }
+    $this->apiVersion = $apiVersion;
+  }
+
+  /**
+   * Get the API version
+   *
+   * @return int
+   */
+  protected function getApiVersion(): int {
+    return $this->apiVersion;
+  }
+
+  /**
    * Method to get the api entity to process in this CiviRule action
    *
    * @return string
@@ -59,20 +90,35 @@ abstract class CRM_CivirulesActions_Generic_Api extends CRM_Civirules_Action {
    * @throws Exception on api error
    */
   protected function executeApiAction(string $entity, string $action, array $params) {
-    try {
-      civicrm_api3($entity, $action, $params);
-    } catch (Exception $e) {
-      $formattedParams = '';
-      foreach($params as $key => $param) {
-        if (strlen($formattedParams)) {
-          $formattedParams .= ', ';
+    switch ($this->getApiVersion()) {
+      case 3:
+        try {
+          civicrm_api3($entity, $action, $params);
+        } catch (Exception $e) {
+          $formattedParams = '';
+          foreach($params as $key => $param) {
+            if (strlen($formattedParams)) {
+              $formattedParams .= ', ';
+            }
+            $formattedParams .= "{$key}=\"$param\"";
+          }
+          $message = "Civirules api3 action exception: {$e->getMessage()}. API call: {$entity}.{$action} with params: {$formattedParams}";
+          \Civi::log('civirules')->error($message);
+          throw new Exception($message);
         }
-        $formattedParams .= "{$key}=\"$param\"";
-      }
-      $message = "Civirules api action exception: {$e->getMessage()}. API call: {$entity}.{$action} with params: {$formattedParams}";
-      \Civi::log('civirules')->error($message);
-      throw new Exception($message);
+        break;
+
+      case 4:
+        try {
+          civicrm_api4($entity, $action, $params);
+        }
+        catch (Exception $e) {
+          $message = "Civirules api4 action exception: {$e->getMessage()}. API call: {$entity}.{$action} with params: " . print_r($params,TRUE);
+          \Civi::log('civirules')->error($message);
+          throw new Exception($message);
+        }
     }
+
   }
 
 }
