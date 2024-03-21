@@ -36,6 +36,7 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
     }
     $this->assign('delayClasses', CRM_Civirules_Delay_Factory::getAllDelayClasses());
 
+    $this->add('text', 'duration', ts('Duration'));
     // #188 allow assignment of target/assignees dynamically via relationship contacts
     if ($this->trigger->object_name == 'Relationship' && $this->trigger->op == 'create') {
       $this->add('select', 'relationship_contact', ts('Relationship Contact (activity target)'), [
@@ -73,6 +74,9 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
     }
     if (!empty($data['subject'])) {
       $defaultValues['subject'] = $data['subject'];
+    }
+    if (!empty($data['duration'])) {
+      $defaultValues['duration'] = $data['duration'];
     }
     if (!empty($data['details'])) {
       $defaultValues['details'] = $data['details'];
@@ -154,6 +158,7 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
     $data['activity_type_id'] = $this->_submitValues['activity_type_id'];
     $data['status_id'] = $this->_submitValues['status_id'];
     $data['subject'] = $this->_submitValues['subject'];
+    $data['duration'] = $this->_submitValues['duration'];
     $data['details'] = $this->_submitValues['details'];
     $data["assignee_contact_id"] = explode(',', $this->_submitValues["assignee_contact_id"]);
 
