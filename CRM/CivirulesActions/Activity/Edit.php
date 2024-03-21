@@ -74,7 +74,17 @@ class CRM_CivirulesActions_Activity_Edit extends CRM_CivirulesActions_Activity_A
     if (!empty($params['assignee_contact_id'])) {
 
       $existingAssignees = (array)$activity['assignee_contact_id'];
-      $newAssignees = (array)$params['assignee_contact_id'];
+
+      $newAssignees = [];
+      // Note: We need to loop and check for valid contact ids
+      // When assignee_contact_id is not set in the UI,
+      // $params['assignee_contact_id'] = [0 => ];
+      // else $params['assignee_contact_id'] = [0 => 'valide contact id'];
+      foreach($params['assignee_contact_id'] as $contactId) {
+        if (!empty($contactId)) {
+          $newAssignees[] = $contactId;
+        }
+      }
 
       // Is there anyone new is the params list
       $newlyAssignedContacts = array_diff($newAssignees,$existingAssignees);
