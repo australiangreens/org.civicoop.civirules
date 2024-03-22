@@ -90,24 +90,13 @@ abstract class CRM_Civirules_Action {
    * Convert parameters to an array of parameters
    *
    * @return array
-   * @access protected
    */
   protected function getActionParameters() {
-    $params = array();
+    $params = [];
     if (!empty($this->ruleAction['action_params'])) {
       $params = unserialize($this->ruleAction['action_params']);
     }
     return $params;
-  }
-
-  /**
-   * Returns whether we should ignore rechecking of the conditions when an action
-   * is executed with a delay
-   *
-   * @return bool
-   */
-  public function ignoreConditionsOnDelayedProcessing() {
-    return $this->ruleAction['ignore_condition_with_delay'] ? true : false;
   }
 
   /**

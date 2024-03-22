@@ -132,37 +132,17 @@ class CRM_Civirules_Engine {
    */
   public static function executeDelayedAction(): bool {
     try {
-      // Check how many arguments this function has.
-      // If there are two we could use the ActionEngine if one we should convert the ruleAction to
-      // an actionEngine.
-      // Why is this? Because we want to make sure that as soon as someone upgrades their existing civirules installation
-      // the old delayed actions should still be executed.
       $args = func_get_args();
-      if (count($args) == 2 && $args[1] instanceof CRM_Civirules_ActionEngine_AbstractActionEngine) {
-        $actionEngine = $args[1];
-        $ruleAction = $actionEngine->getRuleAction();
-        $triggerData = $actionEngine->getTriggerData();
-        if (isset($ruleAction['ignore_condition_with_delay']) && $ruleAction['ignore_condition_with_delay']) {
-          $processAction = true;
-        } else {
-          $processAction = self::areConditionsValid($actionEngine->getTriggerData());
-        }
-        if ($processAction) {
-          $actionEngine->execute();
-        }
-      } elseif (count($args) == 3 && $args[1] instanceof CRM_Civirules_Action && $args[2] instanceof CRM_Civirules_TriggerData_TriggerData) {
-        // Process the 'old' way
-        $action = $args[1];
-        $triggerData = $args[2];
-        if ($action->ignoreConditionsOnDelayedProcessing()) {
-          $processAction = true;
-        } else {
-          $processAction = self::areConditionsValid($triggerData);
-        }
-
-        if ($processAction) {
-          $action->processAction($triggerData);
-        }
+      /* @var \CRM_Civirules_ActionEngine_AbstractActionEngine $actionEngine */
+      $actionEngine = $args[1];
+      $triggerData = $actionEngine->getTriggerData();
+      if ($actionEngine->ignoreConditionsOnDelayedProcessing()) {
+        $processAction = TRUE;
+      } else {
+        $processAction = self::areConditionsValid($actionEngine->getTriggerData());
+      }
+      if ($processAction) {
+        $actionEngine->execute();
       }
     } catch (Exception $e) {
       CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute delayed action',  $e->getMessage(), $triggerData);
