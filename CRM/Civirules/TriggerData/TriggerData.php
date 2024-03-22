@@ -13,14 +13,14 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    *
    * @var array
    */
-  private $entity_data = [];
+  private array $entity_data = [];
 
   /**
    * Entity ID of the primary trigger data e.g. the activity id
    *
    * @var Int
    */
-  protected $entity_id;
+  protected int $entity_id;
 
   /**
    * Entity name of the primary trigger data e.g. 'contact' or 'activity'
@@ -38,14 +38,33 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    *
    * @var array
    */
-  private $custom_data = [];
+  private array $custom_data = [];
 
-  protected $contact_id = 0;
+  /**
+   * The Contact ID
+   *
+   * @var int
+   */
+  protected int $contact_id = 0;
+
+  /**
+   * Is this Trigger being executed with a delay (set at runtime when executing actions)
+   * @var bool
+   */
+  public bool $isDelayedExecution;
+
+  /**
+   * The datetime (YmdHis) when the rule was triggered. Only set if we are delaying execution.
+   * This will contain the original trigger time which can be used by actions (eg. to fill in an activity scheduled date).
+   *
+   * @var string
+   */
+  public string $delayedSubmitDateTime;
 
   /**
    * @var CRM_Civirules_Trigger
    */
-  protected $trigger;
+  protected CRM_Civirules_Trigger $trigger;
 
   public function __construct() {
   }

@@ -22,7 +22,7 @@ class CRM_Civirules_Engine {
    *
    * @return bool true when conditions are valid; false when conditions are not valid
    */
-  public static function triggerRule(CRM_Civirules_Trigger $trigger, CRM_Civirules_TriggerData_TriggerData $triggerData) {
+  public static function triggerRule(CRM_Civirules_Trigger $trigger, CRM_Civirules_TriggerData_TriggerData $triggerData): bool {
     try {
       $triggerData->setTrigger($trigger);
       $triggerData->setEntityId($triggerData->getEntityData($triggerData->getEntity())['id']);
@@ -34,7 +34,7 @@ class CRM_Civirules_Engine {
       if ($isRuleValid) {
         self::logRule($triggerData);
         self::executeActions($triggerData);
-        return true;
+        return TRUE;
       }
     } catch (Exception $e) {
       $message = "Error on {file} (Line {line})\r\n\r\n{exception_message}";
@@ -44,7 +44,7 @@ class CRM_Civirules_Engine {
       $context['exception_message'] = $e->getMessage();
       CRM_Civirules_Utils_LoggerFactory::logError("Failed to execute rule",  $message, $triggerData, $context);
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -75,7 +75,7 @@ class CRM_Civirules_Engine {
     $delay = self::getActionDelay($ruleAction, $actionEngine);
     if ($delay instanceof DateTime) {
       $triggerData->isDelayedExecution = TRUE;
-      $triggerData->delayedSubmitDateTime = CRM_Utils_Time::getTime('YmdHis');
+      $triggerData->delayedSubmitDateTime = CRM_Utils_Time::date('YmdHis');
       self::delayAction($delay, $actionEngine);
     } else {
       //there is no delay so process action immediately
@@ -96,11 +96,11 @@ class CRM_Civirules_Engine {
    *
    * @return array
    */
-  public static function processDelayedActions($maxRunTime=30) {
+  public static function processDelayedActions(int $maxRunTime = 30): array {
     $queue = CRM_Queue_Service::singleton()->create([
       'type' => 'Civirules',
       'name' => self::QUEUE_NAME,
-      'reset' => false, //do not flush queue upon creation
+      'reset' => FALSE, //do not flush queue upon creation
     ]);
 
     $returnValues = [];
@@ -114,7 +114,7 @@ class CRM_Civirules_Engine {
 
     $stopTime = time() + $maxRunTime; // stop executing next item after 30 seconds
     while((time() < $stopTime) && $queue->numberOfItems() > 0) {
-      $result = $runner->runNext(false);
+      $result = $runner->runNext(FALSE);
       $returnValues[] = $result;
 
       if (!$result['is_continue']) {
@@ -130,7 +130,7 @@ class CRM_Civirules_Engine {
    *
    * @return bool
    */
-  public static function executeDelayedAction() {
+  public static function executeDelayedAction(): bool {
     try {
       // Check how many arguments this function has.
       // If there are two we could use the ActionEngine if one we should convert the ruleAction to
@@ -165,9 +165,9 @@ class CRM_Civirules_Engine {
         }
       }
     } catch (Exception $e) {
-      CRM_Civirules_Utils_LoggerFactory::logError("Failed to execute delayed action",  $e->getMessage(), $triggerData);
+      CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute delayed action',  $e->getMessage(), $triggerData);
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -180,7 +180,7 @@ class CRM_Civirules_Engine {
     $queue = CRM_Queue_Service::singleton()->create([
       'type' => 'Civirules',
       'name' => self::QUEUE_NAME,
-      'reset' => false, // do not flush queue upon creation
+      'reset' => FALSE, // do not flush queue upon creation
     ]);
 
     // create a task with the action and eventData as parameters
@@ -225,11 +225,11 @@ class CRM_Civirules_Engine {
       if ($now < $actionDelayedTo) {
         return $actionDelayedTo;
       }
-      return false;
+      return FALSE;
     } elseif ($delayedTo instanceof DateTime and $now < $delayedTo) {
       return $delayedTo;
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -239,9 +239,9 @@ class CRM_Civirules_Engine {
    *
    * @return bool
    */
-  public static function areConditionsValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $isValid = true;
-    $firstCondition = true;
+  public static function areConditionsValid(CRM_Civirules_TriggerData_TriggerData $triggerData): bool {
+    $isValid = TRUE;
+    $firstCondition = TRUE;
 
     $conditionParams = [
       'rule_id' => $triggerData->getTrigger()->getRuleId(),
@@ -250,7 +250,7 @@ class CRM_Civirules_Engine {
     foreach ($ruleConditions as $ruleConditionId => $ruleCondition) {
       if ($firstCondition) {
         $isValid = self::checkCondition($ruleCondition, $triggerData);
-        $firstCondition = false;
+        $firstCondition = FALSE;
       } elseif ($ruleCondition['condition_link'] == 'AND') {
         if ($isValid) {
           $isValid = self::checkCondition($ruleCondition, $triggerData);
@@ -260,7 +260,7 @@ class CRM_Civirules_Engine {
           $isValid = self::checkCondition($ruleCondition, $triggerData);
         }
       } else {
-        $isValid = false; // we should never reach this statement
+        $isValid = FALSE; // we should never reach this statement
       }
       $conditionsValid[$ruleConditionId] = "$ruleConditionId=" . ($isValid ? 'true' : 'false');
     }
@@ -289,15 +289,15 @@ class CRM_Civirules_Engine {
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    *
    * @return bool
+   * @throws \Exception
    */
-  public static function checkCondition($ruleCondition, CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], false);
+  public static function checkCondition(array $ruleCondition, CRM_Civirules_TriggerData_TriggerData $triggerData): bool {
+    $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], FALSE);
     if (!$condition) {
-      return false;
+      return FALSE;
     }
     $condition->setRuleConditionData($ruleCondition);
-    $isValid = $condition->isConditionValid($triggerData);
-    return $isValid;
+    return $condition->isConditionValid($triggerData);
   }
 
   /**
