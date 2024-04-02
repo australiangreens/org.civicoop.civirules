@@ -139,7 +139,17 @@ class CRM_Civirules_Engine {
       if ($actionEngine->ignoreConditionsOnDelayedProcessing()) {
         $processAction = TRUE;
       } else {
-        $processAction = self::areConditionsValid($actionEngine->getTriggerData());
+        $entity = $triggerData->getEntity();
+        if ($entity) {
+          try {
+            $entityData = civicrm_api3($entity, 'getsingle', ['id' => $triggerData->getEntityId()]);
+            $triggerData->setEntityData($entity, $entityData);
+          }
+          catch (Exception $e) {
+            // leave $triggerData as is
+          }
+        }
+        $processAction = self::areConditionsValid($triggerData);
       }
       if ($processAction) {
         $actionEngine->execute();
