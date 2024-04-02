@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Version 3.3 (not yet released)
+
+* Fixed deprecation notices and type errors by !237 and !239
+* Fix for checking conditions with a delayed action against data in the database. See #208 and !238
+
 ## Version 3.2 (2024-03-19)
 
 * Add 'Update Recurring Contribution Status' action and make it work with Membership trigger.
