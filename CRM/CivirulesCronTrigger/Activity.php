@@ -63,6 +63,7 @@ abstract class CRM_CivirulesCronTrigger_Activity extends CRM_Civirules_Trigger_C
   }
 
   public function setTriggerParams($triggerParams) {
+    $triggerParams = $triggerParams ?? '';
     $this->triggerParams = unserialize($triggerParams);
   }
 
