@@ -277,7 +277,7 @@ class CRM_Civirules_Engine {
       return FALSE;
     }
     $condition->setRuleConditionData($ruleCondition);
-    return $condition->isConditionValid($triggerData);
+    return (bool) $condition->isConditionValid($triggerData);
   }
 
   /**

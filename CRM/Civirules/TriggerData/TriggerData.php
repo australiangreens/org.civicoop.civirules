@@ -70,6 +70,23 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
   }
 
   /**
+   * @param $data
+   */
+  public function __unserialize(array $data): void {
+    foreach ($data as $key => $val) {
+      switch ($key) {
+        case 'entity_id':
+        case 'contact_id':
+          $this->$key = (int) $val;
+          break;
+
+        default:
+          $this->$key = $val;
+      }
+    }
+  }
+
+  /**
    * @param $entity_id
    */
   public function setEntityId($entity_id) {
