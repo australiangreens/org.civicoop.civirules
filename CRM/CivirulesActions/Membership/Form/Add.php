@@ -19,10 +19,9 @@ class CRM_CivirulesActions_Membership_Form_Add extends CRM_CivirulesActions_Form
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
 
-    $membershipTypeOptions = array_merge(
-      ['' => E::ts('-- please select --')],
-      CRM_Civirules_Utils::getMembershipTypes(TRUE)
-    );
+    $membershipTypeOptions =
+      ['' => E::ts('-- please select --')] +
+      CRM_Civirules_Utils::getMembershipTypes(TRUE);
 
     $this->add('select', 'membership_type_id', E::ts('Membership type'), $membershipTypeOptions, TRUE, [
       'class' => 'select2 huge',

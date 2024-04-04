@@ -306,7 +306,6 @@ class CRM_Civirules_Utils {
 
     try {
       $membershipTypesAPI = \Civi\Api4\MembershipType::get(FALSE)
-        ->addWhere('is_active', '=', TRUE)
         ->addOrderBy('name', 'ASC');
       if ($onlyActive) {
         $membershipTypesAPI->addWhere('is_active', '=', TRUE);
