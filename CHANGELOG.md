@@ -1,9 +1,12 @@
 # CHANGELOG
 
-## Version 3.3 (not yet released)
+## Version 3.3 (2024-04-06)
 
+* [#219](https://lab.civicrm.org/extensions/civirules/-/issues/219) Add duration field support for activity actions.
+* Fix [#218](https://lab.civicrm.org/extensions/civirules/-/issues/218) Edit triggering activity action fails with assignee contact error.
 * Fixed deprecation notices and type errors by !237 and !239
 * Fix for checking conditions with a delayed action against data in the database. See #208 and !238
+* Remove some legacy code.
 
 ## Version 3.2 (2024-03-19)
 
