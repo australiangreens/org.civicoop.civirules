@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 3.4 (not yet released)
+## Version 3.4
 
 * Fixed issue #220: The condition "contact custom field changed is one of" does not work when it is a date field.
 * Fix crash when contact_id is array / undefined on post trigger (eg. for Case entity).
