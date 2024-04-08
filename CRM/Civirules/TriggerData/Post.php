@@ -35,10 +35,34 @@ class CRM_Civirules_TriggerData_Post extends CRM_Civirules_TriggerData_TriggerDa
         $this->setEntityData('Membership', $membership);
         break;
 
+      case 'Case':
+        // $data['contact_id'] will probably be an array for case.
+        // We just pick the first one in the array.
+        if (isset($data['contact_id'])) {
+          $contactID = $data['contact_id'];
+          if (is_array($contactID)) {
+            $contactID = reset($contactID);
+          }
+          if (is_numeric($contactID)) {
+            $this->setContactId($contactID);
+          }
+          else {
+            \Civi::log('civirules')->warning('Civirules: Contact ID is not numeric for Case: data: ' . print_r($data, TRUE) . ')');
+          }
+        }
+        $this->setEntityData($entity, $data);
+        break;
+
       default:
         // Generic handler: Just make sure contactID is set.
         if (isset($data['contact_id'])) {
-          $this->setContactId($data['contact_id']);
+          if (is_numeric($data['contact_id'])) {
+            $this->setContactId($data['contact_id']);
+          }
+          else {
+            \Civi::log('civirules')
+              ->warning('Civirules: Contact ID is not numeric (entity: ' . $entity . 'data: ' . print_r($data, TRUE) . ')');
+          }
         }
         $this->setEntityData($entity, $data);
     }
