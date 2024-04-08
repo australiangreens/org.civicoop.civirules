@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.4 (not yet released)
+
+* Fix crash when contact_id is array / undefined on post trigger (eg. for Case entity).
+
 ## Version 3.3 (2024-04-06)
 
 * [#219](https://lab.civicrm.org/extensions/civirules/-/issues/219) Add duration field support for activity actions.
