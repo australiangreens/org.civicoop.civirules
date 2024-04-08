@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 3.5 (not yet released)
+
 ## Version 3.4
 
 * Fixed issue #220: The condition "contact custom field changed is one of" does not work when it is a date field.
