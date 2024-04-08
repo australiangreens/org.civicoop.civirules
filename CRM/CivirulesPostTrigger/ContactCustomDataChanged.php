@@ -78,7 +78,12 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
       $contact = civicrm_api3('Contact', 'getsingle', ['id' => $entityID]);
       foreach ($params as $field) {
         if (!empty($field['custom_field_id'])) {
-          $contact['custom_' . $field['custom_field_id']] = $field['value'];
+          $value = $field['value'];
+          if ($field['type'] == 'Timestamp') {
+            $date = \DateTime::createFromFormat('YmdHis', $value);
+            $value = $date->format('Y-m-d H:i:s');
+          }
+          $contact['custom_' . $field['custom_field_id']] = $value;
           $contact['custom_' . $field['custom_field_id'] . '_group_id'] = $field['custom_group_id'];
           $contact['custom_' . $field['custom_field_id'] . '_entry_id'] = $field['id'] ?? null;
         }

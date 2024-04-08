@@ -150,16 +150,28 @@ class CRM_Civirules_Utils_PreData {
    * @static
    */
   public static function getPreData($entity, $entityId, $eventID) {
+    $return = [];
     $entityNames = [$entity];
-    if ($entity === 'Contact') {
-      $entityNames = ['Contact', 'Individual', 'Organization', 'Household'];
+    switch ($entity) {
+      case 'Contact':
+        $entityNames = ['Contact', 'Individual', 'Organization', 'Household'];
+        break;
+      case 'Individual':
+        $entityNames = ['Contact', 'Individual'];
+        break;
+      case 'Organization':
+        $entityNames = ['Contact', 'Organization'];
+        break;
+      case 'Household':
+        $entityNames = ['Contact', 'Household'];
+        break;
     }
     foreach ($entityNames as $entity) {
       if (isset(self::$preData[$entity][$entityId][$eventID])) {
-        return self::$preData[$entity][$entityId][$eventID];
+        $return = array_merge($return, self::$preData[$entity][$entityId][$eventID]);
       }
     }
-    return [];
+    return $return;
   }
 
 }
