@@ -13,6 +13,11 @@ class CRM_Civirules_TriggerData_Post extends CRM_Civirules_TriggerData_TriggerDa
    * @throws \Civi\API\Exception\UnauthorizedException
    */
   public function __construct($entity, $objectId, $data) {
+    if (empty($objectId)) {
+      \Civi::log('civirules')->error('CiviRules TriggerData_Post entityID is NULL! Entity: ' . $entity . '; Data: ' . print_r($data,TRUE));
+      throw new CRM_Core_Exception('CiviRules TriggerData_Post entityID is NULL! Entity: ' . $entity);
+    }
+
     parent::__construct();
     $this->setEntity($entity);
     $this->setEntityId($objectId);

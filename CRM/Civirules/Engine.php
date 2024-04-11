@@ -25,13 +25,25 @@ class CRM_Civirules_Engine {
   public static function triggerRule(CRM_Civirules_Trigger $trigger, CRM_Civirules_TriggerData_TriggerData $triggerData): bool {
     try {
       $triggerData->setTrigger($trigger);
-      $triggerData->setEntityId($triggerData->getEntityData($triggerData->getEntity())['id']);
-      if ($triggerData->getEntity() === 'Contact') {
-        $triggerData->setContactId($triggerData->getEntityId());
+
+      // The Entity ID should have been set by one of the TriggerData classes
+      if (empty($triggerData->getEntityId())) {
+        \CRM_Core_Error::deprecatedWarning('CiviRules: The entityID for Entity: ' . $triggerData->getEntity() . ' should be set by the calling class.');
+        $triggerData->setEntityId($triggerData->getEntityData($triggerData->getEntity())['id']);
       }
+
+      if ($triggerData->getEntity() === 'Contact') {
+        if (empty($triggerData->getContactId())) {
+          \CRM_Core_Error::deprecatedWarning('CiviRules: The Contact contactID should be set by the calling class.');
+          $triggerData->setContactId($triggerData->getEntityId());
+        }
+      }
+
+      // Check if the conditions are valid
       $isRuleValid = self::areConditionsValid($triggerData);
 
       if ($isRuleValid) {
+        // Log and execute the actions for the rule
         self::logRule($triggerData);
         self::executeActions($triggerData);
         return TRUE;
@@ -42,7 +54,7 @@ class CRM_Civirules_Engine {
       $context['line'] = $e->getLine();
       $context['file'] = $e->getFile();
       $context['exception_message'] = $e->getMessage();
-      CRM_Civirules_Utils_LoggerFactory::logError("Failed to execute rule",  $message, $triggerData, $context);
+      CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute rule',  $message, $triggerData, $context);
     }
     return FALSE;
   }
