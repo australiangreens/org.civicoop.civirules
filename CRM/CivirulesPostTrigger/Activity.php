@@ -29,12 +29,13 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
   /**
    * Trigger a rule for this trigger
    *
-   * @param $op
-   * @param $objectName
-   * @param $objectId
-   * @param $objectRef
+   * @param string $op
+   * @param string $objectName
+   * @param int $objectId
+   * @param object $objectRef
+   * @param string $eventID
    */
-  public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID = NULL) {
+  public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
     $triggerData = $this->getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
     if (empty($triggerData->getEntityId())) {
       $triggerData->setEntityId($objectId);
@@ -65,7 +66,8 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
       if (isset($activityContact['contact_id']) && $activityContact['contact_id']) {
         $triggerData->setContactId($activityContact['contact_id']);
       }
-      CRM_Civirules_Engine::triggerRule($this, clone $triggerData);
+      $this->setTriggerData($triggerData);
+      parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
     }
   }
 

@@ -10,10 +10,11 @@ class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_CivirulesPostTrigge
   /**
    * Trigger a rule for this trigger
    *
-   * @param $op
-   * @param $objectName
-   * @param $objectId
-   * @param $objectRef
+   * @param string $op
+   * @param string $objectName
+   * @param int $objectId
+   * @param object $objectRef
+   * @param string $eventID
    */
   public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
     $triggerData = $this->getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
@@ -36,7 +37,8 @@ class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_CivirulesPostTrigge
       return;
     }
 
-    CRM_Civirules_Engine::triggerRule($this, clone $triggerData);
+    $this->setTriggerData($triggerData);
+    parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
   }
 
 }

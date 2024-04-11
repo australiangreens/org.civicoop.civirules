@@ -119,8 +119,12 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
    * @param string $eventID
    */
   public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
-    $triggerData = $this->getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
-    CRM_Civirules_Engine::triggerRule($this, clone $triggerData);
+    if (empty($this->getTriggerData())) {
+      // Many classes inherit from CRM_Civirules_Trigger_Post and already set the triggerData
+      // Only set it here if not already set by child class
+      $this->setTriggerData($this->getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID));
+    }
+    parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
   }
 
   /**
