@@ -242,21 +242,21 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
     return TRUE;
   }
 
-	public function upgrade_1022() {
-		CRM_Core_DAO::executeQuery("
-			UPDATE civirule_trigger
-			SET class_name = 'CRM_CivirulesPostTrigger_Contribution'
-			WHERE object_name = 'Contribution'
-		");
-		return TRUE;
-	}
+  public function upgrade_1022() {
+    CRM_Core_DAO::executeQuery("
+      UPDATE civirule_trigger
+      SET class_name = 'CRM_CivirulesPostTrigger_Contribution'
+      WHERE object_name = 'Contribution'
+    ");
+    return TRUE;
+  }
 
   /**
    * Upgrade 1023 (issue #189 - replace managed entities with inserts
    *
    * @return bool
    */
-	public function upgrade_1023() {
+  public function upgrade_1023() {
     $this->ctx->log->info('Applying update 1023 - remove unwanted managed entities');
     $query = "DELETE FROM civicrm_managed WHERE module = %1 AND entity_type IN(%2, %3, %4)";
     $params = array(
@@ -312,7 +312,7 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
     CRM_Core_DAO::executeQuery("UPDATE `civirule_trigger` SET `class_name` = 'CRM_CivirulesPostTrigger_Participant' WHERE `object_name` = 'Participant'");
 
     return TRUE;
-	}
+  }
 
   /**
    * Upgrade 1024 (issue #138 rules for trash en untrash)
@@ -328,7 +328,7 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
   /**
    * Upgrade 1025 add Contact Lives in Country condition
    */
-	public function upgrade_1025() {
+  public function upgrade_1025() {
     $this->ctx->log->info('Applying update 1025 - add LivesInCountry condition to CiviRules');
     $select = "SELECT COUNT(*) FROM civirule_condition WHERE class_name = %1";
     $selectParams = array(
