@@ -22,7 +22,7 @@ class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_CivirulesPostTrigge
 
     // Pure change of membership state, e.g. by scheduled job Update Membership Statuses
     //   does not supply all required information, but is not a Renewal, so escape.
-	  if( !isset($membership['membership_type_id']) || !isset($membership['membership_join_date']) || !isset($membership['end_date']) ) {
+    if( !isset($membership['membership_type_id']) || !isset($membership['membership_join_date']) || !isset($membership['end_date']) ) {
       return;
     }
 
