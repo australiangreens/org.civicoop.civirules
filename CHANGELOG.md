@@ -2,6 +2,8 @@
 
 ## Version 3.6 (not yet released)
 
+* Fix Group Contact trigger causes crash. See !247
+
 ## Version 3.5 (2024-04-15)
 
 * New action: Update Membership Status. See !245
