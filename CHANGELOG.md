@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 3.6 (not yet released)
+
 ## Version 3.5 (2024-04-15)
 
 * New action: Update Membership Status. See !245
