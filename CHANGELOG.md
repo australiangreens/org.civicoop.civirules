@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## Version 3.5 (not yet released)
+## Version 3.5 (2024-04-15)
 
 * New action: Update Membership Status. See !245
+* Fix for issue #222. Error when saving Contact
 
 ## Version 3.4
 
