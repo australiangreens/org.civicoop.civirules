@@ -52,7 +52,7 @@ class CRM_CivirulesPostTrigger_GroupContact extends CRM_Civirules_Trigger_Post {
       CRM_Civirules_Engine::triggerRule($this, clone $triggerData);
     } else {
       // We are dealing with an array of contact ids.
-      $sql = "SELECT MAX(`id`), `group_id`, `contact_id`, `status`, `location_id`, `email_id`
+      $sql = "SELECT MAX(`id`) AS id, `group_id`, `contact_id`, `status`, `location_id`, `email_id`
             FROM `civicrm_group_contact`
             WHERE `group_id` = %1 AND `contact_id` IN (" . implode(", ", $objectRef) . ")
             GROUP BY `contact_id`";
