@@ -596,6 +596,12 @@
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/action/membership/update_status</path>
+    <page_callback>CRM_CivirulesActions_Membership_Form_UpdateStatus</page_callback>
+    <title>UpdateStatus</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/condition/contribution_soft_type</path>
     <page_callback>CRM_CivirulesConditions_Form_ContributionSoft_SoftCreditType</page_callback>
     <title>Soft Credit Type</title>
