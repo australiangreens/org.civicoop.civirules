@@ -7,6 +7,7 @@ namespace Civi\Api4;
  *
  * Provided by the civirules extension.
  *
+ * @searchable secondary
  * @package Civi\Api4
  */
 class CiviRulesRuleCondition extends Generic\DAOEntity {

@@ -8,7 +8,6 @@
   <table_type>Innodb</table_type>
   <log>true</log>
   <labelField>label</labelField>
-  <title>Rule</title>
 
   <field>
     <name>id</name>
