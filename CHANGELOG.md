@@ -2,8 +2,29 @@
 
 ## Version 3.6 (not yet released)
 
+API:
+
+* Rename API3 CiviRuleAction to CiviRulesAction to match entity name
+* Rename API3 CiviRuleTrigger -> CiviRulesTrigger to match entity name
+* Rename API3 CiviRuleRule to CiviRulesRule to match entity name
+* Rename API3 CiviRuleRuleCondition to CiviRulesRuleCondition to match entity name
+* Rename API3 CiviRuleRuleAction to CiviRulesRuleAction to match entity name
+* Rename API3 CiviRuleCondition to CiviRulesCondition to match entity name
+* Rename API3 CiviRuleRuleTag to CiviRulesRuleTag to match entity name
+
+Triggers:
+
+* Use shared triggerTrigger parent function and triggerData property
+* Add triggerData property to Trigger class
+* Clean up setEntityID/setContactID for triggerData and add logging
 * Fix Group Contact trigger causes crash. See !247
 * Fix for Fatal error: Uncaught Error: Cannot assign null to property CRM_Civirules_TriggerData_TriggerData::$entity_id of type int. See !249 and #224
+* Fix 'triggerData cannot be accessed before initialisation for membership add trigger'
+
+Other:
+
+* Smarty 3/4 fix for Membership Status/Type condition.
+* Fix crash if membership add action does not have a valid membership_type_id.
 
 ## Version 3.5 (2024-04-15)
 
