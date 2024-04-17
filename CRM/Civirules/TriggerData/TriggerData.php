@@ -18,7 +18,7 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
   /**
    * Entity ID of the primary trigger data e.g. the activity id
    *
-   * @var Int
+   * @var int
    */
   protected int $entity_id = 0;
 

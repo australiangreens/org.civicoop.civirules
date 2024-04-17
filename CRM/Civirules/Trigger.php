@@ -59,6 +59,15 @@ abstract class CRM_Civirules_Trigger {
     return $this->triggerData;
   }
 
+  /**
+   * Check if the triggerData has been set
+   *
+   * @return bool
+   */
+  public function hasTriggerData(): bool {
+    return isset($this->triggerData);
+  }
+
   public function getRuleTitle() {
     if (empty($this->ruleTitle) && !empty($this->ruleId)) {
       $rule = new CRM_Civirules_BAO_Rule();
@@ -216,7 +225,7 @@ abstract class CRM_Civirules_Trigger {
    * @param string $eventID
    */
   public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
-    if (empty($this->getTriggerData())) {
+    if (!$this->hasTriggerData()) {
       throw new CRM_Core_Exception('CiviRules: Trigger data is empty. You need to call setTriggerData() first');
     }
 
