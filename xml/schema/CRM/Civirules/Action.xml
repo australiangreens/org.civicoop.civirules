@@ -31,6 +31,9 @@
     <type>varchar</type>
     <length>128</length>
     <default>NULL</default>
+    <html>
+      <type>Select</type>
+    </html>
   </field>
   <field>
     <name>class_name</name>
