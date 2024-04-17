@@ -3,6 +3,7 @@
 ## Version 3.6 (not yet released)
 
 * Fix Group Contact trigger causes crash. See !247
+* Fix for Fatal error: Uncaught Error: Cannot assign null to property CRM_Civirules_TriggerData_TriggerData::$entity_id of type int. See !249 and #224
 
 ## Version 3.5 (2024-04-15)
 
