@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 3.6 (not yet released)
+## Version 3.6 (2024-04-18)
 
 API:
 
