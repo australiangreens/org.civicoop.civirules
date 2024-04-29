@@ -155,6 +155,7 @@ class CRM_Civirules_Engine {
         if ($entity) {
           try {
             $entityData = civicrm_api3($entity, 'getsingle', ['id' => $triggerData->getEntityId()]);
+            $entityData = self::useCanonicalFieldNames($entity, $entityData);
             $triggerData->setEntityData($entity, $entityData);
           }
           catch (Exception $e) {
@@ -170,6 +171,24 @@ class CRM_Civirules_Engine {
       CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute delayed action',  $e->getMessage(), $triggerData);
     }
     return TRUE;
+  }
+
+  /**
+   * Modify entity data to use canonical and not unique field names.
+   * This is necessary because CiviRules uses canonical field names, but `executeDelayedAction()` calls API3, which uses unique field names.
+   */
+  private static function useCanonicalFieldNames(string $entityName, array $entityData) : array {
+    $fieldData = civicrm_api3($entityName, 'getfields')['values'];
+    $lookupTable = array_combine(array_keys($fieldData), array_column($fieldData, 'name'));
+    foreach ($entityData as $fieldName => $value) {
+      if (isset($lookupTable[$fieldName])) {
+        $fixedEntityData[$lookupTable[$fieldName]] = $value;
+      }
+      else {
+        $fixedEntityData[$fieldName] = $value;
+      }
+    }
+    return $fixedEntityData;
   }
 
   /**
