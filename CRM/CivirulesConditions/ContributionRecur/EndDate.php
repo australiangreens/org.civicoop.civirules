@@ -6,7 +6,6 @@
  * This CiviRule condition will check if the end date of the recurring contribution is set or not set
  *
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
- * @link http://redmine.civicoop.org/projects/civirules/wiki/Tutorial_create_a_more_complicated_condition_with_its_own_form_processing
  */
 
 class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Condition {

@@ -45,12 +45,13 @@ class CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring extends CRM_Civ
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $contactId = $triggerData->getContactId();
     $donorHasAny = FALSE;
-    $recurringParams = array(
-      'contact_id' => $contactId,
-      'is_test' => 0);
     try {
-      $foundRecurring = civicrm_api3('ContributionRecur', 'Get', $recurringParams);
-      foreach ($foundRecurring['values'] as $recurring) {
+      $foundRecurring = \Civi\Api4\ContributionRecur::get(FALSE)
+        ->addWhere('contact_id', '=', $contactId)
+        ->addWhere('is_test', '=', FALSE)
+        ->addWhere('contribution_status_id:name', 'NOT IN', ['Cancelled', 'Failed'])
+        ->execute();
+      foreach ($foundRecurring as $recurring) {
         if (CRM_Civirules_Utils::endDateLaterThanToday($recurring['end_date']) == TRUE || !isset($recurring['end_date'])) {
           $donorHasAny = TRUE;
         }

@@ -13,14 +13,14 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    *
    * @var array
    */
-  private $entity_data = [];
+  private array $entity_data = [];
 
   /**
    * Entity ID of the primary trigger data e.g. the activity id
    *
-   * @var Int
+   * @var int
    */
-  protected $entity_id;
+  protected int $entity_id = 0;
 
   /**
    * Entity name of the primary trigger data e.g. 'contact' or 'activity'
@@ -38,17 +38,35 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    *
    * @var array
    */
-  private $custom_data = [];
+  private array $custom_data = [];
 
-  protected $contact_id = 0;
+  /**
+   * The Contact ID
+   *
+   * @var int
+   */
+  protected int $contact_id = 0;
+
+  /**
+   * Is this Trigger being executed with a delay (set at runtime when executing actions)
+   * @var bool
+   */
+  public bool $isDelayedExecution;
+
+  /**
+   * The datetime (YmdHis) when the rule was triggered. Only set if we are delaying execution.
+   * This will contain the original trigger time which can be used by actions (eg. to fill in an activity scheduled date).
+   *
+   * @var string
+   */
+  public string $delayedSubmitDateTime;
 
   /**
    * @var CRM_Civirules_Trigger
    */
-  protected $trigger;
+  protected CRM_Civirules_Trigger $trigger;
 
   public function __construct() {
-
   }
 
   /**
@@ -117,8 +135,8 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
     if (!empty($this->contact_id)) {
       return $this->contact_id;
     }
-    if (!empty($this->entity_data['contact']['id'])) {
-      return $this->entity_data['contact']['id'];
+    if (!empty($this->entity_data['Contact']['id'])) {
+      return $this->entity_data['Contact']['id'];
     }
     foreach($this->entity_data as $entity => $data) {
       if (!empty($data['contact_id'])) {
@@ -176,14 +194,13 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
   /**
    * Returns an array of custom fields in param format
    *
-   * @param $custom_field_id
    * @return array
    */
   public function getEntityCustomData() {
     $customFields = [];
-    if ( ! isset($this->custom_data) ) {
+    if (!isset($this->custom_data)) {
       return $customFields;
-    } elseif ( ! is_array($this->custom_data) ) {
+    } elseif (!is_array($this->custom_data) ) {
       return $customFields;
     }
     foreach ($this->custom_data as $custom_field_id => $custom_field_value ) {

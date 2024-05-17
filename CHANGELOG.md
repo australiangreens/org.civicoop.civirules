@@ -1,6 +1,177 @@
 # CHANGELOG
 
-## Version 2.38 (not yet released)
+## Version 3.6 (2024-04-18)
+
+API:
+
+* Rename API3 CiviRuleAction to CiviRulesAction to match entity name
+* Rename API3 CiviRuleTrigger -> CiviRulesTrigger to match entity name
+* Rename API3 CiviRuleRule to CiviRulesRule to match entity name
+* Rename API3 CiviRuleRuleCondition to CiviRulesRuleCondition to match entity name
+* Rename API3 CiviRuleRuleAction to CiviRulesRuleAction to match entity name
+* Rename API3 CiviRuleCondition to CiviRulesCondition to match entity name
+* Rename API3 CiviRuleRuleTag to CiviRulesRuleTag to match entity name
+
+Triggers:
+
+* Use shared triggerTrigger parent function and triggerData property
+* Add triggerData property to Trigger class
+* Clean up setEntityID/setContactID for triggerData and add logging
+* Fix Group Contact trigger causes crash. See !247
+* Fix for Fatal error: Uncaught Error: Cannot assign null to property CRM_Civirules_TriggerData_TriggerData::$entity_id of type int. See !249 and #224
+* Fix 'triggerData cannot be accessed before initialisation for membership add trigger'
+
+Other:
+
+* Smarty 3/4 fix for Membership Status/Type condition.
+* Fix crash if membership add action does not have a valid membership_type_id.
+
+## Version 3.5 (2024-04-15)
+
+* New action: Update Membership Status. See !245
+* Fix for issue #222. Error when saving Contact
+
+## Version 3.4
+
+* Fixed issue #220: The condition "contact custom field changed is one of" does not work when it is a date field.
+* Fix crash when contact_id is array / undefined on post trigger (eg. for Case entity).
+
+## Version 3.3 (2024-04-06)
+
+* [#219](https://lab.civicrm.org/extensions/civirules/-/issues/219) Add duration field support for activity actions.
+* Fix [#218](https://lab.civicrm.org/extensions/civirules/-/issues/218) Edit triggering activity action fails with assignee contact error.
+* Fixed deprecation notices and type errors by !237 and !239
+* Fix for checking conditions with a delayed action against data in the database. See #208 and !238
+* Remove some legacy code.
+
+## Version 3.2 (2024-03-19)
+
+* Add 'Update Recurring Contribution Status' action and make it work with Membership trigger.
+* Support API4 for generic API action class.
+* Migrate 'Manage Tags' to searchkit and menu items to managed entities.
+
+## Version 3.1 (2024-03-08)
+
+* Fix editing custom fields on certain CiviCRM versions. See !228
+* Compatibility with CiviCRM 5.72.
+* Fix class entity names (fixes error on delete rule).
+* Replace deprecated DAO add functions with writeRecord (fixes error on disable rule).
+* Don't hardcode status for 'Daily trigger for case activity' (now you can use case status condition to trigger for cases with any status).
+* Fix 'Set Case Status' action when used with 'Daily case activity trigger'.
+* Update permissions hook format per https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_permission/#parameters.
+
+## Version 3.0
+
+* Added action rebuild smart group
+* Searchkit / Formbuilder UI for rules overview.
+* The condition "Case has tags/does not have tags" now can be selected for cases.
+* "Is Client of the Case" now checks really if the contact is a client.
+* [!225](https://lab.civicrm.org/extensions/civirules/-/merge_requests/225) Display membership status label instead of name in conditions.
+
+
+## Version 2.51
+
+*  Fix preData custom field collection on CiviCRM 5.67+  See !224
+
+## Version 2.50
+
+* Fixed issue #206
+* Fixed `xth recurring contribution` condition not appearing.
+* Add `administer CiviRules` permission
+* Fixed issue #202 by !223
+
+## Version 2.49
+
+* Fixed deprecation warning in Upgrader class.
+
+## Version 2.48
+
+* Fixed preventing of delayed tasks never being executed by !199
+* Add action 'Add related contact to group' by !201
+* Add cleanup API for rule triggers/conditions/actions (to fix duplicates) by !200
+* ConfigItems: fixed when CiviRules is enabled importing a configuration set throws an error (#196)
+* Add `xth recurring contribution` condition. See !204
+* Performance improvement by caching the custom groups in a cached php file container.
+* Performance improvement by optimizing the customPreHook
+* !203 Add condition: Recurring pays for Membership
+* !206 Add action: Set Custom Field on an entiy with data from another Custom Field
+* Fix action disable/delete relationship when contact is on the 'b' side of the relationship
+* !202 Condition: User is logged in
+
+## Version 2.47
+* issue #163: also fix for activity
+
+## Version 2.46
+* Fix action AddToCase -> error on api3 getvalue with limit => 0, changed to 1
+* Add Activity action: remember send_email "no" selection with !191
+* Fix Activity trigger when triggered for all contacts with !192
+* Added hours and minutes option to the Activity Scheduled Date trigger (#191)
+* When trigger is scheduled before the activity date/time it triggers now _after_ the trigger time is reached (See #191)
+* Add `Contribution Source` and `Contribution Is Pay Later` conditions  (See !194)
+* Add `Contact is (not) of Type(s)` condition (See !195)
+* Add condition `xth Contribution in Last Time Interval` (see !196)
+* Fix #163: retrieve custom field if needed for activity add action when delayed date in custom field is used
+* Add "inclusion operator" for condition ContactHasMembership  (See !197)
+
+
+## Version 2.45
+* add xmlMenu function to civirules.php (mixin issue with older CiviCRM versions)
+* !190: Don't crash if contact ID does not exist (eg. was deleted) and code cleanup caseaddrole
+
+## Version 2.44
+
+* Fixes #189: action on activity AddToCase ignores deleted cases
+* !180 Replace deprecated function getTimeRaw().
+* Fixed #177: "Event reached date" trigger fires prematurely when setting a "before" offset.
+* Fixed #178: "Event reached date" trigger fires daily on the same participants.
+* Implemented integration with config item extension. For importing and exporting civirules configuration.
+* Fix !178: Api4 tag remove/add action for non-admins.
+* !179: Add an Activity Subject condition.
+* !181: Show label for 'Field value comparison' description. Add description to SetCustomField action.
+* !182: Support multiple membership types for "Contact has active membership of type".
+* Fix #182 by !183: Domain conditional selection shows a maximum of 25 domains.
+* Fix #183 by !184: Only show active/visible groups in group conditions / actions.
+* Changed date format for comparison value to YmdHis to fix #186 by !185
+* Always use ymd format for dates in field value comparisons  by !186
+* #188 activity action: condition target/assignee on relationship contacts by !187
+* !188 For CRON date triggers don't trigger on deleted(is_deleted=1) or disabled (is_active=0) cases,activities,events.
+
+## Version 2.43
+
+* Add option to negate the "Contact has Active Membership of Type" condition
+* Allow 'any' event type and 'before/after X hours' for 'Event date reached' trigger
+* Fix error where original activity data is incomplete after alterPreData - fixes #176
+
+## Version 2.42
+
+* Added action register participant, fixes #169
+* Avoid duplicate Contact Subtypes by !164
+* Fix ContactHasMembership condition !163
+* Fix display of group type label instead of group type ID !165
+* Escape if simple change of Membership State, not a Renewal !156
+* Fix cron triggers based on event date !168
+* Added action Create Case Activity
+
+## Version 2.41
+
+* Improved ContactHasMembership condition adding fields start_date, join_date, end_date to be part as condition's filters. By !159
+* Set the custom value on the correct entity by !160
+* Fixed activity Scheduled Date triggers for incorrect set of contacts with !161
+* Added condition on recurring contribution frequency, fixes #168.
+
+
+## Version 2.40
+
+* Added operators 'Matches regular expression' and 'Does not match regular expression' to Field Value condition.
+* Fix 'Contact has recurring contribution' condition
+* Fixed issue with contribution recur cron trigger: added ID to the trigger data.
+
+## Version 2.39
+
+* Added configuration to the event trigger to use the logged in user as the contact for the trigger.
+
+## Version 2.38
+* Add cron trigger for next scheduled contribution date on recurring contribution, fixes #162
 
 ## Version 2.37
 

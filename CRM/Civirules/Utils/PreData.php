@@ -1,5 +1,7 @@
 <?php
 
+use Civi\Api4\Service\Schema\Joinable\CustomGroupJoinable;
+
 class CRM_Civirules_Utils_PreData {
 
   /**
@@ -96,16 +98,31 @@ class CRM_Civirules_Utils_PreData {
    */
   public static function customPre($op, $groupID, $entityID, $params, $eventID=1) {
     // We use api version 3 here as there is no api v4 for the CustomValue table.
-    $entity = civicrm_api3('CustomGroup', 'getvalue', ['id' => $groupID, 'return' => 'extends']);
-    $data = array();
-    try {
-      $data = civicrm_api3($entity, 'getsingle', array('id' => $entityID));
-    } catch (Exception $e) {
-      // Do nothing.
+    if ($op != 'edit' && $op != 'delete') {
+      return;
     }
-    $customDataApiResult = civicrm_api3('CustomValue', 'get', ['entity_id' => $entityID, 'entity_table' => $entity]);
-    foreach($customDataApiResult['values'] as $customField) {
-      $data['custom_' . $customField['id']] = $customField['latest'];
+    $config = \Civi\CiviRules\Config\ConfigContainer::getInstance();
+    $custom_group = $config->getCustomGroupById($groupID);
+    if (version_compare(CRM_Utils_System::version(), '5.67', '<')) {
+      $entity = CustomGroupJoinable::getEntityFromExtends($custom_group['extends']);
+    }
+    else {
+      $entity = CRM_Core_BAO_CustomGroup::getEntityFromExtends($custom_group['extends']);
+    }
+    $data = [];
+    if (!isset(self::$preData[$entity][$entityID][$eventID])) {
+      try {
+        $data = civicrm_api3($entity, 'getsingle', ['id' => $entityID]);
+      } catch (Exception $e) {
+        // Do nothing.
+      }
+      $customDataApiResult = civicrm_api3('CustomValue', 'get', [
+        'entity_id' => $entityID,
+        'entity_table' => $entity
+      ]);
+      foreach ($customDataApiResult['values'] as $customField) {
+        $data['custom_' . $customField['id']] = $customField['latest'];
+      }
     }
     self::setPreData($entity, $entityID, $data, $eventID);
   }
@@ -133,16 +150,28 @@ class CRM_Civirules_Utils_PreData {
    * @static
    */
   public static function getPreData($entity, $entityId, $eventID) {
+    $return = [];
     $entityNames = [$entity];
-    if ($entity === 'Contact') {
-      $entityNames = ['Contact', 'Individual', 'Organization', 'Household'];
+    switch ($entity) {
+      case 'Contact':
+        $entityNames = ['Contact', 'Individual', 'Organization', 'Household'];
+        break;
+      case 'Individual':
+        $entityNames = ['Contact', 'Individual'];
+        break;
+      case 'Organization':
+        $entityNames = ['Contact', 'Organization'];
+        break;
+      case 'Household':
+        $entityNames = ['Contact', 'Household'];
+        break;
     }
     foreach ($entityNames as $entity) {
       if (isset(self::$preData[$entity][$entityId][$eventID])) {
-        return self::$preData[$entity][$entityId][$eventID];
+        $return = array_merge($return, self::$preData[$entity][$entityId][$eventID]);
       }
     }
-    return [];
+    return $return;
   }
 
 }

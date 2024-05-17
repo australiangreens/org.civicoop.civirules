@@ -104,6 +104,10 @@ class CRM_Civirules_Utils_Upgrader {
         'label' => 'Activity Details',
         'name' => 'contact_has_activity_with_details',
       ),
+      'CRM_CivirulesConditions_Activity_Subject' => array(
+        'label' => 'Activity Subject',
+        'name' => 'contact_has_activity_with_subject',
+      ),
       'CRM_CivirulesConditions_Activity_OnlyOnce' => array(
         'label' => 'Execute Action only Once for Activity',
         'name' => 'once_for_activity',
@@ -176,6 +180,10 @@ class CRM_Civirules_Utils_Upgrader {
         'label' => 'Contact Has Phone',
         'name' => 'contact_has_phone',
       ),
+      'CRM_CivirulesConditions_Contact_HasType' => array(
+        'label' => 'Contact is (not) of Type(s)',
+        'name' => 'contact_has_type',
+      ),
       'CRM_CivirulesConditions_Contact_HasSubtype' => array(
         'label' => 'Contact is (not) of Subtype(s)',
         'name' => 'contact_has_subtype',
@@ -220,6 +228,14 @@ class CRM_Civirules_Utils_Upgrader {
         'label' => 'First Contribution of a Contact',
         'name' => 'first_contribution_of_contact',
       ),
+      'CRM_CivirulesConditions_Contribution_IsPayLater' => array(
+        'label' => 'Is (not) a Pay Later Contribution',
+        'name' => 'contribution_pay_later',
+      ),
+      'CRM_CivirulesConditions_Contribution_Source' => array(
+        'label' => 'Contribution Source',
+        'name' => 'contribution_source',
+      ),
       'CRM_CivirulesConditions_Contribution_LastContribution' => array(
         'label' => 'Last Contribution of a Contact',
         'name' => 'last_contribution_of_contact',
@@ -252,6 +268,10 @@ class CRM_Civirules_Utils_Upgrader {
         'label' => 'xth Recurring Contribution Collection',
         'name' => 'contribution_recur_count',
       ),
+      'CRM_CivirulesConditions_ContributionRecur_xthContribution' => array(
+        'label' => 'xth Contribution of the Recurring Contribution',
+        'name' => 'contribution_recur_xth_contribution',
+      ),      
       'CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring' => array(
         'label' => 'Donor has Recurring Contribution',
         'name' => 'donor_has_recurring',
@@ -481,7 +501,7 @@ class CRM_Civirules_Utils_Upgrader {
       if (!isset($trigger['class_name'])) {
         $trigger['class_name'] = null;
       }
-      self::insertTrigger($trigger['name'], $trigger['label'], $trigger['cron'], $trigger['class_name'], $trigger['object_name'], $trigger['op']);
+      self::insertTrigger($trigger['name'], $trigger['label'], $trigger['cron'] ?? 0, $trigger['class_name'], $trigger['object_name'], $trigger['op']);
     }
   }
 

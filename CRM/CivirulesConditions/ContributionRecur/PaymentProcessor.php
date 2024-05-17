@@ -62,17 +62,17 @@ LEFT JOIN civicrm_contribution_recur ccr ON ccr.id = cm.contribution_recur_id WH
     if (count($this->conditionParams['payment_processor_id'])) {
       switch ($this->conditionParams['payment_processor_id_operator']) {
         case 'in':
-          $whereClauses[] = 'payment_processor_id IN ('.implode($this->conditionParams['payment_processor_id'], ','). ')';
+          $whereClauses[] = 'payment_processor_id IN (' . implode(',', $this->conditionParams['payment_processor_id']). ')';
           break;
         case 'not in':
           $whereClauses[] = '(payment_processor_id NOT IN ('
-            . implode($this->conditionParams['payment_processor_id'], ',')
+            . implode(',', $this->conditionParams['payment_processor_id'])
             . ') OR payment_processor_id IS NULL)';
           break;
       }
     }
 
-    $sql .= implode($whereClauses, ' AND ');
+    $sql .= implode(' AND ', $whereClauses);
     $result = CRM_Core_DAO::singleValueQuery($sql, $sqlParams);
     if ($result) {
       return TRUE;
@@ -131,6 +131,49 @@ LEFT JOIN civicrm_contribution_recur ccr ON ccr.id = cm.contribution_recur_id WH
     } catch (CiviCRM_API3_Exception $ex) {}
 
     return trim($label);
+  }
+
+  /**
+   * Returns condition data as an array and ready for export.
+   * E.g. replace ids for names.
+   *
+   * @return array
+   */
+  public function exportConditionParameters() {
+    $params = parent::exportConditionParameters();
+    if (!empty($params['payment_processor_id']) && is_array($params['payment_processor_id'])) {
+      foreach($params['payment_processor_id'] as $i => $gid) {
+        try {
+          $params['payment_processor_id'][$i] = civicrm_api3('PaymentProcessor', 'getvalue', [
+            'return' => 'name',
+            'id' => $gid,
+          ]);
+        } catch (CiviCRM_API3_Exception $e) {
+        }
+      }
+    }
+    return $params;
+  }
+
+  /**
+   * Returns condition data as an array and ready for import.
+   * E.g. replace name for ids.
+   *
+   * @return string
+   */
+  public function importConditionParameters($condition_params = NULL) {
+    if (!empty($condition_params['payment_processor_id']) && is_array($condition_params['payment_processor_id'])) {
+      foreach($condition_params['payment_processor_id'] as $i => $gid) {
+        try {
+          $condition_params['payment_processor_id'][$i] = civicrm_api3('PaymentProcessor', 'getvalue', [
+            'return' => 'id',
+            'name' => $gid,
+          ]);
+        } catch (CiviCRM_API3_Exception $e) {
+        }
+      }
+    }
+    return parent::importConditionParameters($condition_params);
   }
 
   /**

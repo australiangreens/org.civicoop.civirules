@@ -47,14 +47,20 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
   }
 
   public static function custom($op, $groupID, $entityID, &$params) {
-    $custom_group = civicrm_api3('CustomGroup', 'getsingle', array('id' => $groupID));
+    $config = \Civi\CiviRules\Config\ConfigContainer::getInstance();
+    $custom_group = $config->getCustomGroupById($groupID);
     if ($custom_group['extends'] != 'Case') {
       return;
     }
     $case = civicrm_api3('Case', 'getsingle', array('id' => $entityID));
     foreach($params as $field) {
       if (!empty($field['custom_field_id'])) {
-        $case['custom_' . $field['custom_field_id']] = $field['value'];
+        $value = $field['value'];
+        if ($field['type'] == 'Timestamp') {
+          $date = \DateTime::createFromFormat('YmdHis', $value);
+          $value = $date ? $date->format('Y-m-d H:i:s') : NULL;
+        }
+        $case['custom_' . $field['custom_field_id']] = $value;
       }
     }
 

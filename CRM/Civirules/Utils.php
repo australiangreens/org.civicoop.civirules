@@ -106,54 +106,6 @@ class CRM_Civirules_Utils {
   }
 
   /**
-   * Function to build the trigger list
-   *
-   * @return array $triggerList
-   * @access public
-   * @static
-   */
-  public static function buildTriggerList() {
-    $triggerList = array();
-    $triggers = CRM_Civirules_BAO_Trigger::getValues(array());
-    foreach ($triggers as $triggerId => $trigger) {
-      $triggerList[$triggerId] = $trigger['label'];
-    }
-    return $triggerList;
-  }
-
-  /**
-   * Function to build the conditions list
-   *
-   * @return array $conditionList
-   * @access public
-   * @static
-   */
-  public static function buildConditionList() {
-    $conditionList = array();
-    $conditions = CRM_Civirules_BAO_Condition::getValues(array());
-    foreach ($conditions as $conditionId => $condition) {
-      $conditionList[$conditionId] = $condition['label'];
-    }
-    return $conditionList;
-  }
-
-  /**
-   * Function to build the action list
-   *
-   * @return array $actionList
-   * @access public
-   * @static
-   */
-  public static function buildActionList() {
-    $actionList = array();
-    $actions = CRM_Civirules_BAO_Action::getValues(array());
-    foreach ($actions as $actionId => $action) {
-      $actionList[$actionId] = $action['label'];
-    }
-    return $actionList;
-  }
-
-  /**
    * Function to return activity status list
    *
    * @return array $activityStatusList
@@ -350,41 +302,47 @@ class CRM_Civirules_Utils {
    * @return array
    */
   public static function getMembershipTypes($onlyActive = TRUE) {
-    $return = array();
-    if ($onlyActive) {
-      $params = array('is_active' => 1);
-    } else {
-      $params = array();
-    }
-    $params['options'] = array('limit' => 0, 'sort' => "name ASC");
+    $membershipTypes = [];
+
     try {
-      $membershipTypes = civicrm_api3("MembershipType", "Get", $params);
-      foreach ($membershipTypes['values'] as $membershipType) {
-        $return[$membershipType['id']] = $membershipType['name'];
+      $membershipTypesAPI = \Civi\Api4\MembershipType::get(FALSE)
+        ->addOrderBy('name', 'ASC');
+      if ($onlyActive) {
+        $membershipTypesAPI->addWhere('is_active', '=', TRUE);
       }
-    } catch (CiviCRM_API3_Exception $ex) {}
-    return $return;
+      $membershipTypes = $membershipTypesAPI
+        ->execute()
+        ->indexBy('id')
+        ->column('name');
+    } catch (Exception $e) {
+      \Civi::log('civirules')->error('Error getting membership types: ' . $e->getMessage());
+    }
+    return $membershipTypes;
   }
 
   /**
    * Method to get the membership status
    * @param bool $onlyActive
+   *
    * @return array
    */
-  public static function getMembershipStatus($onlyActive = TRUE) {
-    $return = array();
-    if ($onlyActive) {
-      $params = array('is_active' => 1);
-    } else {
-      $params = array();
-    }
+  public static function getMembershipStatus(bool $onlyActive = TRUE): array {
+    $membershipStatuses = [];
+
     try {
-      $apiMembershipStatus = civicrm_api3("MembershipStatus", "Get", $params);
-      foreach ($apiMembershipStatus['values'] as $membershipStatus) {
-        $return[$membershipStatus['id']] = $membershipStatus['name'];
+      $membershipStatusesAPI = \Civi\Api4\MembershipStatus::get(FALSE)
+        ->addSelect('id', 'label');
+      if ($onlyActive) {
+        $membershipStatusesAPI->addWhere('is_active', '=', TRUE);
       }
-    } catch (CiviCRM_API3_Exception $ex) {}
-    return $return;
+      $membershipStatuses = $membershipStatusesAPI
+        ->execute()
+        ->indexBy('id')
+        ->column('label');
+    } catch (Exception $e) {
+      \Civi::log('civirules')->error('Error getting membership statuses: ' . $e->getMessage());
+    }
+    return $membershipStatuses;
   }
 
   /**
@@ -544,39 +502,14 @@ class CRM_Civirules_Utils {
   }
 
   /**
-   * Method to get the CiviCRM version
-   *
-   * @return float
-   * @throws CiviCRM_API3_Exception
-   */
-  public static function getCiviVersion() {
-    $apiVersion = (string) civicrm_api3('Domain', 'getvalue', array('current_domain' => "TRUE", 'return' => 'version'));
-    $civiVersion = (float) substr($apiVersion, 0, 3);
-    return $civiVersion;
-  }
-
-  /**
    * Method to get the civirules base path
    *
    * @return string
    * @throws CiviCRM_API3_Exception
    */
   public static function getCivirulesPath() {
-    $version = CRM_Core_BAO_Domain::version();
-    if ($version >= 4.7) {
-      $container = CRM_Extension_System::singleton()->getFullContainer();
-      return $container->getPath('org.civicoop.civirules');
-    }
-    else {
-      $settings = civicrm_api3('Setting', 'getsingle', []);
-      $path = $settings['extensionsDir'].'/civirules/';
-      if (is_dir($path)) {
-        return $path;
-      }
-      else {
-        return $settings['extensionsDir'].'/org.civicoop/civirules/';
-      }
-    }
+    $container = CRM_Extension_System::singleton()->getFullContainer();
+    return $container->getPath('org.civicoop.civirules');
   }
 
 
@@ -663,7 +596,12 @@ class CRM_Civirules_Utils {
   public static function getObjectNameFromObject(\CRM_Core_DAO $object)
   {
     static $contact_types = []; // Array with contact ID and value the contact type.
-    $objectName = CRM_Core_DAO_AllCoreTables::getBriefName(get_class($object));
+    // Classes renamed in core: https://github.com/civicrm/civicrm-core/pull/29390
+    $className = 'CRM_Core_DAO_AllCoreTables::getEntityNameForClass';
+    if (!method_exists('CRM_Core_DAO_AllCoreTables', 'getEntityNameForClass')) {
+      $className = 'CRM_Core_DAO_AllCoreTables::getBriefName';
+    }
+    $objectName = $className(get_class($object));
     if ($objectName == 'Contact' && isset($object->contact_type)) {
       $objectName = $object->contact_type;
     } elseif ($objectName == 'Contact' && isset($contact_types[$object->id])) {
@@ -770,15 +708,36 @@ class CRM_Civirules_Utils {
    * @return array
    */
   public static function getGroupList() {
-    $groups = [];
+    $groups = \Civi\Api4\Group::get(FALSE)
+      ->addSelect('id', 'title')
+      ->addWhere('is_active', '=', TRUE)
+      ->addWhere('is_hidden', '=', FALSE)
+      ->execute();
+    $groupList = [];
+    foreach ($groups as $group) {
+      $groupList[$group['id']] = $group['title'];
+    }
+    asort($groupList);
+    return $groupList;
+  }
+
+  /**
+   * Method to get list of active frequency units
+   *
+   * @return array
+   */
+  public static function getFrequencyUnits() {
+    $optionGroupName = "recur_frequency_units";
+    $units = [];
     if (function_exists('civicrm_api4')) {
       try {
-        $apiGroups = \Civi\Api4\Group::get()
-          ->addSelect('title')
+        $optionValues = \Civi\Api4\OptionValue::get()
+          ->addSelect('label', 'value')
+          ->addWhere('option_group_id:name', '=', $optionGroupName)
           ->addWhere('is_active', '=', TRUE)
           ->execute();
-        foreach ($apiGroups as $apiGroup) {
-          $groups[$apiGroup['id']] = $apiGroup['title'];
+        foreach ($optionValues as $optionValue) {
+          $units[$optionValue['value']] = $optionValue['label'];
         }
       }
       catch (API_Exception $ex) {
@@ -786,19 +745,99 @@ class CRM_Civirules_Utils {
     }
     else {
       try {
-        $apiGroups = civicrm_api3('Group', 'get', [
-          'return' => ['title'],
-           'is_active' => TRUE,
+        $result = civicrm_api3('OptionValue', 'get', [
           'options' => ['limit' => 0],
+          'sequential' => 1,
+          'option_group_id' => $optionGroupName,
+          'is_active' => TRUE,
+          'return' => ['label', 'value']
         ]);
-        foreach ($apiGroups['result'] as $groupId => $groupData) {
-          $groups[$groupId] = $groupData['title'];
+        foreach ($result['values'] as $optionValue) {
+          $units[$optionValue['value']] = $optionValue['label'];
         }
       }
       catch (CiviCRM_API3_Exception $ex) {
       }
     }
-    return $groups;
+    return $units;
+  }
+
+  /**
+   * Method to get event title with name
+   *
+   * @param int $eventId
+   * @return array|false|mixed|null
+   */
+  public static function getEventTitle(int $eventId) {
+    if (!empty($eventId)) {
+      if (function_exists('civicrm_api4')) {
+        try {
+          $events = \Civi\Api4\Event::get()
+            ->addSelect('title')
+            ->addWhere('id', '=', 1)
+            ->execute();
+          $event = $events->first();
+          if ($event['title']) {
+            return $event['title'];
+          }
+        }
+        catch (API_Exception $ex) {
+        }
+      }
+      else {
+        try {
+          $eventTitle = civicrm_api3('Event', 'getvalue', [
+            'id' => $eventId,
+            'return' => 'title',
+          ]);
+          if ($eventTitle) {
+            return $eventTitle;
+          }
+        }
+        catch (CiviCRM_API3_Exception $ex) {
+        }
+
+      }
+    }
+    return NULL;
+  }
+
+  /**
+   * Method to get participant status label
+   *
+   * @param int $participantStatusId
+   * @return array|false|mixed|null
+   */
+  public static function getParticipantStatusLabel(int $participantStatusId) {
+    if (!empty($participantStatusId)) {
+      try {
+        $label = civicrm_api3('ParticipantStatusType', 'getvalue', [
+          'id' => $participantStatusId,
+          'return' => 'label',
+        ]);
+        if ($label) {
+          return $label;
+        }
+      }
+      catch (CiviCRM_API3_Exception $ex) {
+      }
+    }
+    return NULL;
+  }
+
+  /**
+   * Method to get contact types
+   *
+   * @return array
+   */
+  public static function getContactTypes($parent_operator = 'IS NULL', $parent_value = null) {
+    return \Civi\Api4\ContactType::get(FALSE)
+      ->addSelect('label', 'name')
+      ->addWhere('is_active', '=', TRUE)
+      ->addWhere('parent_id', $parent_operator, $parent_value)
+      ->execute()
+      ->indexBy('name')
+      ->column('label');
   }
 
 }
