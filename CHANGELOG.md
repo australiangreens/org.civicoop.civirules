@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 3.7 (not yet released)
+
+Other: 
+
+* Fixed deprecation notice. See !257
+
 ## Version 3.6 (2024-04-18)
 
 API:
