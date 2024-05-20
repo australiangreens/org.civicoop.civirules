@@ -334,7 +334,7 @@ class CRM_Civirules_Engine {
     $reactOnEntity = $trigger->getReactOnEntity();
     $daoClass = $reactOnEntity->daoClass;
     if($daoClass) {
-      $table = $daoClass::$_tableName;
+      $table = $daoClass::getTableName();
     }
     $ruleId = $trigger->getRuleId();
     $contactId = $triggerData->getContactId();
