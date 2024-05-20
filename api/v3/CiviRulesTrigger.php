@@ -40,7 +40,7 @@ function civicrm_api3_civi_rules_trigger_create($params) {
     $params['created_user_id'] = $userId;
   }
   $returnValues = CRM_Civirules_BAO_CiviRulesTrigger::writeRecord($params);
-  return civicrm_api3_create_success($returnValues->toValue(), $params, 'CiviRulesTrigger', 'Create');
+  return civicrm_api3_create_success((array) $returnValues, $params, 'CiviRulesTrigger', 'Create');
 }
 
 /**
