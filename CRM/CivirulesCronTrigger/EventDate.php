@@ -133,7 +133,7 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
    *
    * @return string
    */
-  public function getTriggerDescription() {
+  public function getTriggerDescription(): string {
     $fields = [
       'start_date' => E::ts('Start Date'),
       'end_date' => E::ts('End Date'),

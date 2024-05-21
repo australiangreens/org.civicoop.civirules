@@ -117,7 +117,7 @@ class CRM_CivirulesCronTrigger_GroupMembership extends CRM_Civirules_Trigger_Cro
    *
    * @return string
    */
-  public function getTriggerDescription() {
+  public function getTriggerDescription(): string {
     $groupName = E::ts('Unknown');
     if (is_array($this->triggerParams['group_id'])) {
       $groupApi = civicrm_api3('Group', 'get', ['id' => ['IN' => $this->triggerParams['group_id']], 'options' => ['limit' => 0]]);

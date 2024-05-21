@@ -240,7 +240,7 @@ abstract class CRM_Civirules_Trigger {
    *
    * @return string
    */
-  public function getTriggerDescription(): string {
+  public function getTriggerDescription() {
     return '';
   }
 

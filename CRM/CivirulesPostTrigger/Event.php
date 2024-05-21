@@ -58,10 +58,8 @@ class CRM_CivirulesPostTrigger_Event extends CRM_Civirules_Trigger_Post {
    * Returns a description of this trigger
    *
    * @return string
-   * @access public
-   * @abstract
    */
-  public function getTriggerDescription() {
+  public function getTriggerDescription(): string {
     if (isset($this->triggerParams['contact_id']) && $this->triggerParams['contact_id'] == 1) {
       return E::ts('Trigger uses the logged in user as the contact.');
     } else {

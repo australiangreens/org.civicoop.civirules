@@ -126,7 +126,7 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
    *
    * @return string
    */
-  public function getTriggerDescription() {
+  public function getTriggerDescription(): string {
     $intervalUnits = self::intervals();
     $intervalUnitLabel = $intervalUnits[$this->triggerParams['interval_unit']];
     return E::ts('Next Scheduled Contribution Date %1 - %2', [

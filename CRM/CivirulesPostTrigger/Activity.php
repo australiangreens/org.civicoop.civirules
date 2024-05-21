@@ -130,10 +130,8 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
    * Returns a description of this trigger
    *
    * @return string
-   * @access public
-   * @abstract
    */
-  public function getTriggerDescription() {
+  public function getTriggerDescription(): string {
     $result = civicrm_api3('ActivityContact', 'getoptions', [
       'field' => "record_type_id",
     ]);

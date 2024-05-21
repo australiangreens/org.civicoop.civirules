@@ -150,7 +150,7 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
    *
    * @return string
    */
-  public function getTriggerDescription() {
+  public function getTriggerDescription(): string {
     $membershipTypes = CRM_Civirules_Utils::getMembershipTypes();
     $intervalUnits = self::intervals();
     $intervalUnitLabel = $intervalUnits[$this->triggerParams['interval_unit']];
