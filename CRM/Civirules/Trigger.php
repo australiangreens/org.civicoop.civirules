@@ -48,12 +48,20 @@ abstract class CRM_Civirules_Trigger {
   }
 
   /**
-   * @param array $triggerParams
+   * This is stored as a serialized array in the database
+   *
+   * @param string $triggerParams
    *
    * @return void
    */
-  public function setTriggerParams(array $triggerParams) {
-    $this->triggerParams = $triggerParams;
+  public function setTriggerParams(string $triggerParams) {
+    try {
+      $this->triggerParams = unserialize($triggerParams);
+    }
+    catch (TypeError $e) {
+      \Civi::log()->error('CiviRules setTriggerParams: Could not unserialize trigger params.');
+    }
+    $this->triggerParams = [];
   }
 
   /**

@@ -108,10 +108,6 @@ class CRM_CivirulesCronTrigger_GroupMembership extends CRM_Civirules_Trigger_Cro
     return CRM_Utils_System::url('civicrm/civirule/form/trigger/groupmembership/', 'rule_id=' . $ruleId);
   }
 
-  public function setTriggerParams($triggerParams) {
-    $this->triggerParams = unserialize($triggerParams);
-  }
-
   /**
    * Returns a description of this trigger
    *

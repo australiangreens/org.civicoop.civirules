@@ -115,13 +115,6 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
   }
 
   /**
-   * @param string $triggerParams
-   */
-  public function setTriggerParams($triggerParams) {
-    $this->triggerParams = unserialize($triggerParams);
-  }
-
-  /**
    * Returns a description of this trigger
    *
    * @return string

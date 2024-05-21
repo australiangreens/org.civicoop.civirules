@@ -101,7 +101,7 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
       return;
     }
 
-    //find matching rules for this objectName and op
+    // find matching rules for this objectName and op
     $triggers = CRM_Civirules_BAO_CiviRulesRule::findRulesByObjectNameAndOp($objectName, $op);
     foreach($triggers as $trigger) {
       if ($trigger instanceof CRM_Civirules_Trigger_Post) {

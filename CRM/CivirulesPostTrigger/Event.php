@@ -27,10 +27,6 @@ use CRM_Civirules_ExtensionUtil as E;
  */
 class CRM_CivirulesPostTrigger_Event extends CRM_Civirules_Trigger_Post {
 
-  public function setTriggerParams($triggerParams) {
-    $this->triggerParams = unserialize($triggerParams);
-  }
-
   protected function getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID = NULL) {
     $triggerData = parent::getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
     if (isset($this->triggerParams['contact_id']) && $this->triggerParams['contact_id'] == 1) {

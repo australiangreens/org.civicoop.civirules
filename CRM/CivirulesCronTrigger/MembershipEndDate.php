@@ -139,13 +139,6 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
   }
 
   /**
-   * @param string $triggerParams
-   */
-  public function setTriggerParams($triggerParams) {
-    $this->triggerParams = unserialize($triggerParams);
-  }
-
-  /**
    * Returns a description of this trigger
    *
    * @return string

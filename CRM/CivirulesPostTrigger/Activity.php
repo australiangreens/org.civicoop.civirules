@@ -4,10 +4,6 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
 
-  public function setTriggerParams($triggerParams) {
-    $this->triggerParams = unserialize($triggerParams);
-  }
-
   /**
    * Returns an array of entities on which the trigger reacts
    *
