@@ -6,6 +6,7 @@ Other:
 
 * Fixed deprecation notice. See !257
 * Fixed type error on CRON and delayed execution in some circumstances (#224, #227).
+* Fix cron trigger execution.
 
 ## Version 3.6 (2024-04-18)
 
