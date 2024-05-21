@@ -174,6 +174,7 @@ abstract class CRM_Civirules_Trigger {
    * Checks whether the trigger provides a certain entity.
    *
    * @param string $entity
+   *
    * @return bool
    */
   public function doesProvideEntity(string $entity): bool {
@@ -190,6 +191,7 @@ abstract class CRM_Civirules_Trigger {
    * Checks whether the trigger provides a certain set of entities
    *
    * @param array<string> $entities
+   *
    * @return bool
    */
   public function doesProvideEntities($entities): bool {
