@@ -136,7 +136,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
       if ($triggerObject !== FALSE) {
         $triggerObject->setTriggerId($dao->trigger_id);
         $triggerObject->setRuleId($dao->rule_id);
-        $triggerObject->setTriggerParams($dao->trigger_params);
+        $triggerObject->setTriggerParams($dao->trigger_params ?? []);
         $triggers[] = $triggerObject;
       }
     }
@@ -162,7 +162,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
       if ($cronTriggerObject !== FALSE) {
         $cronTriggerObject->setTriggerId($dao->trigger_id);
         $cronTriggerObject->setRuleId($dao->rule_id);
-        $cronTriggerObject->setTriggerParams($dao->trigger_params);
+        $cronTriggerObject->setTriggerParams($dao->trigger_params ?? []);
         $cronTriggers[] = $cronTriggerObject;
       }
     }
@@ -187,7 +187,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
       if ($triggerObject !== FALSE) {
         $triggerObject->setTriggerId($dao->trigger_id);
         $triggerObject->setRuleId($dao->rule_id);
-        $triggerObject->setTriggerParams($dao->trigger_params);
+        $triggerObject->setTriggerParams($dao->trigger_params ?? []);
         $triggers[] = $triggerObject;
       }
     }

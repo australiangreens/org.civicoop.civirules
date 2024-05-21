@@ -90,7 +90,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $this->triggerClass = CRM_Civirules_BAO_Trigger::getTriggerObjectByTriggerId($this->trigger->id, TRUE);
       $this->triggerClass->setTriggerId($this->trigger->id);
       $this->triggerClass->setRuleId($this->rule->id);
-      $this->triggerClass->setTriggerParams($this->rule->trigger_params);
+      $this->triggerClass->setTriggerParams($this->rule->trigger_params ?? []);
 
       $this->assign('trigger_edit_params', $this->triggerClass->getExtraDataInputUrl($this->ruleId));
     }
