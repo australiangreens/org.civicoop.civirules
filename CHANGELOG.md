@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.8 (not yet released)
+
+* Fix "Membership is Renewed" trigger that was not working because of an invalid field name.
+
 ## Version 3.7 (2024-05-21)
 
 * Fixed deprecation notice. See !257

@@ -5,7 +5,7 @@ use Civi\Api4\ContributionRecur;
 use Civi\Api4\LineItem;
 
 /**
- * Class for CiviRules post trigger handling - Membership Renewed
+ * Class for CiviRules post trigger handling - Membership
  *
  * @license AGPL-3.0
  */
