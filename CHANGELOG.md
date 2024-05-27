@@ -1,8 +1,10 @@
 # CHANGELOG
 
-## Version 3.8 (not yet released)
+## Version 3.8 (2024-05-27)
 
 * Fix "Membership is Renewed" trigger that was not working because of an invalid field name.
+* Fix field names when comparing to 'pre' data - see !258.
+* Fix issue with trigger parameters being overwritten to empty array.
 
 ## Version 3.7 (2024-05-21)
 
