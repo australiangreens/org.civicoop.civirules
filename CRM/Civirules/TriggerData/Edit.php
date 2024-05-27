@@ -19,7 +19,7 @@ class CRM_Civirules_TriggerData_Edit extends CRM_Civirules_TriggerData_Post impl
     if (!is_array($originalData)) {
       throw new Exception('Original data is not set or is not an array in EditTriggerData for CiviRules');
     }
-    $this->originalData = $originalData;
+    $this->originalData = CRM_Civirules_Engine::useCanonicalFieldNames($entity, $originalData);
   }
 
   public function getOriginalData() {
