@@ -55,13 +55,14 @@ abstract class CRM_Civirules_Trigger {
    * @return void
    */
   public function setTriggerParams(string $triggerParams) {
+    // Initialise as empty array in case we fail to unserialize (so we don't crash when trying to access uninitialised data).
+    $this->triggerParams = [];
     try {
       $this->triggerParams = unserialize($triggerParams);
     }
     catch (TypeError $e) {
       \Civi::log()->error('CiviRules setTriggerParams: Could not unserialize trigger params.');
     }
-    $this->triggerParams = [];
   }
 
   /**
