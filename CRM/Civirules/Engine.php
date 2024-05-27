@@ -177,7 +177,8 @@ class CRM_Civirules_Engine {
    * Modify entity data to use canonical and not unique field names.
    * This is necessary because CiviRules uses canonical field names, but `executeDelayedAction()` calls API3, which uses unique field names.
    */
-  private static function useCanonicalFieldNames(string $entityName, array $entityData) : array {
+  public static function useCanonicalFieldNames(string $entityName, array $entityData) : array {
+    $fixedEntityData = [];
     $fieldData = civicrm_api3($entityName, 'getfields')['values'];
     $lookupTable = array_combine(array_keys($fieldData), array_column($fieldData, 'name'));
     foreach ($entityData as $fieldName => $value) {
