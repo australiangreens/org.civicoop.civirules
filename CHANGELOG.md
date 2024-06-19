@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.9 (not yet released)
+
+* Add Action: Set Contact as Deceased.
+
 ## Version 3.8 (2024-05-27)
 
 * Fix "Membership is Renewed" trigger that was not working because of an invalid field name.
