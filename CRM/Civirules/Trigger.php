@@ -39,6 +39,11 @@ abstract class CRM_Civirules_Trigger {
   protected $ruleDebugEnabled;
 
   /**
+   * @var array
+   */
+  protected $ruleConditions;
+
+  /**
    * @param int $ruleId
    *
    * @return void
@@ -139,6 +144,16 @@ abstract class CRM_Civirules_Trigger {
       }
     }
     return $this->ruleDebugEnabled ?? FALSE;
+  }
+
+  /**
+   * @return array
+   */
+  public function getRuleConditions(): array {
+    if (!isset($this->ruleConditions) && !empty($this->ruleId)) {
+      $this->ruleConditions = CRM_Civirules_BAO_RuleCondition::getValues(['rule_id' => $this->ruleId]);
+    }
+    return $this->ruleConditions ?? [];
   }
 
   /**
