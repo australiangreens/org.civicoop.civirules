@@ -1,4 +1,7 @@
 <?php
+
+use Civi\Api4\Activity;
+
 /**
  * Class for CiviRule Condition FirstContribution
  *
@@ -85,10 +88,12 @@ class CRM_CivirulesConditions_Activity_Type extends CRM_Civirules_Condition {
     $activityData = $triggerData->getEntityData('Activity');
 
     if (empty($activityData['activity_type_id'] ?? '')) {
-      $activity = civicrm_api3('Activity', 'getsingle', [
-        'return' => ['activity_type_id'],
-        'id' => $activityData['id'],
-      ]);
+      $activity = Activity::get(FALSE)
+        ->addSelect('activity_type_id')
+        ->addWhere('id', '=', $activityData['id'])
+        ->setLimit(1)
+        ->execute()
+        ->first();
       $activityData['activity_type_id'] = $activity['activity_type_id'];
       $triggerData->setEntityData('Activity', $activityData);
     }
