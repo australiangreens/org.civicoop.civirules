@@ -39,6 +39,9 @@ abstract class CRM_Civirules_Trigger {
   protected $ruleDebugEnabled;
 
   /**
+   * The Rule Conditions
+   * Conditions are cached in this variable
+   *
    * @var array
    */
   protected $ruleConditions;
@@ -147,6 +150,9 @@ abstract class CRM_Civirules_Trigger {
   }
 
   /**
+   * Retrieve rule conditions for the current rule.
+   * Results are cached.
+   *
    * @return array
    */
   public function getRuleConditions(): array {

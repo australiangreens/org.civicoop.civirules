@@ -8,6 +8,8 @@
 class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
 
   /**
+   * Cache for CiviRule Condition ID - class name mapping
+   *
    * @var array
    */
   protected static $conditionClassNames = [];
