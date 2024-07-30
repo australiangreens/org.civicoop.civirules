@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 3.11 (not yet released)
+## Version 3.11 (2024-07-30)
 
 * #228 Fix issue with trigger Untag contact not working anymore.
 
