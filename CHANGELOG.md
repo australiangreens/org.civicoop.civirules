@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.11 (not yet released)
+
+* #228 Fix issue with trigger Untag contact not working anymore.
+
 ## Version 3.10 (2024-07-28)
 
 * Fix 'Recur next scheduled date' trigger was not working (it was comparing a datetime field with a date so it would never match).
