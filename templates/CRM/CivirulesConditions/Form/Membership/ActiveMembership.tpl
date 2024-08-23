@@ -5,6 +5,11 @@
     <div class="content">{$form.membership_type_id.html}</div>
     <div class="clear"></div>
   </div>
+  <div class="crm-section">
+    <div class="label">{$form.negate.label}</div>
+    <div class="content">{$form.negate.html}</div>
+    <div class="clear"></div>
+  </div>
 </div>
 <div class="crm-submit-buttons">
     {include file="CRM/common/formButtons.tpl" location="bottom"}

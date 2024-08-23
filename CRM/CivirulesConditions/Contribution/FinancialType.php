@@ -28,11 +28,11 @@ class CRM_CivirulesConditions_Contribution_FinancialType extends CRM_Civirules_C
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $contribution = $triggerData->getEntityData('Contribution');
-		if (!isset($contribution['financial_type_id'])) {
-			// The financial type could be empty because of an online payment.
-			// So we have to look it up in the database.
-			$contribution['financial_type_id'] = CRM_Core_DAO::singleValueQuery("SELECT financial_type_id FROM civicrm_contribution WHERE id = %1", array(1=>array($contribution['id'], 'Integer')));
-		}
+    if (!isset($contribution['financial_type_id'])) {
+      // The financial type could be empty because of an online payment.
+      // So we have to look it up in the database.
+      $contribution['financial_type_id'] = CRM_Core_DAO::singleValueQuery("SELECT financial_type_id FROM civicrm_contribution WHERE id = %1", array(1=>array($contribution['id'], 'Integer')));
+    }
     switch ($this->conditionParams['operator']) {
       case 0:
         if (in_array($contribution['financial_type_id'], $this->conditionParams['financial_type_id'])) {
@@ -60,6 +60,49 @@ class CRM_CivirulesConditions_Contribution_FinancialType extends CRM_Civirules_C
    */
   public function getExtraDataInputUrl($ruleConditionId) {
     return CRM_Utils_System::url('civicrm/civirule/form/condition/contribution_financialtype/', 'rule_condition_id='.$ruleConditionId);
+  }
+
+  /**
+   * Returns condition data as an array and ready for export.
+   * E.g. replace ids for names.
+   *
+   * @return array
+   */
+  public function exportConditionParameters() {
+    $params = parent::exportConditionParameters();
+    if (!empty($params['financial_type_id']) && is_array($params['financial_type_id'])) {
+      foreach($params['financial_type_id'] as $i => $gid) {
+        try {
+          $params['financial_type_id'][$i] = civicrm_api3('FinancialType', 'getvalue', [
+            'return' => 'name',
+            'id' => $gid,
+          ]);
+        } catch (CiviCRM_API3_Exception $e) {
+        }
+      }
+    }
+    return $params;
+  }
+
+  /**
+   * Returns condition data as an array and ready for import.
+   * E.g. replace name for ids.
+   *
+   * @return string
+   */
+  public function importConditionParameters($condition_params = NULL) {
+    if (!empty($condition_params['financial_type_id']) && is_array($condition_params['financial_type_id'])) {
+      foreach($condition_params['financial_type_id'] as $i => $gid) {
+        try {
+          $condition_params['financial_type_id'][$i] = civicrm_api3('FinancialType', 'getvalue', [
+            'return' => 'id',
+            'name' => $gid,
+          ]);
+        } catch (CiviCRM_API3_Exception $e) {
+        }
+      }
+    }
+    return parent::importConditionParameters($condition_params);
   }
 
   /**

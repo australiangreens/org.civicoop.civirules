@@ -5,38 +5,27 @@
  * @license AGPL-3.0
  */
 
-class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_Civirules_Trigger_Post {
-
-  /**
-   * Returns an array of entities on which the trigger reacts
-   *
-   * @return CRM_Civirules_TriggerData_EntityDefinition
-   */
-  protected function reactOnEntity() {
-    return new CRM_Civirules_TriggerData_EntityDefinition($this->objectName, $this->objectName, $this->getDaoClassName(), 'Membership');
-  }
-
-  /**
-   * Return the name of the DAO Class. If a dao class does not exist return an empty value
-   *
-   * @return string
-   */
-  protected function getDaoClassName() {
-    return 'CRM_Member_DAO_Membership';
-  }
+class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_CivirulesPostTrigger_Membership {
 
   /**
    * Trigger a rule for this trigger
    *
-   * @param $op
-   * @param $objectName
-   * @param $objectId
-   * @param $objectRef
+   * @param string $op
+   * @param string $objectName
+   * @param int $objectId
+   * @param object $objectRef
+   * @param string $eventID
    */
   public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
     $triggerData = $this->getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
     $membership = $triggerData->getEntityData('Membership');
     $originalMembership = $triggerData->getOriginalData();
+
+    // Pure change of membership state, e.g. by scheduled job Update Membership Statuses
+    //   does not supply all required information, but is not a Renewal, so escape.
+    if( !isset($membership['membership_type_id']) || !isset($membership['membership_join_date']) || !isset($membership['end_date']) ) {
+      return;
+    }
 
     // Check if the Membership has been renewed (end_date has been increased by one membership term)
     // As a membership runs from [date] to [date - 1 day] we need to check if the new end_date matches the
@@ -48,7 +37,8 @@ class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_Civirules_Trigger_P
       return;
     }
 
-    CRM_Civirules_Engine::triggerRule($this, clone $triggerData);
+    $this->setTriggerData($triggerData);
+    parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
   }
 
 }

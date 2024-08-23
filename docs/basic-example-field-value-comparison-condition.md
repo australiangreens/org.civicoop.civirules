@@ -14,6 +14,12 @@ The Condition **Field Value Comparison** will allow you to select the _Entity_ y
 
 Below you will find a few examples that will demonstrate this.
 
+## Dates in Field Value Comparison Conditions
+
+All dates are in format `YYYYMMDD`, but you can enter dates in any format that PHP understands and they will be converted when the condition is evaluated. This includes [relative dates](https://www.php.net/manual/en/datetime.formats.relative.php), so you can enter dates like `today`, `-1 year`, `3 days ago`, or `first day of` (for the first day of the month). Note that the condition description will show the current evaluated date, rather than the value you entered (e.g. if you enter `today`, the description will show today's date), but the comparison date will be evaluated every time the condition is checked. 
+
+Note that any time component of the date is ignored. Only dates are compared, never times.
+
 ## Example: Create Activity when Participant Registers for Event but Has no Email
 
 In this example I want to catch an Event Participant that register for my event, but has flagged 'Do Not Email' so he/she does not get a confirmation by email. In this case I want to create an Activity for Bob Watson to send the confirmation by snailmail.
@@ -48,8 +54,8 @@ Bob Watson now has the Activity on his summary and I could create a dashlet for 
 
 ![Edit actions](./img/CiviRules_46_print10.png)
 
-!!!Note	
-	Select List with Values
+!!!Note
+    Select List with Values
     As you can see the possible values are shows as select lists if that makes sense, in this example for the Do Not Email field and for the Participant Status field. In some exceptional cases you might not get a select list, but simply a field where you can enter a value. That might be because there is no reason for a select list (last_name = "Jones") OR when a select list would make sense but the internal engine can not find the link to the option values linked to the field. In that case you will have to find out the value you want from Administer/System Settings/Option Groups and find the one you want.
 
 ## Example: Add to Group When Pledge Becomes Active

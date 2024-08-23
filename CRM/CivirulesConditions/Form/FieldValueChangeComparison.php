@@ -95,11 +95,11 @@ class CRM_CivirulesConditions_Form_FieldValueChangeComparison extends CRM_Civiru
     $this->add('hidden', 'rule_condition_id');
 
     $this->add('select', 'original_operator', ts('Operator'), $this->conditionClass->getOperators(), true);
-    $this->add('text', 'original_value', ts('Compare value'), true);
+    $this->add('text', 'original_value', ts('Compare value'), NULL, true);
     $this->add('textarea', 'original_multi_value', ts('Compare values'));
 
     $this->add('select', 'operator', ts('Operator'), $this->conditionClass->getOperators(), true);
-    $this->add('text', 'value', ts('Compare value'), true);
+    $this->add('text', 'value', ts('Compare value'), NULL, true);
     $this->add('textarea', 'multi_value', ts('Compare values'));
 
     $this->assign('field_options', $this->conditionClass->getFieldOptions());

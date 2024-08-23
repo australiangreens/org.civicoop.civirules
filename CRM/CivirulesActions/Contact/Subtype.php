@@ -19,8 +19,10 @@ class CRM_CivirulesActions_Contact_Subtype extends CRM_Civirules_Action {
     $action_params = $this->getActionParameters();
     foreach($action_params['sub_type'] as $sub_type) {
       if (CRM_Contact_BAO_ContactType::isExtendsContactType($sub_type, $contactType)) {
-        $subTypes[] = $sub_type;
-        $changed = true;
+        if (!in_array($sub_type, $subTypes)) {
+          $subTypes[] = $sub_type;
+          $changed = true;
+        }
       }
     }
     if ($changed) {
@@ -28,8 +30,47 @@ class CRM_CivirulesActions_Contact_Subtype extends CRM_Civirules_Action {
       $params['contact_id'] = $contactId;
       $params['contact_type'] = $contactType;
       $params['contact_sub_type'] = $subTypes;
-      CRM_Contact_BAO_Contact::add($params);
+      CRM_Contact_BAO_Contact::writeRecord($params);
     }
+  }
+
+  /**
+   * Returns condition data as an array and ready for export.
+   * E.g. replace ids for names.
+   *
+   * @return array
+   */
+  public function exportActionParameters() {
+    $action_params = parent::exportActionParameters();
+    foreach($action_params['sub_type'] as $i=>$j) {
+      try {
+        $action_params['sub_type'][$i] = civicrm_api3('ContactType', 'getvalue', [
+          'return' => 'name',
+          'id' => $j,
+        ]);
+      } catch (CiviCRM_API3_Exception $e) {
+      }
+    }
+    return $action_params;
+  }
+
+  /**
+   * Returns condition data as an array and ready for import.
+   * E.g. replace name for ids.
+   *
+   * @return string
+   */
+  public function importActionParameters($action_params = NULL) {
+    foreach($action_params['sub_type'] as $i=>$j) {
+      try {
+        $action_params['sub_type'][$i] = civicrm_api3('ContactType', 'getvalue', [
+          'return' => 'id',
+          'name' => $j,
+        ]);
+      } catch (CiviCRM_API3_Exception $e) {
+      }
+    }
+    return parent::importActionParameters($action_params);
   }
 
   /**

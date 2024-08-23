@@ -9,6 +9,11 @@ abstract class CRM_Civirules_Trigger {
   protected $triggerParams;
 
   /**
+   * @var \CRM_Civirules_TriggerData_TriggerData
+   */
+  protected \CRM_Civirules_TriggerData_TriggerData $triggerData;
+
+  /**
    * @var string
    */
   protected $ruleTitle;
@@ -36,6 +41,31 @@ abstract class CRM_Civirules_Trigger {
 
   public function getTriggerId() {
     return $this->triggerId;
+  }
+
+  /**
+   * @param \CRM_Civirules_TriggerData_TriggerData $triggerData
+   *
+   * @return void
+   */
+  public function setTriggerData(\CRM_Civirules_TriggerData_TriggerData $triggerData) {
+    $this->triggerData = $triggerData;
+  }
+
+  /**
+   * @return \CRM_Civirules_TriggerData_TriggerData
+   */
+  public function getTriggerData(): \CRM_Civirules_TriggerData_TriggerData {
+    return $this->triggerData;
+  }
+
+  /**
+   * Check if the triggerData has been set
+   *
+   * @return bool
+   */
+  public function hasTriggerData(): bool {
+    return isset($this->triggerData);
   }
 
   public function getRuleTitle() {
@@ -183,6 +213,28 @@ abstract class CRM_Civirules_Trigger {
   public function alterTriggerData(CRM_Civirules_TriggerData_TriggerData &$triggerData) {
     $hook_invoker = CRM_Civirules_Utils_HookInvoker::singleton();
     $hook_invoker->hook_civirules_alterTriggerData($triggerData);
+  }
+
+  /**
+   * Trigger a rule for this trigger
+   *
+   * @param string $op
+   * @param string $objectName
+   * @param int $objectId
+   * @param object $objectRef
+   * @param string $eventID
+   */
+  public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
+    if (!$this->hasTriggerData()) {
+      throw new CRM_Core_Exception('CiviRules: Trigger data is empty. You need to call setTriggerData() first');
+    }
+
+    try {
+      CRM_Civirules_Engine::triggerRule($this, $this->getTriggerData());
+    }
+    catch (Exception $e) {
+      \Civi::log()->error('Failed to trigger rule: ' . $e->getMessage());
+    }
   }
 
 }

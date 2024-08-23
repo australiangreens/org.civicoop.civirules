@@ -4,6 +4,15 @@ class CRM_Civirules_TriggerData_Edit extends CRM_Civirules_TriggerData_Post impl
 
   protected $originalData = array();
 
+  /**
+   * @param string $entity
+   * @param int $objectId
+   * @param array $data
+   * @param array $originalData
+   *
+   * @throws \CRM_Core_Exception
+   * @throws \Civi\API\Exception\UnauthorizedException
+   */
   public function __construct($entity, $objectId, $data, $originalData) {
     parent::__construct($entity, $objectId, $data);
 

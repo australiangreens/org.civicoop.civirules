@@ -22,19 +22,31 @@ class CRM_Civirules_Engine {
    *
    * @return bool true when conditions are valid; false when conditions are not valid
    */
-  public static function triggerRule(CRM_Civirules_Trigger $trigger, CRM_Civirules_TriggerData_TriggerData $triggerData) {
+  public static function triggerRule(CRM_Civirules_Trigger $trigger, CRM_Civirules_TriggerData_TriggerData $triggerData): bool {
     try {
       $triggerData->setTrigger($trigger);
-      $triggerData->setEntityId($triggerData->getEntityData($triggerData->getEntity())['id']);
-      if ($triggerData->getEntity() === 'Contact') {
-        $triggerData->setContactId($triggerData->getEntityId());
+
+      // The Entity ID should have been set by one of the TriggerData classes
+      if (empty($triggerData->getEntityId())) {
+        \CRM_Core_Error::deprecatedWarning('CiviRules: The entityID for Entity: ' . $triggerData->getEntity() . ' should be set by the calling class.');
+        $triggerData->setEntityId($triggerData->getEntityData($triggerData->getEntity())['id']);
       }
+
+      if ($triggerData->getEntity() === 'Contact') {
+        if (empty($triggerData->getContactId())) {
+          \CRM_Core_Error::deprecatedWarning('CiviRules: The Contact contactID should be set by the calling class.');
+          $triggerData->setContactId($triggerData->getEntityId());
+        }
+      }
+
+      // Check if the conditions are valid
       $isRuleValid = self::areConditionsValid($triggerData);
 
       if ($isRuleValid) {
+        // Log and execute the actions for the rule
         self::logRule($triggerData);
         self::executeActions($triggerData);
-        return true;
+        return TRUE;
       }
     } catch (Exception $e) {
       $message = "Error on {file} (Line {line})\r\n\r\n{exception_message}";
@@ -42,9 +54,9 @@ class CRM_Civirules_Engine {
       $context['line'] = $e->getLine();
       $context['file'] = $e->getFile();
       $context['exception_message'] = $e->getMessage();
-      CRM_Civirules_Utils_LoggerFactory::logError("Failed to execute rule",  $message, $triggerData, $context);
+      CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute rule',  $message, $triggerData, $context);
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -75,7 +87,7 @@ class CRM_Civirules_Engine {
     $delay = self::getActionDelay($ruleAction, $actionEngine);
     if ($delay instanceof DateTime) {
       $triggerData->isDelayedExecution = TRUE;
-      $triggerData->delayedSubmitDateTime = CRM_Utils_Time::getTime('YmdHis');
+      $triggerData->delayedSubmitDateTime = CRM_Utils_Time::date('YmdHis');
       self::delayAction($delay, $actionEngine);
     } else {
       //there is no delay so process action immediately
@@ -96,11 +108,11 @@ class CRM_Civirules_Engine {
    *
    * @return array
    */
-  public static function processDelayedActions($maxRunTime=30) {
+  public static function processDelayedActions(int $maxRunTime = 30): array {
     $queue = CRM_Queue_Service::singleton()->create([
       'type' => 'Civirules',
       'name' => self::QUEUE_NAME,
-      'reset' => false, //do not flush queue upon creation
+      'reset' => FALSE, //do not flush queue upon creation
     ]);
 
     $returnValues = [];
@@ -114,7 +126,7 @@ class CRM_Civirules_Engine {
 
     $stopTime = time() + $maxRunTime; // stop executing next item after 30 seconds
     while((time() < $stopTime) && $queue->numberOfItems() > 0) {
-      $result = $runner->runNext(false);
+      $result = $runner->runNext(FALSE);
       $returnValues[] = $result;
 
       if (!$result['is_continue']) {
@@ -130,44 +142,34 @@ class CRM_Civirules_Engine {
    *
    * @return bool
    */
-  public static function executeDelayedAction() {
+  public static function executeDelayedAction(): bool {
     try {
-      // Check how many arguments this function has.
-      // If there are two we could use the ActionEngine if one we should convert the ruleAction to
-      // an actionEngine.
-      // Why is this? Because we want to make sure that as soon as someone upgrades their existing civirules installation
-      // the old delayed actions should still be executed.
       $args = func_get_args();
-      if (count($args) == 2 && $args[1] instanceof CRM_Civirules_ActionEngine_AbstractActionEngine) {
-        $actionEngine = $args[1];
-        $ruleAction = $actionEngine->getRuleAction();
-        $triggerData = $actionEngine->getTriggerData();
-        if (isset($ruleAction['ignore_condition_with_delay']) && $ruleAction['ignore_condition_with_delay']) {
-          $processAction = true;
-        } else {
-          $processAction = self::areConditionsValid($actionEngine->getTriggerData());
+      /* @var \CRM_Civirules_ActionEngine_AbstractActionEngine $actionEngine */
+      $actionEngine = $args[1];
+      $triggerData = $actionEngine->getTriggerData();
+      if ($actionEngine->ignoreConditionsOnDelayedProcessing()) {
+        $processAction = TRUE;
+      } else {
+        $entity = $triggerData->getEntity();
+        if ($entity) {
+          try {
+            $entityData = civicrm_api3($entity, 'getsingle', ['id' => $triggerData->getEntityId()]);
+            $triggerData->setEntityData($entity, $entityData);
+          }
+          catch (Exception $e) {
+            // leave $triggerData as is
+          }
         }
-        if ($processAction) {
-          $actionEngine->execute();
-        }
-      } elseif (count($args) == 3 && $args[1] instanceof CRM_Civirules_Action && $args[2] instanceof CRM_Civirules_TriggerData_TriggerData) {
-        // Process the 'old' way
-        $action = $args[1];
-        $triggerData = $args[2];
-        if ($action->ignoreConditionsOnDelayedProcessing()) {
-          $processAction = true;
-        } else {
-          $processAction = self::areConditionsValid($triggerData);
-        }
-
-        if ($processAction) {
-          $action->processAction($triggerData);
-        }
+        $processAction = self::areConditionsValid($triggerData);
+      }
+      if ($processAction) {
+        $actionEngine->execute();
       }
     } catch (Exception $e) {
-      CRM_Civirules_Utils_LoggerFactory::logError("Failed to execute delayed action",  $e->getMessage(), $triggerData);
+      CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute delayed action',  $e->getMessage(), $triggerData);
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -180,7 +182,7 @@ class CRM_Civirules_Engine {
     $queue = CRM_Queue_Service::singleton()->create([
       'type' => 'Civirules',
       'name' => self::QUEUE_NAME,
-      'reset' => false, // do not flush queue upon creation
+      'reset' => FALSE, // do not flush queue upon creation
     ]);
 
     // create a task with the action and eventData as parameters
@@ -225,11 +227,11 @@ class CRM_Civirules_Engine {
       if ($now < $actionDelayedTo) {
         return $actionDelayedTo;
       }
-      return false;
+      return FALSE;
     } elseif ($delayedTo instanceof DateTime and $now < $delayedTo) {
       return $delayedTo;
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -239,9 +241,9 @@ class CRM_Civirules_Engine {
    *
    * @return bool
    */
-  public static function areConditionsValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $isValid = true;
-    $firstCondition = true;
+  public static function areConditionsValid(CRM_Civirules_TriggerData_TriggerData $triggerData): bool {
+    $isValid = TRUE;
+    $firstCondition = TRUE;
 
     $conditionParams = [
       'rule_id' => $triggerData->getTrigger()->getRuleId(),
@@ -250,7 +252,7 @@ class CRM_Civirules_Engine {
     foreach ($ruleConditions as $ruleConditionId => $ruleCondition) {
       if ($firstCondition) {
         $isValid = self::checkCondition($ruleCondition, $triggerData);
-        $firstCondition = false;
+        $firstCondition = FALSE;
       } elseif ($ruleCondition['condition_link'] == 'AND') {
         if ($isValid) {
           $isValid = self::checkCondition($ruleCondition, $triggerData);
@@ -260,7 +262,7 @@ class CRM_Civirules_Engine {
           $isValid = self::checkCondition($ruleCondition, $triggerData);
         }
       } else {
-        $isValid = false; // we should never reach this statement
+        $isValid = FALSE; // we should never reach this statement
       }
       $conditionsValid[$ruleConditionId] = "$ruleConditionId=" . ($isValid ? 'true' : 'false');
     }
@@ -289,15 +291,15 @@ class CRM_Civirules_Engine {
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    *
    * @return bool
+   * @throws \Exception
    */
-  public static function checkCondition($ruleCondition, CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], false);
+  public static function checkCondition(array $ruleCondition, CRM_Civirules_TriggerData_TriggerData $triggerData): bool {
+    $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], FALSE);
     if (!$condition) {
-      return false;
+      return FALSE;
     }
     $condition->setRuleConditionData($ruleCondition);
-    $isValid = $condition->isConditionValid($triggerData);
-    return $isValid;
+    return (bool) $condition->isConditionValid($triggerData);
   }
 
   /**
