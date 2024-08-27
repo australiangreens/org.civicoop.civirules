@@ -18,8 +18,16 @@ class CRM_CivirulesActions_Membership_Form_CancelLatestMembership extends CRM_Ci
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $this->add('select', 'membership_type_id', E::ts('Membership type:'), CRM_Civirules_Utils::getMembershipTypes(), TRUE, ['class' => 'crm-select2']);
-    $this->add('select', 'membership_status_id', E::ts('Membership currently has status:'), CRM_Civirules_Utils::getMembershipStatus(), TRUE, ['class' => 'crm-select2']);
+    $this->add('select', 'membership_type_id', E::ts('Membership type:'), CRM_Civirules_Utils::getMembershipTypes(), TRUE, [
+      'class' => 'crm-select2',
+      'multiple' => TRUE,
+      'placeholder' => '- select type(s) -'
+    ]);
+    $this->add('select', 'membership_status_id', E::ts('Membership currently has status:'), CRM_Civirules_Utils::getMembershipStatus(), TRUE, [
+      'class' => 'crm-select2',
+      'multiple' => TRUE,
+      'placeholder' => '- select status(es) -'
+    ]);
     $this->addButtons([
       ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
       ['type' => 'cancel', 'name' => ts('Cancel')],

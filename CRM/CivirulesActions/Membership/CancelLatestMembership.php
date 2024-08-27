@@ -26,8 +26,8 @@ class CRM_CivirulesActions_Membership_CancelLatestMembership extends CRM_Civirul
         $membership = \Civi\Api4\Membership::get(FALSE)
           ->addSelect('id')
           ->addWhere('contact_id', '=', $contactId)
-          ->addWhere('membership_type_id', '=', $actionParams['membership_type_id'])
-          ->addWhere('status_id', '=', $actionParams['membership_status_id'])
+          ->addWhere('membership_type_id', 'IN', $actionParams['membership_type_id'])
+          ->addWhere('status_id', 'IN', $actionParams['membership_status_id'])
           ->addOrderBy('start_date', 'DESC')
           ->setLimit(1)->execute()->first();
         if ($membership['id']) {
@@ -78,14 +78,21 @@ class CRM_CivirulesActions_Membership_CancelLatestMembership extends CRM_Civirul
   public function userFriendlyConditionParams(): string {
     $friendlyText = "Cancel Membership ";
     $actionParams = $this->getActionParameters();
-    $textElements = [];
+    $statusElements = [];
+    $typeElements = [];
     if ($actionParams['membership_type_id']) {
-      $textElements[] = "of type: " . $this->getMembershipTypeName($actionParams['membership_type_id']);
+      foreach ($actionParams['membership_type_id'] as $typeId) {
+        $typeElements[] = $this->getMembershipTypeName($typeId);
+      }
+      $friendlyText .= "of type(s): " . implode(", ", $typeElements);
     }
     if ($actionParams['membership_status_id']) {
-      $textElements[] = "with status: " . $this->getMembershipStatusLabel($actionParams['membership_status_id']);
+      foreach ($actionParams['membership_status_id'] as $statusId) {
+        $statusElements[] = $this->getMembershipStatusLabel($statusId);
+      }
+      $friendlyText .= " and of status(es): " . implode(", ", $statusElements);
     }
-    return $friendlyText . implode(' ', $textElements);
+    return $friendlyText;
   }
 
   /**
