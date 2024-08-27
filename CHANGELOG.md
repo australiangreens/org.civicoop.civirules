@@ -1,4 +1,8 @@
 # CHANGELOG
+## Version 3.12 (2024-08-27)
+
+* add action to cancel latest membership of a type and status, also allow for group entity
+* make sure we get the latest contribution by date for membership triggers
 
 ## Version 3.11 (2024-07-30)
 
