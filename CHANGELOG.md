@@ -1,4 +1,8 @@
 # CHANGELOG
+## Version 3.13 (not yet released)
+
+*  Add Update Contribution Status action. See !267
+
 ## Version 3.12 (2024-08-27)
 
 * add action to cancel latest membership of a type and status, also allow for group entity
