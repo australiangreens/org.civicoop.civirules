@@ -30,6 +30,7 @@ function civicrm_api3_civirules_cron($params) {
 
   $rules = CRM_Civirules_BAO_CiviRulesRule::findRulesForCron();
   foreach($rules as $rule) {
+    /** @var CRM_Civirules_Trigger $rule */
     $return = $rule->process();
     $triggeredEntities = $return['count'];
     $triggeredActions = $return['is_valid_count'];

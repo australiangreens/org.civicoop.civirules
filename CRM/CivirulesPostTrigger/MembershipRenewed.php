@@ -21,19 +21,16 @@ class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_CivirulesPostTrigge
     $membership = $triggerData->getEntityData('Membership');
     $originalMembership = $triggerData->getOriginalData();
 
-    // Pure change of membership state, e.g. by scheduled job Update Membership Statuses
-    //   does not supply all required information, but is not a Renewal, so escape.
-    if( !isset($membership['membership_type_id']) || !isset($membership['membership_join_date']) || !isset($membership['end_date']) ) {
-      return;
-    }
-
     // Check if the Membership has been renewed (end_date has been increased by one membership term)
     // As a membership runs from [date] to [date - 1 day] we need to check if the new end_date matches the
     //   calculated end_date based on the original end_date + 1 day.
     $startDate = date('Y-m-d', strtotime("{$originalMembership['end_date']} + 1 day"));
     $membershipDates = CRM_Member_BAO_MembershipType::getDatesForMembershipType(
-      $membership['membership_type_id'], $membership['membership_join_date'], $startDate);
+      $membership['membership_type_id'], $membership['join_date'], $startDate);
     if ($membershipDates['end_date'] !== CRM_Utils_Date::isoToMysql($membership['end_date'])) {
+      if ($this->getRuleDebugEnabled()) {
+        \Civi::log('civirules')->debug('CiviRules Trigger MembershipRenewed: NOT TRIGGERING. Calculated end_date: ' . $membershipDates['end_date'] . ' does not match actual end date: ' . CRM_Utils_Date::isoToMysql($membership['end_date']));
+      }
       return;
     }
 

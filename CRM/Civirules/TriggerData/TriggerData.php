@@ -17,10 +17,12 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
 
   /**
    * Entity ID of the primary trigger data e.g. the activity id
+   * @fixme: Add type int to property. We can't do this yet because delayed execution actions are stored in civicrm_queue_item serialized
+   *   When unserialized PHP throws a fatal error because entity_id was a string in CiviRules < 3.6
    *
    * @var int
    */
-  protected int $entity_id = 0;
+  protected $entity_id = 0;
 
   /**
    * Entity name of the primary trigger data e.g. 'contact' or 'activity'
@@ -42,10 +44,12 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
 
   /**
    * The Contact ID
+   * @fixme: Add type int to property. We can't do this yet because delayed execution actions are stored in civicrm_queue_item serialized
+   *   When unserialized PHP throws a fatal error because entity_id was a string in CiviRules < 3.6
    *
    * @var int
    */
-  protected int $contact_id = 0;
+  protected $contact_id = 0;
 
   /**
    * Is this Trigger being executed with a delay (set at runtime when executing actions)

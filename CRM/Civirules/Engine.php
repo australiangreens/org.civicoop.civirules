@@ -155,6 +155,7 @@ class CRM_Civirules_Engine {
         if ($entity) {
           try {
             $entityData = civicrm_api3($entity, 'getsingle', ['id' => $triggerData->getEntityId()]);
+            $entityData = self::useCanonicalFieldNames($entity, $entityData);
             $triggerData->setEntityData($entity, $entityData);
           }
           catch (Exception $e) {
@@ -170,6 +171,25 @@ class CRM_Civirules_Engine {
       CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute delayed action',  $e->getMessage(), $triggerData);
     }
     return TRUE;
+  }
+
+  /**
+   * Modify entity data to use canonical and not unique field names.
+   * This is necessary because CiviRules uses canonical field names, but `executeDelayedAction()` calls API3, which uses unique field names.
+   */
+  public static function useCanonicalFieldNames(string $entityName, array $entityData) : array {
+    $fixedEntityData = [];
+    $fieldData = civicrm_api3($entityName, 'getfields')['values'];
+    $lookupTable = array_combine(array_keys($fieldData), array_column($fieldData, 'name'));
+    foreach ($entityData as $fieldName => $value) {
+      if (isset($lookupTable[$fieldName])) {
+        $fixedEntityData[$lookupTable[$fieldName]] = $value;
+      }
+      else {
+        $fixedEntityData[$fieldName] = $value;
+      }
+    }
+    return $fixedEntityData;
   }
 
   /**
@@ -245,10 +265,7 @@ class CRM_Civirules_Engine {
     $isValid = TRUE;
     $firstCondition = TRUE;
 
-    $conditionParams = [
-      'rule_id' => $triggerData->getTrigger()->getRuleId(),
-    ];
-    $ruleConditions = CRM_Civirules_BAO_RuleCondition::getValues($conditionParams);
+    $ruleConditions = $triggerData->getTrigger()->getRuleConditions();
     foreach ($ruleConditions as $ruleConditionId => $ruleCondition) {
       if ($firstCondition) {
         $isValid = self::checkCondition($ruleCondition, $triggerData);
@@ -315,7 +332,7 @@ class CRM_Civirules_Engine {
     $reactOnEntity = $trigger->getReactOnEntity();
     $daoClass = $reactOnEntity->daoClass;
     if($daoClass) {
-      $table = $daoClass::$_tableName;
+      $table = $daoClass::getTableName();
     }
     $ruleId = $trigger->getRuleId();
     $contactId = $triggerData->getContactId();
@@ -349,4 +366,3 @@ class CRM_Civirules_Engine {
   }
 
 }
-
