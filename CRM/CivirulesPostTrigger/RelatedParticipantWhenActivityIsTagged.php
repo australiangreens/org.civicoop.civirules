@@ -4,10 +4,6 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityIsTagged extends CRM_CivirulesPostTrigger_EntityTag {
 
-  public function setTriggerParams($triggerParams) {
-    $this->triggerParams = unserialize($triggerParams);
-  }
-
   /**
    * Trigger a rule for this trigger
    *

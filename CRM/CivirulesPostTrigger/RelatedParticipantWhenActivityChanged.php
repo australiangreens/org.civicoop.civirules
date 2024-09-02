@@ -4,10 +4,6 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityChanged extends CRM_Civirules_Trigger_Post {
 
-  public function setTriggerParams($triggerParams) {
-    $this->triggerParams = unserialize($triggerParams);
-  }
-
   /**
    * Returns an array of entities on which the trigger reacts
    *
@@ -41,7 +37,7 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityChanged extends CRM
       $triggerData->setEntityId($objectId);
     }
 
-    if (isset($this->triggerParams['activity_type_id']) && is_array($this->triggerParams['activity_type_id']) && count(isset($this->triggerParams['activity_type_id']))) {
+    if (isset($this->triggerParams['activity_type_id']) && is_array($this->triggerParams['activity_type_id']) && count($this->triggerParams['activity_type_id'])) {
       $activity = civicrm_api3('Activity', 'getsingle', ['id' => $triggerData->getEntityId()]);
       if (!in_array($activity['activity_type_id'], $this->triggerParams['activity_type_id'])) {
         return;

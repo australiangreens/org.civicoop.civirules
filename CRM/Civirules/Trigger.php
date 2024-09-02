@@ -2,10 +2,25 @@
 
 abstract class CRM_Civirules_Trigger {
 
+  /**
+   * The Rule ID
+   *
+   * @var int
+   */
   protected $ruleId;
 
+  /**
+   * The Rule Trigger ID
+   *
+   * @var int
+   */
   protected $triggerId;
 
+  /**
+   * The Trigger Params
+   *
+   * @var array
+   */
   protected $triggerParams;
 
   /**
@@ -23,23 +38,61 @@ abstract class CRM_Civirules_Trigger {
    */
   protected $ruleDebugEnabled;
 
-  public function setRuleId($ruleId) {
+  /**
+   * The Rule Conditions
+   * Conditions are cached in this variable
+   *
+   * @var array
+   */
+  protected $ruleConditions;
+
+  /**
+   * @param int $ruleId
+   *
+   * @return void
+   */
+  public function setRuleId(int $ruleId) {
     $this->ruleId = $ruleId;
   }
 
-  public function setTriggerParams($triggerParams) {
-    $this->triggerParams = $triggerParams;
+  /**
+   * This is stored as a serialized array in the database
+   *
+   * @param string $triggerParams
+   *
+   * @return void
+   */
+  public function setTriggerParams(string $triggerParams) {
+    // Initialise as empty array in case we fail to unserialize (so we don't crash when trying to access uninitialised data).
+    $this->triggerParams = [];
+    try {
+      $this->triggerParams = unserialize($triggerParams);
+    }
+    catch (TypeError $e) {
+      \Civi::log()->error('CiviRules setTriggerParams: Could not unserialize trigger params.');
+    }
   }
 
-  public function getRuleId() {
+  /**
+   * @return int
+   */
+  public function getRuleId(): int {
     return $this->ruleId;
   }
 
-  public function setTriggerId($triggerId) {
+  /**
+   * @param int $triggerId
+   *
+   * @return void
+   */
+  public function setTriggerId(int $triggerId) {
     $this->triggerId = $triggerId;
   }
 
-  public function getTriggerId() {
+  /**
+   * @return int
+   */
+  public function getTriggerId(): int {
     return $this->triggerId;
   }
 
@@ -68,26 +121,45 @@ abstract class CRM_Civirules_Trigger {
     return isset($this->triggerData);
   }
 
-  public function getRuleTitle() {
-    if (empty($this->ruleTitle) && !empty($this->ruleId)) {
+  /**
+   * @return string
+   */
+  public function getRuleTitle(): string {
+    if (!isset($this->ruleTitle) && !empty($this->ruleId)) {
       $rule = new CRM_Civirules_BAO_Rule();
       $rule->id = $this->ruleId;
       if ($rule->find(true)) {
         $this->ruleTitle = $rule->label;
       }
     }
-    return $this->ruleTitle;
+    return $this->ruleTitle ?? '';
   }
 
-  public function getRuleDebugEnabled() {
-    if (empty($this->ruleDebugEnabled) && !empty($this->ruleId)) {
+  /**
+   * @return bool
+   */
+  public function getRuleDebugEnabled(): bool {
+    if (!isset($this->ruleDebugEnabled) && !empty($this->ruleId)) {
       $rule = new CRM_Civirules_BAO_Rule();
       $rule->id = $this->ruleId;
       if ($rule->find(true)) {
         $this->ruleDebugEnabled = $rule->is_debug;
       }
     }
-    return $this->ruleDebugEnabled;
+    return $this->ruleDebugEnabled ?? FALSE;
+  }
+
+  /**
+   * Retrieve rule conditions for the current rule.
+   * Results are cached.
+   *
+   * @return array
+   */
+  public function getRuleConditions(): array {
+    if (!isset($this->ruleConditions) && !empty($this->ruleId)) {
+      $this->ruleConditions = CRM_Civirules_BAO_RuleCondition::getValues(['rule_id' => $this->ruleId]);
+    }
+    return $this->ruleConditions ?? [];
   }
 
   /**
@@ -132,38 +204,40 @@ abstract class CRM_Civirules_Trigger {
    * Checks whether the trigger provides a certain entity.
    *
    * @param string $entity
+   *
    * @return bool
    */
-  public function doesProvideEntity($entity) {
+  public function doesProvideEntity(string $entity): bool {
     $availableEntities = $this->getProvidedEntities();
     foreach($availableEntities as $providedEntity) {
       if (strtolower($providedEntity->entity) == strtolower($entity)) {
-        return true;
+        return TRUE;
       }
     }
-    return false;
+    return FALSE;
   }
 
   /**
    * Checks whether the trigger provides a certain set of entities
    *
    * @param array<string> $entities
+   *
    * @return bool
    */
-  public function doesProvideEntities($entities) {
+  public function doesProvideEntities($entities): bool {
     $availableEntities = $this->getProvidedEntities();
     foreach($entities as $entity) {
-      $entityPresent = false;
+      $entityPresent = FALSE;
       foreach ($availableEntities as $providedEntity) {
         if (strtolower($providedEntity->entity) == strtolower($entity)) {
-          $entityPresent = true;
+          $entityPresent = TRUE;
         }
       }
       if (!$entityPresent) {
-        return false;
+        return FALSE;
       }
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -173,7 +247,7 @@ abstract class CRM_Civirules_Trigger {
    */
   protected function getAdditionalEntities() {
     $reactOnEntity = $this->reactOnEntity();
-    $entities = array();
+    $entities = [];
     if (strtolower($reactOnEntity->key) != strtolower('Contact')) {
       $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Contact', 'Contact', 'CRM_Contact_DAO_Contact', 'Contact');
     }
@@ -186,20 +260,17 @@ abstract class CRM_Civirules_Trigger {
    * Return false if you do not need extra data input
    *
    * @param int $ruleId
+   *
    * @return bool|string
-   * @access public
-   * @abstract
    */
   public function getExtraDataInputUrl($ruleId) {
-    return false;
+    return FALSE;
   }
 
   /**
    * Returns a description of this trigger
    *
    * @return string
-   * @access public
-   * @abstract
    */
   public function getTriggerDescription() {
     return '';
