@@ -1,5 +1,5 @@
 # CHANGELOG
-## Version 3.13 (not yet released)
+## Version 3.13 (2024-10-08)
 
 *  Add Update Contribution Status action. See !267
 
