@@ -1,4 +1,9 @@
 # CHANGELOG
+
+## Version 3.14 (not yet released)
+
+* Fixed issue with delayed actions. See !269
+
 ## Version 3.13.0 (2024-10-08)
 
 *  Add Update Contribution Status action. See !267
