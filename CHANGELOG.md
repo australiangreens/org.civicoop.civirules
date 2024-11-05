@@ -3,6 +3,8 @@
 ## Version 3.14 (not yet released)
 
 * Fixed issue with delayed actions. See !269
+* Fixed bug for delayed actions in the Check Participant Status condition
+* Fixed a bug for delayed actions in Check Participant Role condition
 
 ## Version 3.13.0 (2024-10-08)
 
