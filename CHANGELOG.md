@@ -5,6 +5,7 @@
 * Fixed issue with delayed actions. See !269
 * Fixed bug for delayed actions in the Check Participant Status condition
 * Fixed a bug for delayed actions in Check Participant Role condition
+* Increase minimum CiviCRM version to 5.68. See !270
 
 ## Version 3.13.0 (2024-10-08)
 
