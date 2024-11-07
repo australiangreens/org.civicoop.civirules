@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 3.14 (not yet released)
+## Version 3.14.0 (2024-11-07)
 
 * Fixed issue with delayed actions. See !269
 * Fixed bug for delayed actions in the Check Participant Status condition
