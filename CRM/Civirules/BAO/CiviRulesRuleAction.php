@@ -15,7 +15,7 @@ class CRM_Civirules_BAO_CiviRulesRuleAction extends CRM_Civirules_DAO_RuleAction
    * @static
    */
   public static function getValues($params) {
-    $result = array();
+    $result = [];
     $ruleAction = new CRM_Civirules_BAO_RuleAction();
     if (!empty($params)) {
       $fields = self::fields();
@@ -27,7 +27,7 @@ class CRM_Civirules_BAO_CiviRulesRuleAction extends CRM_Civirules_DAO_RuleAction
     }
     $ruleAction->find();
     while ($ruleAction->fetch()) {
-      $row = array();
+      $row = [];
       self::storeValues($ruleAction, $row);
       if (!empty($row['action_id'])) {
         $result[$row['id']] = $row;

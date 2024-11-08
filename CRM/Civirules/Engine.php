@@ -63,8 +63,10 @@ class CRM_Civirules_Engine {
    * Method to execute the actions
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
+   *
+   * @return void
    */
-  protected static function executeActions(CRM_Civirules_TriggerData_TriggerData $triggerData) {
+  protected static function executeActions(CRM_Civirules_TriggerData_TriggerData $triggerData): void {
     $actionParams = [
       'rule_id' => $triggerData->getTrigger()->getRuleId(),
     ];
@@ -79,8 +81,10 @@ class CRM_Civirules_Engine {
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @param array $ruleAction
+   *
+   * @return void
    */
-  public static function executeAction(CRM_Civirules_TriggerData_TriggerData &$triggerData, $ruleAction) {
+  public static function executeAction(CRM_Civirules_TriggerData_TriggerData &$triggerData, array $ruleAction): void {
     $actionEngine = CRM_Civirules_ActionEngine_Factory::getEngine($ruleAction, $triggerData);
 
     //determine if the action should be executed with a delay
@@ -95,8 +99,8 @@ class CRM_Civirules_Engine {
       try {
         $actionEngine->execute();
       }
-      catch (Exception $e) {
-        CRM_Civirules_Utils_LoggerFactory::logError("Failed to execute action",  $e->getMessage(), $triggerData);
+      catch (Throwable $e) {
+        CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute action for Rule ID: ' . $triggerData->getTrigger()->getRuleId(),  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
       }
     }
   }
@@ -167,8 +171,8 @@ class CRM_Civirules_Engine {
       if ($processAction) {
         $actionEngine->execute();
       }
-    } catch (Exception $e) {
-      CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute delayed action',  $e->getMessage(), $triggerData);
+    } catch (Throwable $e) {
+      CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute delayed action for Rule ID: ' . $triggerData->getTrigger()->getRuleId(),  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
     }
     return TRUE;
   }
@@ -197,8 +201,10 @@ class CRM_Civirules_Engine {
    *
    * @param \DateTime $delayTo
    * @param CRM_Civirules_ActionEngine_AbstractActionEngine $actionEngine
+   *
+   * @return void
    */
-  public static function delayAction(DateTime $delayTo, CRM_Civirules_ActionEngine_AbstractActionEngine $actionEngine) {
+  public static function delayAction(DateTime $delayTo, CRM_Civirules_ActionEngine_AbstractActionEngine $actionEngine): void {
     $queue = CRM_Queue_Service::singleton()->create([
       'type' => 'Civirules',
       'name' => self::QUEUE_NAME,
