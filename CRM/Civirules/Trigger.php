@@ -213,13 +213,7 @@ abstract class CRM_Civirules_Trigger {
    * @return bool
    */
   public function doesProvideEntity(string $entity): bool {
-    $availableEntities = $this->getProvidedEntities();
-    foreach($availableEntities as $providedEntity) {
-      if (strtolower($providedEntity->entity) == strtolower($entity)) {
-        return TRUE;
-      }
-    }
-    return FALSE;
+    return $this->doesProvideEntities([$entity]);
   }
 
   /**
@@ -229,7 +223,7 @@ abstract class CRM_Civirules_Trigger {
    *
    * @return bool
    */
-  public function doesProvideEntities($entities): bool {
+  public function doesProvideEntities(array $entities): bool {
     $availableEntities = $this->getProvidedEntities();
     foreach($entities as $entity) {
       $entityPresent = FALSE;
