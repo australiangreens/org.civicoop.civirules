@@ -217,22 +217,6 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     $triggerObject = CRM_Civirules_BAO_Trigger::getPostTriggerObjectByClassName($trigger->class_name, TRUE);
     $triggerObject->setTriggerId($trigger->id);
 
-    // The code below is deprecated and is only here for backwards compatibility.
-    // The checking of required entities is refactored in using the doesWorkWithTrigger
-    $requiredEntities = $conditionClass->requiredEntities();
-    if (is_array($requiredEntities)) {
-      $availableEntities = [];
-      foreach ($triggerObject->getProvidedEntities() as $entityDef) {
-        $availableEntities[] = strtolower($entityDef->entity);
-      }
-      foreach ($requiredEntities as $entity) {
-        if (!in_array(strtolower($entity), $availableEntities)) {
-          $errors['rule_condition_select'] = ts('This condition is not available with trigger %1', [1 => $trigger->label]);
-          return $errors;
-        }
-      }
-    }
-
     if (!$conditionClass->doesWorkWithTrigger($triggerObject, $rule)) {
       $errors['rule_condition_select'] = ts('This condition is not available with trigger %1', [1 => $trigger->label]);
       return $errors;
