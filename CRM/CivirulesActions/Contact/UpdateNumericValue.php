@@ -193,7 +193,7 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
         unset($action_params['target_field_id']);
         $action_params['target_custom_group'] = $customGroup['name'];
         $action_params['target_custom_field'] = $customField['name'];
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -208,7 +208,7 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
         unset($action_params['source_field_id']);
         $action_params['source_custom_group'] = $customGroup['name'];
         $action_params['source_custom_field'] = $customField['name'];
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -231,7 +231,7 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
         $action_params['target_field_id'] = $customField['id'];
         unset($action_params['target_custom_group']);
         unset($action_params['target_custom_field']);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -244,7 +244,7 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
         $action_params['source_field_id'] = $customField['id'];
         unset($action_params['source_custom_group']);
         unset($action_params['source_custom_field']);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

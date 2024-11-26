@@ -63,7 +63,7 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
         unset($action_params['field']);
         $action_params['custom_group'] = $customGroup['name'];
         $action_params['custom_field'] = $customField['name'];
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -86,7 +86,7 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
         $action_params['field'] = 'custom_'.$customField['id'];
         unset($action_params['custom_group']);
         unset($action_params['custom_field']);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

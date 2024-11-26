@@ -149,7 +149,7 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
           'return' => 'name',
           'id' => $j,
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     foreach($action_params['rel_type_ids'] as $i=>$j) {
@@ -160,7 +160,7 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
           'return' => 'name_a_b',
           'id' => $rel_type,
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -179,7 +179,7 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
           'return' => 'id',
           'name' => $j,
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     foreach($action_params['rel_type_ids'] as $i=>$j) {
@@ -190,7 +190,7 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
             'return' => 'id',
             'name_a_b' => $rel_type,
           ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);

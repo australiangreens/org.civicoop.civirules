@@ -57,7 +57,7 @@ class CRM_Civirules_Form_RuleDelete extends CRM_Core_Form {
         ));
         $defaults['rule_label'] = (string) $ruleLabel;
       }
-      catch (CiviCRM_API3_Exception $ex) {
+      catch (CRM_Core_Exception $ex) {
       }
     }
     return $defaults;

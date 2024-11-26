@@ -261,7 +261,7 @@ class CRM_CivirulesActions_Generic_UpdateDateValue extends CRM_Civirules_Action 
    *
    * @return string
    * @access public
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public function userFriendlyConditionParams() {
 

@@ -65,7 +65,7 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
     try {
       $new_value = civicrm_api3($from_entity, 'getvalue', ['id' => $fromEntityId, 'return' => 'custom_' . $copy_from_field_id]);
     }
-    catch (\CiviCRM_API3_Exception $ex) {
+    catch (\CRM_Core_Exception $ex) {
       // Do nothing.
     }
 
@@ -103,7 +103,7 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
         unset($action_params['field_id']);
         $action_params['custom_group'] = $customGroup['name'];
         $action_params['custom_field'] = $customField['name'];
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -118,7 +118,7 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
         unset($action_params['copy_from_field_id']);
         $action_params['copy_from_custom_group'] = $customGroup['name'];
         $action_params['copy_from_custom_field'] = $customField['name'];
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -141,7 +141,7 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
         $action_params['field_id'] = $customField['id'];
         unset($action_params['custom_group']);
         unset($action_params['custom_field']);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

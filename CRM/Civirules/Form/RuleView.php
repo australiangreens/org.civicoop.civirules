@@ -228,7 +228,7 @@ LEFT JOIN civirule_rule_tag AS crt ON cr.id = crt.rule_id";
         $this->_triggerList[$triggerId] = $trigger['label'];
       }
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
     }
   }
 

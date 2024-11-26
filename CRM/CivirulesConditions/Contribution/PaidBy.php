@@ -74,7 +74,7 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
             'id' => $gid,
             'option_group_id' => 'payment_instrument'
           ]);
-        } catch (CiviCRM_API3_Exception $e) {
+        } catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -96,7 +96,7 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
             'name' => $gid,
             'option_group_id' => 'payment_instrument'
           ]);
-        } catch (CiviCRM_API3_Exception $e) {
+        } catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -134,7 +134,7 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
         $paymentNames[] = $paymentInstrument['label'];
       }
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
       $logMessage = ts('Could not find payment_instruments in ') . __METHOD__
         . ts(', error from API OptionValue get: ') . $ex->getMessage();
       Civi::log()->debug($logMessage);

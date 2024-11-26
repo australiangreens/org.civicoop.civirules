@@ -147,10 +147,10 @@ class CRM_Civirules_BAO_CiviRulesRuleTag extends CRM_Civirules_DAO_RuleTag  {
             'value' => $ruleTag['rule_tag_id'],
             'return' => 'label'
           ));
-        } catch (CiviCRM_API3_Exception $ex) {
+        } catch (CRM_Core_Exception $ex) {
         }
       }
-    } catch (CiviCRM_API3_Exception $ex) {}
+    } catch (CRM_Core_Exception $ex) {}
     return $ruleTagLabels;
   }
 }

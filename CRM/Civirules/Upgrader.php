@@ -471,7 +471,7 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
       if ($optionValueId) {
         civicrm_api3('OptionValue', 'delete', ['id' => $optionValueId]);
       }
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (CRM_Core_Exception $ex) {
     }
     return TRUE;
   }

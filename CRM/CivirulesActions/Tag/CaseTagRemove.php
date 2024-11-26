@@ -94,7 +94,7 @@ class CRM_CivirulesActions_Tag_CaseTagRemove extends CRM_Civirules_Action {
           'return' => 'name',
           'id' => $j,
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -113,7 +113,7 @@ class CRM_CivirulesActions_Tag_CaseTagRemove extends CRM_Civirules_Action {
           'return' => 'id',
           'name' => $j,
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);

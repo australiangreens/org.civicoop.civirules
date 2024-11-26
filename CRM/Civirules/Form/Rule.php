@@ -346,7 +346,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
         foreach ($ruleTags['values'] as $ruleTagId => $ruleTag) {
           $defaultRuleTags[] = $ruleTag['rule_tag_id'];
         }
-      } catch (CiviCRM_API3_Exception $ex) {}
+      } catch (CRM_Core_Exception $ex) {}
       if (!empty($defaultRuleTags)) {
         $defaults['rule_tag_id'] = $defaultRuleTags;
       }

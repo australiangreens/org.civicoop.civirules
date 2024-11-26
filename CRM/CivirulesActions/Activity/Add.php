@@ -31,7 +31,7 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
         'value' => $action_params['status_id'],
         'option_group_id' => 'activity_status',
       ]);
-    } catch (CiviCRM_API3_Exception $e) {
+    } catch (CRM_Core_Exception $e) {
     }
     try {
       $action_params['activity_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
