@@ -23,6 +23,11 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
   protected $triggerClass;
 
   /**
+   * @var array The trigger params
+   */
+  protected array $triggerParams = [];
+
+  /**
    * Overridden parent method to perform processing before form is build
    */
   public function preProcess() {
@@ -69,6 +74,9 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
   }
 
   public function postProcess() {
+    $this->rule->trigger_params = serialize($this->triggerParams);
+    $this->rule->save();
+
     $session = CRM_Core_Session::singleton();
     $session->setStatus('Rule '.$this->rule->label.' parameters updated', 'Rule parameters updated', 'success');
 

@@ -43,11 +43,8 @@ class CRM_CivirulesCronTrigger_Form_NextContributionDate extends CRM_CivirulesTr
    * Overridden parent method to process form data after submission
    */
   public function postProcess() {
-    $data['interval_unit'] = $this->_submitValues['interval_unit'];
-    $data['interval'] = $this->_submitValues['interval'];
-    $this->rule->trigger_params = serialize($data);
-    $this->rule->save();
-
+    $this->triggerParams['interval_unit'] = $this->getSubmittedValue('interval_unit');
+    $this->triggerParams['interval'] = $this->getSubmittedValue('interval');
     parent::postProcess();
   }
 

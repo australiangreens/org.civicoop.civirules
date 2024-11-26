@@ -74,21 +74,17 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
    * Overridden parent method to process form data after submission
    *
    * @throws Exception when rule condition not found
-   * @access public
    */
   public function postProcess() {
-    $data['event_id_custom_field'] = $this->_submitValues['event_id_custom_field'];
-    $data['activity_type_id'] = [];
+    $this->triggerParams['event_id_custom_field'] = $this->getSubmittedValue('event_id_custom_field');
+    $this->triggerParams['activity_type_id'] = [];
     if (isset($this->_submitValues['activity_type_id'])) {
-      $data['activity_type_id'] = $this->_submitValues['activity_type_id'];
+      $this->triggerParams['activity_type_id'] = $this->getSubmittedValue('activity_type_id');
     }
-    $data['tag_ids'] = [];
+    $this->triggerParams['tag_ids'] = [];
     if (isset($this->_submitValues['tag_ids'])) {
-      $data['tag_ids'] = $this->_submitValues['tag_ids'];
+      $this->triggerParams['tag_ids'] = $this->getSubmittedValue('tag_ids');
     }
-    $this->rule->trigger_params = serialize($data);
-    $this->rule->save();
-
     parent::postProcess();
   }
 

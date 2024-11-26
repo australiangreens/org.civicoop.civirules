@@ -49,13 +49,10 @@ class CRM_CivirulesCronTrigger_Form_ActivityDate extends CRM_CivirulesCronTrigge
    * @throws Exception when rule condition not found
    */
   public function postProcess() {
-    $data['activity_type_id'] = $this->_submitValues['activity_type_id'];
-    $data['activity_status_id'] = $this->_submitValues['activity_status_id'];
-    $data['record_type'] = $this->_submitValues['record_type'];
-    $data['case_activity'] = $this->_submitValues['case_activity'];
-    $this->rule->trigger_params = serialize($data);
-    $this->rule->save();
-
+    $this->triggerParams['activity_type_id'] = $this->getSubmittedValue('activity_type_id');
+    $this->triggerParams['activity_status_id'] = $this->getSubmittedValue('activity_status_id');
+    $this->triggerParams['record_type'] = $this->getSubmittedValue('record_type');
+    $this->triggerParams['case_activity'] = $this->getSubmittedValue('case_activity');
     parent::postProcess();
   }
 

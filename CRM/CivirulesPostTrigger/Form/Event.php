@@ -65,10 +65,7 @@ class CRM_CivirulesPostTrigger_Form_Event extends CRM_CivirulesTrigger_Form_Form
    * @access public
    */
   public function postProcess() {
-    $data['contact_id'] = $this->_submitValues['contact_id'];
-    $this->rule->trigger_params = serialize($data);
-    $this->rule->save();
-
+    $this->triggerParams['contact_id'] = $this->getSubmittedValue('contact_id');
     parent::postProcess();
   }
 

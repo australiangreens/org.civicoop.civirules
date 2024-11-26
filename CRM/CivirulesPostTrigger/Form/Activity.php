@@ -52,10 +52,7 @@ class CRM_CivirulesPostTrigger_Form_Activity extends CRM_CivirulesTrigger_Form_F
    * @throws Exception when rule condition not found
    */
   public function postProcess() {
-    $data['record_type'] = $this->_submitValues['record_type'];
-    $this->rule->trigger_params = serialize($data);
-    $this->rule->save();
-
+    $this->triggerParams['record_type'] = $this->getSubmittedValue('record_type');
     parent::postProcess();
   }
 
