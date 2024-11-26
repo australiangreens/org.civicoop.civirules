@@ -37,7 +37,7 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
       $triggerData->setEntityId($objectId);
     }
     //trigger for activity trigger for every source_contact_id, target_contact_id and assignee_contact_id
-    $activityContacts = array();
+    $activityContacts = [];
     if ($op == 'delete') {
       $preData = CRM_Civirules_Utils_PreData::getPreData($objectName, $objectId, $eventID);
       if (isset($preData['activity_contacts'])) {
@@ -113,10 +113,9 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
    *
    * Return false if you do not need extra data input
    *
-   * @param int $ruleId
+   * @param $ruleId
+   *
    * @return bool|string
-   * @access public
-   * @abstract
    */
   public function getExtraDataInputUrl($ruleId) {
     return CRM_Utils_System::url('civicrm/civirule/form/trigger/activity', 'rule_id='.$ruleId);
@@ -135,7 +134,7 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
     foreach($result['values'] as $val => $opt) {
       $options[$val] = $opt;
     }
-    return E::ts('Trigger for %1', array(1=>$options[$this->triggerParams['record_type']]));
+    return E::ts('Trigger for %1', [1=>$options[$this->triggerParams['record_type']]]);
   }
 
 }

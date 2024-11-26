@@ -53,7 +53,7 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
 
     //set user context
     $session = CRM_Core_Session::singleton();
-    $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->rule->id, TRUE);
+    $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
     $session->pushUserContext($editUrl);
   }
 
@@ -72,7 +72,7 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
     $session = CRM_Core_Session::singleton();
     $session->setStatus('Rule '.$this->rule->label.' parameters updated', 'Rule parameters updated', 'success');
 
-    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->rule->id, TRUE);
+    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
     CRM_Utils_System::redirect($redirectUrl);
   }
 

@@ -35,7 +35,7 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
   protected function getNextEntityTriggerData() {
     if (!$this->dao) {
       if (!$this->queryForTriggerEntities()) {
-        return false;
+        return FALSE;
       }
     }
     if ($this->dao->fetch()) {

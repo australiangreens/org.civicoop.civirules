@@ -11,7 +11,6 @@ class CRM_CivirulesPostTrigger_Form_Activity extends CRM_CivirulesTrigger_Form_F
   /**
    * Overridden parent method to build form
    *
-   * @access public
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_id');
@@ -23,7 +22,7 @@ class CRM_CivirulesPostTrigger_Form_Activity extends CRM_CivirulesTrigger_Form_F
       $options[$val] = $opt;
     }
 
-    $this->add('select', 'record_type', E::ts('Trigger for'),$options, true, ['class' => 'crm-select2 huge']);
+    $this->add('select', 'record_type', E::ts('Trigger for'), $options, true, ['class' => 'crm-select2 huge']);
 
     $this->addButtons([
       ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
@@ -35,7 +34,6 @@ class CRM_CivirulesPostTrigger_Form_Activity extends CRM_CivirulesTrigger_Form_F
    * Overridden parent method to set default values
    *
    * @return array $defaultValues
-   * @access public
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
@@ -52,7 +50,6 @@ class CRM_CivirulesPostTrigger_Form_Activity extends CRM_CivirulesTrigger_Form_F
    * Overridden parent method to process form data after submission
    *
    * @throws Exception when rule condition not found
-   * @access public
    */
   public function postProcess() {
     $data['record_type'] = $this->_submitValues['record_type'];

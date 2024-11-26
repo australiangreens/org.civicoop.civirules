@@ -44,7 +44,6 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityChanged extend
    * Overridden parent method to set default values
    *
    * @return array $defaultValues
-   * @access public
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
@@ -62,7 +61,6 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityChanged extend
    * Overridden parent method to process form data after submission
    *
    * @throws Exception when rule condition not found
-   * @access public
    */
   public function postProcess() {
     $data['event_id_custom_field'] = $this->_submitValues['event_id_custom_field'];

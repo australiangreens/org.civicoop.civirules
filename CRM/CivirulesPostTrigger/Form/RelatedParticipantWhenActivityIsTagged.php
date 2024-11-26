@@ -10,6 +10,10 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
 
   protected $entityTable = 'civicrm_activity';
 
+  /**
+   * @return array
+   * @throws \CRM_Core_Exception
+   */
   public static function getActivityCustomFields() {
     $customGroups = civicrm_api3('CustomGroup', 'get', ['extends' => 'Activity', 'options' => ['limit' => 0]]);
     $activityCustomFields = [];
@@ -25,7 +29,6 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
   /**
    * Overridden parent method to build form
    *
-   * @access public
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_id');
@@ -51,7 +54,6 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
    * Overridden parent method to set default values
    *
    * @return array $defaultValues
-   * @access public
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
