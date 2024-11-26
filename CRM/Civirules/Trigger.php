@@ -180,17 +180,22 @@ abstract class CRM_Civirules_Trigger {
     return 'CRM_Civirules_TriggerData_TriggerData';
   }
 
+  /**
+   * @return array of CRM_Civirules_TriggerData_EntityDefinition
+   */
+  public function getProvidedEntities(): array {
+    if (empty(\Civi::$statics[__CLASS__]['getProvidedEntities'])) {
+      $additionalEntities = $this->getAdditionalEntities();
+      foreach ($additionalEntities as $entity) {
+        $entities[$entity->key] = $entity;
+      }
 
-  public function getProvidedEntities() {
-    $additionalEntities = $this->getAdditionalEntities();
-    foreach($additionalEntities as $entity) {
+      $entity = $this->reactOnEntity();
       $entities[$entity->key] = $entity;
+      \Civi::$statics[__CLASS__]['getProvidedEntities'] = $entities;
     }
 
-    $entity = $this->reactOnEntity();
-    $entities[$entity->key] = $entity;
-
-    return $entities;
+    return \Civi::$statics[__CLASS__]['getProvidedEntities'];
   }
 
   /**
