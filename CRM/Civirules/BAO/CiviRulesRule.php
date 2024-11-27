@@ -124,11 +124,11 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
       $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND (t.object_name = %1 OR t.object_name = 'Contact') AND t.op = %2";
     }
     else {
-      $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND t.object_name = %1 AND t.op = %2";
+      $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND t.object_name = %1 AND t.op LIKE %2";
     }
     $sql .= $sqlWhere;
     $params[1] = [$objectName, 'String'];
-    $params[2] = [$op, 'String'];
+    $params[2] = ["%$op%", 'String'];
 
     $dao = CRM_Core_DAO::executeQuery($sql, $params);
     while ($dao->fetch()) {
