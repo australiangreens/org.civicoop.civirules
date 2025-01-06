@@ -39,7 +39,9 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
     if ($this->_dao->fetch()) {
       $data = [];
       CRM_Core_DAO::storeValues($this->_dao, $data);
-      return new CRM_Civirules_TriggerData_Cron($this->_dao->contact_id, 'ContributionRecur', $data, $data['contribution_recur_id']);
+      $triggerData = new CRM_Civirules_TriggerData_Cron($this->_dao->contact_id, 'ContributionRecur', $data, $data['contribution_recur_id']);
+      $triggerData->setTrigger($this);
+      return $triggerData;
     }
     return FALSE;
   }

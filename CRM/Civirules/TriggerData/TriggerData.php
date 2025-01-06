@@ -66,9 +66,9 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
   public string $delayedSubmitDateTime = '';
 
   /**
-   * @var CRM_Civirules_Trigger
+   * @var \CRM_Civirules_Trigger|null
    */
-  protected CRM_Civirules_Trigger $trigger;
+  protected ?CRM_Civirules_Trigger $trigger = NULL;
 
   public function __construct() {
   }
@@ -124,9 +124,9 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
   }
 
   /**
-   * @return CRM_Civirules_Trigger
+   * @return CRM_Civirules_Trigger|null
    */
-  public function getTrigger() {
+  public function getTrigger(): ?CRM_Civirules_Trigger {
     return $this->trigger;
   }
 
