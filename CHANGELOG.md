@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## Version 3.15-dev (not yet released)
+## Version 3.15
 
+* Fixed issue with the Add Contribution Trigger and retrieving Participant Data when it is a participant payment.
 
 ## Version 3.14.0 (2024-11-07)
 

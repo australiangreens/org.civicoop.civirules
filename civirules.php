@@ -141,6 +141,7 @@ function _civirules_upgrade_to_2x_backup() {
  * @param $params
  */
 function civirules_civicrm_pre($op, $objectName, $objectId, &$params) {
+  CRM_Civirules_Utils_ContributionTrigger::pre($op, $objectName, $objectId, $params);
   // New style pre/post Delete/Insert/Update events exist from 5.34.
   if (civirules_use_prehook($op, $objectName, $objectId, $params)) {
     try {
