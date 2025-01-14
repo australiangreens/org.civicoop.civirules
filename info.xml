@@ -15,7 +15,7 @@
     <email>helpdesk@civicoop.org</email>
   </maintainer>
   <releaseDate>2025-01-14</releaseDate>
-  <version>3.15</version>
+  <version>3.16-dev</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>5.68</ver>
