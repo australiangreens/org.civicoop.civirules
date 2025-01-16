@@ -41,7 +41,9 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
     if ($this->dao->fetch()) {
       $data = [];
       CRM_Core_DAO::storeValues($this->dao, $data);
-      return new CRM_Civirules_TriggerData_Cron($this->dao->contact_id, 'Membership', $data);
+      $triggerData = new CRM_Civirules_TriggerData_Cron($this->dao->contact_id, 'Membership', $data);
+      $triggerData->setTrigger($this);
+      return $triggerData;
     }
     return FALSE;
   }

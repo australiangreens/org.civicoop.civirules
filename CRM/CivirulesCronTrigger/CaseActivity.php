@@ -24,6 +24,7 @@ class CRM_CivirulesCronTrigger_CaseActivity extends CRM_Civirules_Trigger_Cron {
       $data = [];
       CRM_Core_DAO::storeValues($this->dao, $data);
       $triggerData = new CRM_Civirules_TriggerData_Cron(0, 'Case', $data);
+      $triggerData->setTrigger($this);
       return $triggerData;
     }
     return FALSE;

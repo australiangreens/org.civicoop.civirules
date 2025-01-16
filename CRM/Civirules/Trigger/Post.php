@@ -153,8 +153,10 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
       //set also original data with an edit event
       $oldData = CRM_Civirules_Utils_PreData::getPreData($entity, $objectId, $eventID);
       $triggerData = new CRM_Civirules_TriggerData_Edit($entity, $objectId, $data, $oldData);
+      $triggerData->setTrigger($this);
     } else {
       $triggerData = new CRM_Civirules_TriggerData_Post($entity, $objectId, $data);
+      $triggerData->setTrigger($this);
     }
 
     $this->alterTriggerData($triggerData);
