@@ -596,12 +596,7 @@ class CRM_Civirules_Utils {
   public static function getObjectNameFromObject(\CRM_Core_DAO $object)
   {
     static $contact_types = []; // Array with contact ID and value the contact type.
-    // Classes renamed in core: https://github.com/civicrm/civicrm-core/pull/29390
-    $className = 'CRM_Core_DAO_AllCoreTables::getEntityNameForClass';
-    if (!method_exists('CRM_Core_DAO_AllCoreTables', 'getEntityNameForClass')) {
-      $className = 'CRM_Core_DAO_AllCoreTables::getBriefName';
-    }
-    $objectName = $className(get_class($object));
+    $objectName = CRM_Core_DAO_AllCoreTables::getEntityNameForTable($object->getTableName());
     if ($objectName == 'Contact' && isset($object->contact_type)) {
       $objectName = $object->contact_type;
     } elseif ($objectName == 'Contact' && isset($contact_types[$object->id])) {
