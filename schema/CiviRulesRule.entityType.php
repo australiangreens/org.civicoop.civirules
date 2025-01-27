@@ -25,9 +25,8 @@ return [
     'name' => [
       'title' => E::ts('Name'),
       'sql_type' => 'varchar(80)',
-      'input_type' => NULL,
+      'input_type' => 'Text',
       'readonly' => TRUE,
-      'default' => NULL,
     ],
     'label' => [
       'title' => E::ts('Label'),
@@ -59,6 +58,7 @@ return [
       'title' => E::ts('Trigger Params'),
       'sql_type' => 'text',
       'input_type' => 'TextArea',
+      'readonly' => TRUE,
       'default' => NULL,
     ],
     'is_active' => [
@@ -80,7 +80,7 @@ return [
     'help_text' => [
       'title' => E::ts('Help Text'),
       'sql_type' => 'text',
-      'input_type' => 'TextArea',
+      'input_type' => 'RichTextEditor',
       'default' => NULL,
       'input_attrs' => [
         'rows' => 4,
@@ -89,8 +89,8 @@ return [
     ],
     'created_date' => [
       'title' => E::ts('Created Date'),
-      'sql_type' => 'date',
-      'input_type' => NULL,
+      'sql_type' => 'timestamp',
+      'input_type' => 'Select Date',
       'readonly' => TRUE,
       'description' => E::ts('When was this item created'),
       'default' => NULL,
@@ -113,11 +113,11 @@ return [
     ],
     'modified_date' => [
       'title' => E::ts('Modified Date'),
-      'sql_type' => 'date',
-      'input_type' => NULL,
+      'sql_type' => 'timestamp',
+      'input_type' => 'Select Date',
       'readonly' => TRUE,
       'description' => E::ts('When was this item modified'),
-      'default' => NULL,
+      'default' => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
     ],
     'modified_user_id' => [
       'title' => E::ts('Modified User ID'),

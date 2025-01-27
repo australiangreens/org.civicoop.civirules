@@ -53,13 +53,14 @@ return [
       'title' => E::ts('Delay'),
       'sql_type' => 'text',
       'input_type' => 'TextArea',
+      'readonly' => TRUE,
       'default' => NULL,
     ],
     'ignore_condition_with_delay' => [
       'title' => E::ts('Ignore Condition With Delay'),
-      'sql_type' => 'int',
-      'input_type' => 'Number',
-      'default' => 0,
+      'sql_type' => 'boolean',
+      'input_type' => 'CheckBox',
+      'default' => FALSE,
     ],
     'is_active' => [
       'title' => E::ts('Enabled'),

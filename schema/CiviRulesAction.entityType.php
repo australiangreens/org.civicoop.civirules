@@ -26,6 +26,7 @@ return [
       'title' => E::ts('Name'),
       'sql_type' => 'varchar(80)',
       'input_type' => 'Text',
+      'required' => TRUE,
       'default' => NULL,
     ],
     'label' => [

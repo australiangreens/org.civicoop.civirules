@@ -53,7 +53,7 @@ return [
     'contact_id' => [
       'title' => E::ts('Contact ID'),
       'sql_type' => 'int unsigned',
-      'input_type' => NULL,
+      'input_type' => 'EntityRef',
       'readonly' => TRUE,
       'description' => E::ts('FK to Contact ID'),
       'default' => NULL,
