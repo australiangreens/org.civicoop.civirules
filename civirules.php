@@ -464,3 +464,16 @@ function civirules_civicrm_scanClasses(&$classes) {
 
   $classes = array_merge($classes, $all);
 }
+
+/**
+ * Intercept form functions
+ * @param $formName
+ * @param $form
+ */
+function civirules_civicrm_buildForm($formName, &$form) {
+  switch ($formName) {
+    case 'CRM_Civirules_Form_Rule':
+      Civi::service('angularjs.loader')->addModules(['afsearchRuleActions', 'afsearchRuleTriggerHistory']);
+      break;
+  }
+}

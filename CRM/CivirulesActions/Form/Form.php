@@ -115,9 +115,6 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
       E::ts('Action parameters updated'),
       'success'
     );
-
-    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->rule->id, TRUE);
-    CRM_Utils_System::redirect($redirectUrl);
   }
 
   /**

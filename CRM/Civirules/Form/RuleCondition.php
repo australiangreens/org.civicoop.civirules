@@ -64,6 +64,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
           ->execute();
       }
       CRM_Utils_System::redirect($redirectUrl);
+      return;
     }
 
     $this->rule = new CRM_Civirules_BAO_Rule();
@@ -97,13 +98,13 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     $redirectUrl = $condition->getExtraDataInputUrl($ruleCondition->id);
     if (empty($redirectUrl)) {
       $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->_submitValues['rule_id'], TRUE);
+      $session->setStatus('Condition added to CiviRule ' . CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->_submitValues['rule_id']),
+        'Condition added', 'success');
     } else {
       $redirectUrl .= '&action=add';
     }
 
-    $session->setStatus('Condition added to CiviRule '.CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->_submitValues['rule_id']),
-      'Condition added', 'success');
-    CRM_Utils_System::redirect($redirectUrl);
+    $session->pushUserContext($redirectUrl);
   }
 
   protected function buildConditionList() {

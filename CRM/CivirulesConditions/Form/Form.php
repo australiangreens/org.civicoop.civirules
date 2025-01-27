@@ -114,7 +114,7 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
     $session->setStatus(E::ts("Condition '%1' parameters updated for CiviRule '%2'", [1 => $this->condition->label, 2 => $this->rule->label]), 'Condition parameters updated', 'success');
 
     $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->rule->id, TRUE);
-    CRM_Utils_System::redirect($redirectUrl);
+    $session->pushUserContext($redirectUrl);
   }
 
   /**

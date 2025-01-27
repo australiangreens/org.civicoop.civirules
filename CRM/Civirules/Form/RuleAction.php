@@ -70,19 +70,6 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
 
       $this->assign('action_label', $this->action->label);
     }
-
-    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->ruleId, TRUE);
-    $session = CRM_Core_Session::singleton();
-    $session->pushUserContext($redirectUrl);
-    if ($this->_action == CRM_Core_Action::DELETE) {
-      $ruleActionId = CRM_Utils_Request::retrieve('id', 'Integer');
-      if (!empty($ruleActionId)) {
-        CiviRulesRuleAction::delete(FALSE)
-          ->addWhere('id', '=', $ruleActionId)
-          ->execute();
-      }
-      CRM_Utils_System::redirect($redirectUrl);
-    }
   }
 
   /**
@@ -121,18 +108,20 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
       ->first();
 
     $session = CRM_Core_Session::singleton();
-    $session->setStatus('Action added to CiviRule '.CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->getSubmittedValue('rule_id')),
-      'Action added', 'success');
-
     $action = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($this->ruleAction->action_id, true);
     $redirectUrl = $action->getExtraDataInputUrl($ruleAction['id']);
-    if (empty($redirectUrl) || $this->ruleActionId) {
+    if (empty($redirectUrl)) {
       $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->getSubmittedValue('rule_id'), TRUE);
-    } elseif (!$this->ruleActionId) {
-      $redirectUrl .= '&action=add';
+      $session->setStatus('Action added to CiviRule '.CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->getSubmittedValue('rule_id')),
+        'Action added', 'success');
+    }
+    else {
+      // Redirect to action configuration (required to redirect popup without closing
+      CRM_Utils_System::redirect($redirectUrl);
     }
 
-    CRM_Utils_System::redirect($redirectUrl);
+    // This will allow popup to close
+    $session->pushUserContext($redirectUrl);
   }
 
   /**

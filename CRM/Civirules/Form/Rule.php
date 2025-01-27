@@ -111,8 +111,6 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     $this->assign('rule', $this->rule);
 
     if ($this->_action == CRM_Core_Action::UPDATE) {
-      $this->assign('ruleTriggerHistory', CRM_Civirules_Utils::getRuleLogLatestTriggerDetail($this->ruleId, 20));
-
       $clones = civicrm_api3('CiviRuleRule', 'getclones', [
         'id' => $this->ruleId,
       ]);
@@ -320,7 +318,6 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
   protected function createUpdateFormElements() {
     $this->add('text', 'rule_trigger_label', '', array('size' => CRM_Utils_Type::HUGE));
     $this->assign('ruleConditions', $this->getRuleConditions());
-    $this->assign('ruleActions', $this->getRuleActions());
   }
 
   /**
@@ -413,37 +410,6 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
   }
 
   /**
-   * Function to get the rule actions for the rule
-   *
-   * @return array $ruleActions
-   * @access protected
-   */
-  protected function getRuleActions() {
-    $ruleActions = CiviRulesRuleAction::get(FALSE)
-      ->addWhere('is_active', '=',TRUE)
-      ->addWhere('rule_id', '=', $this->ruleId)
-      ->execute()
-      ->indexBy('id');
-    foreach ($ruleActions as $ruleActionId => $ruleAction) {
-      $actionClass = CRM_Civirules_BAO_Action::getActionObjectById($ruleAction['action_id']);
-      $actionClass->setRuleActionData($ruleAction);
-
-      $ruleActions[$ruleActionId]['label'] = CRM_Civirules_BAO_Action::getActionLabelWithId($ruleAction['action_id']);
-      $ruleActions[$ruleActionId]['actions'] = $this->setRuleActionActions($ruleActionId, $actionClass);
-      $ruleActions[$ruleActionId]['formattedConditionParams'] = $actionClass->userFriendlyConditionParams();
-
-      $ruleActions[$ruleActionId]['formattedDelay'] = '';
-      if (!empty($ruleAction['delay'])) {
-        $delayClass = unserialize($ruleAction['delay']);
-        if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
-          $ruleActions[$ruleActionId]['formattedDelay'] = $delayClass->getDelayExplanation();
-        }
-      }
-    }
-    return $ruleActions;
-  }
-
-  /**
    * Function to set the actions for each rule condition
    *
    * @param int $ruleConditionId
@@ -463,31 +429,6 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       .$this->ruleId.'&id='.$ruleConditionId);
     $conditionActions[] = '<a class="action-item" title="Remove" href="'.$removeUrl.'">'.E::ts('Remove').'</a>';
     return $conditionActions;
-  }
-
-  /**
-   * Function to set the actions for each rule action
-   *
-   * @param int $ruleActionId
-   * @param CRM_Civirules_Action $action
-   * @return array
-   * @access protected
-   */
-  protected function setRuleActionActions($ruleActionId, CRM_Civirules_Action $action) {
-    $actionActions = array();
-
-    $delaySettingsUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', "reset=1&action=update&rule_id={$this->ruleId}&id={$ruleActionId}");
-    $actionActions[] = '<a class="action-item" title="Edit delay settings" href="'.$delaySettingsUrl.'">'.E::ts('Edit delay').'</a>';
-
-    $editUrl = $action->getExtraDataInputUrl($ruleActionId);
-    if (!empty($editUrl)) {
-      $actionActions[] = '<a class="action-item" title="Edit" href="'.$editUrl.'">'.E::ts('Edit').'</a>';
-    }
-
-    $removeUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', 'reset=1&action=delete&rule_id='
-      .$this->ruleId.'&id='.$ruleActionId);
-    $actionActions[] = '<a class="action-item" title="Remove" href="'.$removeUrl.'">'.E::ts('Remove').'</a>';
-    return $actionActions;
   }
 
   /**
