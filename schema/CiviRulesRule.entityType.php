@@ -38,18 +38,16 @@ return [
     'trigger_id' => [
       'title' => E::ts('Trigger ID'),
       'sql_type' => 'int unsigned',
-      'input_type' => 'Select',
+      'input_type' => 'EntityRef',
       'readonly' => TRUE,
       'default' => NULL,
       'input_attrs' => [
         'label' => E::ts('Trigger'),
-        'multiple' => TRUE,
       ],
       'pseudoconstant' => [
         'table' => 'civirule_trigger',
         'key_column' => 'id',
         'label_column' => 'label',
-        'name_column' => 'name',
       ],
       'entity_reference' => [
         'entity' => 'CiviRulesTrigger',
