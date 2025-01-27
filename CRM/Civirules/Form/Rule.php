@@ -501,7 +501,6 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
         'created_user_id' => $userId);
     } else {
       $ruleParams = array(
-        'modified_date' => date('Ymd'),
         'modified_user_id' => $userId,
         'id' => $formValues['id']);
     }

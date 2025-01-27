@@ -19,7 +19,6 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
   }
 
   public function uninstall() {
-    $this->executeSqlFile('sql/uninstall.sql');
   }
 
   public function upgrade_1001() {
@@ -461,17 +460,10 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
   public function upgrade_2082() {
     $this->ctx->log->info('Update tables to match schema cleanup');
     CRM_Core_DAO::executeQuery("ALTER TABLE civirule_action MODIFY COLUMN is_active tinyint NOT NULL DEFAULT 1");
-    CRM_Core_DAO::executeQuery("ALTER TABLE civirule_action MODIFY COLUMN created_user_id int unsigned DEFAULT NULL COMMENT 'FK to Contact ID'");
-    CRM_Core_DAO::executeQuery("ALTER TABLE civirule_action MODIFY COLUMN modified_user_id int unsigned DEFAULT NULL COMMENT 'FK to Contact ID'");
-
     CRM_Core_DAO::executeQuery("ALTER TABLE civirule_condition MODIFY COLUMN is_active tinyint NOT NULL DEFAULT 1");
-    CRM_Core_DAO::executeQuery("ALTER TABLE civirule_condition MODIFY COLUMN created_user_id int unsigned DEFAULT NULL COMMENT 'FK to Contact ID'");
-    CRM_Core_DAO::executeQuery("ALTER TABLE civirule_condition MODIFY COLUMN modified_user_id int unsigned DEFAULT NULL COMMENT 'FK to Contact ID'");
 
     CRM_Core_DAO::executeQuery("ALTER TABLE civirule_trigger MODIFY COLUMN is_active tinyint NOT NULL DEFAULT 1");
     CRM_Core_DAO::executeQuery("ALTER TABLE civirule_trigger MODIFY COLUMN cron tinyint DEFAULT 0");
-    CRM_Core_DAO::executeQuery("ALTER TABLE civirule_trigger MODIFY COLUMN created_user_id int unsigned DEFAULT NULL COMMENT 'FK to Contact ID'");
-    CRM_Core_DAO::executeQuery("ALTER TABLE civirule_trigger MODIFY COLUMN modified_user_id int unsigned DEFAULT NULL COMMENT 'FK to Contact ID'");
 
     CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_action MODIFY COLUMN is_active tinyint NOT NULL DEFAULT 1");
     CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_condition MODIFY COLUMN is_active tinyint NOT NULL DEFAULT 1");
@@ -507,6 +499,50 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
       CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_log ADD CONSTRAINT FK_civirule_rule_log_contact_id FOREIGN KEY (`contact_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE SET NULL");
     }
 
+    return TRUE;
+  }
+
+  public function upgrade_2084() {
+    $this->ctx->log->info('Applying update 2084');
+
+    $this->ctx->log->info('Convert CiviRulesRule.created_date/modified_date to timestamp and default to CURRENT_TIMESTAMP');
+    CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule MODIFY COLUMN created_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT 'When was this item created'");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule MODIFY COLUMN modified_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'When was this item modified'");
+    $this->ctx->log->info('Convert CiviRulesRuleLog.log_date to timestamp and default to CURRENT_TIMESTAMP');
+    CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_log MODIFY COLUMN log_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL");
+    $this->ctx->log->info('Adding created/modified date to civirule_rule_action');
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civirule_rule_action', 'created_date')) {
+      CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_action ADD COLUMN created_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT 'RuleAction Created Date'");
+    }
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civirule_rule_action', 'modified_date')) {
+      CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_action ADD COLUMN modified_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'RuleAction Modified Date'");
+    }
+    $this->ctx->log->info('Adding created/modified date to civirule_rule_condition');
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civirule_rule_condition', 'created_date')) {
+      CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_condition ADD COLUMN created_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT 'RuleCondition Created Date'");
+    }
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civirule_rule_condition', 'modified_date')) {
+      CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_condition ADD COLUMN modified_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'RuleCondition Modified Date'");
+    }
+
+    $this->ctx->log->info('Adding Weight to RuleConditions and RuleActions');
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civirule_rule_action', 'weight')) {
+      CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_action ADD COLUMN `weight` int DEFAULT 0 NOT NULL COMMENT 'Ordering of the RuleActions'");
+    }
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civirule_rule_condition', 'weight')) {
+      CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_condition ADD COLUMN `weight` int DEFAULT 0 NOT NULL COMMENT 'Ordering of the RuleConditions'");
+    }
+
+    $this->ctx->log->info('Dropping created/modified date/user from action,condition,trigger tables');
+    $tablesToDropFields = ['civirule_action', 'civirule_condition', 'civirule_trigger'];
+    $fieldsToDrop = ['created_date', 'modified_date', 'created_user_id', 'modified_user_id'];
+    foreach ($tablesToDropFields as $tableName) {
+      foreach ($fieldsToDrop as $field) {
+        if (CRM_Core_BAO_SchemaHandler::checkIfFieldExists($tableName, $field)) {
+          CRM_Core_BAO_SchemaHandler::dropColumn($tableName, $field);
+        }
+      }
+    }
     return TRUE;
   }
 
