@@ -21,7 +21,7 @@
         <div class="clear"></div>
     </div>
 
-    {if $form.relationship_contact}
+    {if isset($form.relationship_contact)}
         <div class="crm-section">
             <div class="label">{$form.relationship_contact.label}</div>
             <div class="content">{$form.relationship_contact.html}</div>
@@ -45,7 +45,7 @@
         </div>
     {/if}
 
-    {if $form.relationship_contact_assignee}
+    {if isset($form.relationship_contact_assignee)}
         <div class="crm-section">
             <div class="label">{$form.relationship_contact_assignee.label}</div>
             <div class="content">{$form.relationship_contact_assignee.html}</div>
