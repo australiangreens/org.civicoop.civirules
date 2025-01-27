@@ -31,7 +31,7 @@ class CRM_CivirulesActions_Generic_Form_CopyCustomField extends CRM_CivirulesAct
       TRUE);
 
     // set defaults
-    $this->setDefaults(unserialize($this->ruleAction->action_params));
+    $this->setDefaults($this->ruleAction->unserializeParams());
 
     $this->addButtons([
       ['type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE],

@@ -33,9 +33,7 @@ class CRM_CivirulesActions_User_Form_DisplayMessage extends CRM_CivirulesActions
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
     $defaultValues['rule_action_id'] = $this->ruleActionId;
-    if (!empty($this->ruleAction->action_params)) {
-      $data = unserialize($this->ruleAction->action_params);
-    }
+    $data = $this->ruleAction->unserializeParams();
     if (!empty($data['title'])) {
       $defaultValues['title'] = $data['title'];
     }

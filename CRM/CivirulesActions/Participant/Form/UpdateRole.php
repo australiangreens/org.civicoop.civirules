@@ -29,7 +29,7 @@ class CRM_CivirulesActions_Participant_Form_UpdateRole extends CRM_CivirulesActi
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = !empty($this->ruleAction->action_params) ? unserialize($this->ruleAction->action_params) : [];
+    $data = $this->ruleAction->unserializeParams();
     if (!empty($data['role_id'])) {
       $defaultValues['role_id'] = $data['role_id'];
     }

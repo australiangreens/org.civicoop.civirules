@@ -66,7 +66,7 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->ruleAction->action_params);
+    $data = $this->ruleAction->unserializeParams();
     if (!empty($data['activity_type_id'])) {
       $defaultValues['activity_type_id'] = $data['activity_type_id'];
     }
@@ -95,7 +95,7 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
     foreach(CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->setDefaultValues($defaultValues, 'activity_date_time', $this->rule);
     }
-    if ($data['activity_date_time'] != 'null') {
+    if (!empty($data['activity_date_time']) && $data['activity_date_time'] != 'null') {
       $activityDateClass = unserialize($data['activity_date_time']);
       if ($activityDateClass) {
         $defaultValues['activity_date_time'] = get_class($activityDateClass);

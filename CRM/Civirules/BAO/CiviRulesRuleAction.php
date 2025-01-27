@@ -124,4 +124,16 @@ class CRM_Civirules_BAO_CiviRulesRuleAction extends CRM_Civirules_DAO_RuleAction
     }
   }
 
+  /**
+   * Function to unserialize the CiviRulesRuleAction action_params
+   *
+   * @return array
+   */
+  public function unserializeParams(): array {
+    if (!empty($this->action_params) && !is_array($this->action_params)) {
+      return unserialize($this->action_params);
+    }
+    return [];
+  }
+
 }
