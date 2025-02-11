@@ -51,14 +51,13 @@ return [
       ],
     ],
     'contact_id' => [
-      'title' => E::ts('Contact ID'),
+      'title' => E::ts('Triggered for Contact ID'),
       'sql_type' => 'int unsigned',
       'input_type' => 'EntityRef',
-      'readonly' => TRUE,
       'description' => E::ts('FK to Contact ID'),
       'default' => NULL,
       'input_attrs' => [
-        'label' => E::ts('Modified By'),
+        'label' => E::ts('Triggered For'),
       ],
       'entity_reference' => [
         'entity' => 'Contact',
@@ -67,13 +66,13 @@ return [
       ],
     ],
     'entity_table' => [
-      'title' => E::ts('Entity Table'),
+      'title' => E::ts('Triggered Entity Table'),
       'sql_type' => 'varchar(255)',
       'input_type' => 'Text',
       'default' => NULL,
     ],
     'entity_id' => [
-      'title' => E::ts('Entity ID'),
+      'title' => E::ts('Triggered Entity ID'),
       'sql_type' => 'int unsigned',
       'input_type' => 'Number',
       'default' => NULL,
@@ -81,8 +80,7 @@ return [
     'log_date' => [
       'title' => E::ts('Log Date'),
       'sql_type' => 'datetime',
-      'input_type' => NULL,
-      'readonly' => TRUE,
+      'input_type' => 'Select Date',
       'default' => NULL,
     ],
   ],
