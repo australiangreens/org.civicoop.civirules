@@ -103,8 +103,9 @@ function _civirules_upgrade_to_2x_backup() {
   // Check schema version
   // Schema version 1023 is inserted by a 2x version
   // So if the schema version is lower than 1023 we are still on a 1x version.
+  // If empty, we are installing
   $schemaVersion = CRM_Core_DAO::singleValueQuery("SELECT schema_version FROM civicrm_extension WHERE `name` = 'CiviRules'");
-  if ($schemaVersion >= 1023) {
+  if ($schemaVersion >= 1023 || empty($schemaVersion)) {
     return; // No need for preparing the update.
   }
 
