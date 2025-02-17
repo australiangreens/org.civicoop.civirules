@@ -35,7 +35,7 @@ class CRM_CivirulesActions_GroupContact_AddRelated extends CRM_CivirulesActions_
         $params['relationship_type_id'] = substr($rel_type_id, 4);
         $params['is_active'] = '1';
         $params['options']['limit'] = '0';
-        if (strpos($rel_type_id, 'a_b_') === 0) {
+        if (str_starts_with($rel_type_id, 'a_b_')) {
           $params['contact_id_a'] = $triggerData->getContactId();
           $return_field = 'contact_id_b';
         }
