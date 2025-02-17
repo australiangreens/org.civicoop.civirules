@@ -393,17 +393,19 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    * Function to get the rule conditions for the rule
    *
    * @return array $ruleConditions
-   * @access protected
    */
   protected function getRuleConditions() {
-    $conditionParams = array(
-      'is_active' => 1,
-      'rule_id' => $this->ruleId);
-    $ruleConditions = CRM_Civirules_BAO_RuleCondition::getValues($conditionParams);
+    $ruleConditions = CiviRulesRuleCondition::get(FALSE)
+      ->addWhere('rule_id', '=', $this->ruleId)
+      ->addWhere('is_active', '=', 1)
+      ->addOrderBy('weight', 'ASC')
+      ->addOrderBy('id', 'ASC')
+      ->execute()
+      ->indexBy('id');
     foreach ($ruleConditions as $ruleConditionId => $ruleCondition) {
-      $conditionClass = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id']);
+      $conditionClass = CRM_Civirules_BAO_CiviRulesCondition::getConditionObjectById($ruleCondition['condition_id']);
       $conditionClass->setRuleConditionData($ruleCondition);
-      $ruleConditions[$ruleConditionId]['name'] = CRM_Civirules_BAO_Condition::getConditionLabelWithId($ruleCondition['condition_id']);
+      $ruleConditions[$ruleConditionId]['name'] = CRM_Civirules_BAO_CiviRulesCondition::getConditionLabelWithId($ruleCondition['condition_id']);
       $ruleConditions[$ruleConditionId]['actions'] = $this->setRuleConditionActions($ruleConditionId, $conditionClass);
       $ruleConditions[$ruleConditionId]['formattedConditionParams'] = $conditionClass->userFriendlyConditionParams();
     }

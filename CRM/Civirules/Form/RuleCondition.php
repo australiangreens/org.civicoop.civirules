@@ -8,8 +8,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
 
-use Civi\Api4\CiviRulesCondition;
 use CRM_Civirules_ExtensionUtil as E;
+use Civi\Api4\CiviRulesCondition;
+use Civi\Api4\CiviRulesRuleCondition;
 
 class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
 
@@ -57,7 +58,11 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     $this->assign('countRuleConditions', CRM_Civirules_BAO_RuleCondition::countConditionsForRule($this->ruleId));
     if ($this->_action == CRM_Core_Action::DELETE) {
       $ruleConditionId = CRM_Utils_Request::retrieve('id', 'Integer');
-      CRM_Civirules_BAO_RuleCondition::deleteWithId($ruleConditionId);
+      if (!empty($ruleConditionId)) {
+        CiviRulesRuleCondition::delete(FALSE)
+          ->addWhere('id', '=', $ruleConditionId)
+          ->execute();
+      }
       CRM_Utils_System::redirect($redirectUrl);
     }
 
