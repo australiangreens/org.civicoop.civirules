@@ -8,6 +8,7 @@ if (!class_exists("\\Psr\\Log\\LogLevel")) {
   require_once('psr/log/LogLevel.php');
 }
 
+use Civi\Core\ClassScanner;
 use CRM_Civirules_ExtensionUtil as E;
 
 /**
@@ -437,4 +438,29 @@ function civirules_civicrm_permission(&$permissions) {
     'label' => E::ts('CiviRules: administer CiviRules extension'),
     'description' => E::ts('Perform all CiviRules administration tasks in CiviCRM'),
   ];
+}
+
+/**
+ * We can't use mixin scan-classes directly because we need to exclude the ConfigItems classes
+ *   since that will fail if ConfigItems extension is not installed because scan-classes
+ *   picks them up automatically.
+ *
+ * @param $classes
+ *
+ * @return void
+ */
+function civirules_civicrm_scanClasses(&$classes) {
+  $cache = ClassScanner::cache('structure');
+  $cacheKey = E::LONG_NAME;
+  $all = $cache->get($cacheKey);
+  if ($all === NULL) {
+    $baseDir = CRM_Utils_File::addTrailingSlash(E::path());
+    $all = [];
+
+    ClassScanner::scanFolders($all, $baseDir, 'CRM', '_');
+    ClassScanner::scanFolders($all, $baseDir, 'Civi', '\\', ';(ConfigItems);');
+    $cache->set($cacheKey, $all, ClassScanner::TTL);
+  }
+
+  $classes = array_merge($classes, $all);
 }
