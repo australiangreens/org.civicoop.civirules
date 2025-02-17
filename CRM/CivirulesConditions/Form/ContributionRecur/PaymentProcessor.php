@@ -47,7 +47,7 @@ class CRM_CivirulesConditions_Form_ContributionRecur_PaymentProcessor extends CR
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->ruleCondition->condition_params);
+    $data = $this->ruleCondition->unserializeParams();
     if (!empty($data['payment_processor_id'])) {
       $defaultValues['payment_processor_id'] = $data['payment_processor_id'];
     }

@@ -153,4 +153,17 @@ class CRM_Civirules_BAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_RuleCon
     $ruleCondition->rule_id = $ruleId;
     return $ruleCondition->count();
   }
+
+  /**
+   * Function to unserialize the CiviRulesRuleCondition condition_params
+   *
+   * @return array
+   */
+  public function unserializeParams(): array {
+    if (!empty($this->condition_params) && !is_array($this->condition_params)) {
+      return unserialize($this->condition_params);
+    }
+    return [];
+  }
+
 }
