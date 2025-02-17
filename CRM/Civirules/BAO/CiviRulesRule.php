@@ -195,46 +195,6 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
   }
 
   /**
-   * Function to get latest rule id
-   *
-   * @return int $ruleId
-   */
-  public static function getLatestRuleId() {
-    $rule = new CRM_Civirules_BAO_Rule();
-    $query = 'SELECT MAX(id) AS maxId FROM '.$rule->tableName();
-    $dao = CRM_Core_DAO::executeQuery($query);
-    if ($dao->fetch()) {
-      return $dao->maxId;
-    }
-  }
-
-  /**
-   * Method to get all active rules with a specific trigger id
-   *
-   * @param int $triggerId
-   *
-   * @return array $ruleIds
-   * @throws Exception when triggerId not integer
-   */
-  public static function getRuleIdsByTriggerId($triggerId) {
-    if (!is_numeric($triggerId)) {
-      throw new Exception(ts('You are passing a trigger id as a parameter into ') . __METHOD__
-        . ts(' which does not pass the PHP is_numeric test. An integer is required (only numbers allowed)! Contact your system administrator'));
-    }
-    $ruleIds = [];
-    $sql = 'SELECT id FROM civirule_rule WHERE trigger_id = %1 AND is_active = %2';
-    $params = [
-      1 => [$triggerId, 'Integer'],
-      2 => [1, 'Integer']
-    ];
-    $dao = CRM_Core_DAO::executeQuery($sql, $params);
-    while ($dao->fetch()) {
-      $ruleIds[] = $dao->id;
-    }
-    return $ruleIds;
-  }
-
-  /**
    * Method to determine if a rule is active on the civicrm queue
    *
    * @param $ruleId
