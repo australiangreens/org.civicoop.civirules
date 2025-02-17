@@ -11,6 +11,10 @@ return [
     'description' => E::ts('CiviRules Rule Actions'),
     'log' => TRUE,
   ],
+  'getPaths' => fn() => [
+    'add' => 'civicrm/civirule/form/rule_action?reset=1&action=add&rule_id=[rule_id]',
+    'update' => 'civicrm/civirule/form/rule_action?reset=1&action=update&id=[id]',
+  ],
   'getFields' => fn() => [
     'id' => [
       'title' => E::ts('ID'),

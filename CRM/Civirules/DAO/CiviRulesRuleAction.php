@@ -14,7 +14,10 @@
  * @property string $action_params 
  * @property string $delay 
  * @property int|string $ignore_condition_with_delay 
- * @property bool|string $is_active 
+ * @property bool|string $is_active
+ * @property int $weight
+ * @property string $created_date
+ * @property string|null $modified_date
  */
 class CRM_Civirules_DAO_CiviRulesRuleAction extends CRM_Civirules_DAO_Base {
 
