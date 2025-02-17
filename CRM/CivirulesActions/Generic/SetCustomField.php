@@ -119,7 +119,7 @@ class CRM_CivirulesActions_Generic_SetCustomField extends CRM_Civirules_Action {
    * @access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/generic/setcustomvalue', 'rule_action_id='.$ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/generic/setcustomvalue', $ruleActionId);
   }
 
   /**

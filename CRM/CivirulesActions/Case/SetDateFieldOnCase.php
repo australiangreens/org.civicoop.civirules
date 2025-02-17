@@ -6,7 +6,7 @@
 class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action {
 
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/case/setdatefield', 'rule_action_id='.$ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/case/setdatefield', $ruleActionId);
   }
 
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {

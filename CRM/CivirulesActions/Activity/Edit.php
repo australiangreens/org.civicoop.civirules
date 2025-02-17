@@ -177,7 +177,7 @@ class CRM_CivirulesActions_Activity_Edit extends CRM_CivirulesActions_Activity_A
    * @access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/activity/edit', 'rule_action_id='.$ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/activity/edit', $ruleActionId);
   }
 
   /**

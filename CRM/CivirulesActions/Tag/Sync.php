@@ -93,7 +93,7 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
    * $access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/sync_tag', 'rule_action_id=' . $ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/sync_tag', $ruleActionId);
   }
 
   /**

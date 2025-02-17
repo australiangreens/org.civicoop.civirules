@@ -140,7 +140,7 @@ class CRM_CivirulesActions_Activity_AddTargetContact extends CRM_Civirules_Actio
    * $access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/activity_add_target_contact', 'rule_action_id=' . $ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/activity_add_target_contact', $ruleActionId);
   }
 
 

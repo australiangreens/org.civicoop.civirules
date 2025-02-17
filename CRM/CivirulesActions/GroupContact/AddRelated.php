@@ -93,7 +93,7 @@ class CRM_CivirulesActions_GroupContact_AddRelated extends CRM_CivirulesActions_
    * @return bool|string
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/groupcontact/addrelated', 'rule_action_id=' . $ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/groupcontact/addrelated', $ruleActionId);
   }
 
   /**

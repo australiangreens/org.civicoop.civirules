@@ -90,7 +90,7 @@ class CRM_CivirulesActions_Relationship_End extends CRM_Civirules_Action {
    * @return bool|string
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/relationship/end', 'rule_action_id=' . $ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/relationship/end', $ruleActionId);
   }
 
   /**

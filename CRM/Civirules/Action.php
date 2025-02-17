@@ -109,6 +109,10 @@ abstract class CRM_Civirules_Action {
    */
   abstract public function getExtraDataInputUrl($ruleActionId);
 
+  public function getFormattedExtraDataInputUrl($url, $ruleActionID) {
+    return CRM_Utils_System::url($url, 'rule_action_id=' . $ruleActionID, FALSE, NULL, FALSE, FALSE, TRUE);
+  }
+
   /**
    * Returns a user friendly text explaining the condition params
    * e.g. 'Older than 65'

@@ -161,7 +161,7 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
    * @access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/contact/updatedatevalue', 'rule_action_id='.$ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/contact/updatedatevalue', $ruleActionId);
   }
 
   /**

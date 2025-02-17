@@ -36,7 +36,7 @@ class CRM_CivirulesActions_Tag_ActivityTagRemove extends CRM_Civirules_Action {
    */
   public function getExtraDataInputUrl($ruleActionId) {
     return CRM_Utils_System::url('civicrm/civirule/form/action/tag/entitytag', 'tn=civicrm_activity&rule_action_id='
-      . $ruleActionId);
+      . $ruleActionId, FALSE, NULL, FALSE, FALSE, TRUE);
   }
 
   /**

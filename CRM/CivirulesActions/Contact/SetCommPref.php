@@ -71,7 +71,7 @@ class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
    * @return string
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/contact/commpref', 'rule_action_id='.$ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/contact/commpref', $ruleActionId);
   }
 
   /**
