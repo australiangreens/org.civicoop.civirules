@@ -2,12 +2,14 @@
 /**
  * Form controller class to manage CiviRule/Rule
  *
- * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
- *
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
 
+use Civi\Api4\CiviRulesRuleAction;
+use Civi\Api4\CiviRulesRule;
+use Civi\Api4\CiviRulesRuleCondition;
+use Civi\Api4\CiviRulesRuleTag;
 use Civi\Api4\CiviRulesTrigger;
 use CRM_Civirules_ExtensionUtil as E;
 
@@ -15,9 +17,9 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
   protected $ruleId = NULL;
 
-  protected $rule;
+  protected CRM_Civirules_BAO_CiviRulesRule $rule;
 
-  protected $trigger;
+  protected CRM_Civirules_BAO_CiviRulesTrigger $trigger;
 
   protected $postRuleBlock = '';
 
@@ -91,7 +93,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
         CRM_Core_Error::statusBounce('Could not find trigger with ID: ' . $this->rule->trigger_id);
       }
 
-      $this->triggerClass = CRM_Civirules_BAO_Trigger::getTriggerObjectByTriggerId($this->trigger->id, TRUE);
+      $this->triggerClass = CRM_Civirules_BAO_CiviRulesTrigger::getTriggerObjectByTriggerId($this->trigger->id, TRUE);
       $this->triggerClass->setTriggerId($this->trigger->id);
       $this->triggerClass->setRuleId($this->rule->id);
       $this->triggerClass->setTriggerParams($this->rule->trigger_params ?? '');
@@ -147,7 +149,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $this->saveRuleTrigger($this->getSubmittedValues());
       $session->setStatus("Rule: '{$this->getSubmittedValue('rule_label')}' saved succesfully", 'CiviRule saved', 'success');
       if (isset($this->_submitValues['_qf_Rule_upload_done'])) {
-        CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/civirules/form/rulesview', 'reset=1'));
+        CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/civirules/form/rulesview'));
       }
     }
 
@@ -233,14 +235,14 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       /*
        * check if values have changed against database label
        */
-      $currentLabel = CRM_Civirules_BAO_Rule::getRuleLabelWithId($fields['id']);
+      $currentLabel = CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($fields['id']);
       if ($fields['rule_label'] != $currentLabel &&
-        CRM_Civirules_BAO_Rule::labelExists($fields['rule_label']) == TRUE) {
+        CRM_Civirules_BAO_CiviRulesRule::labelExists($fields['rule_label']) == TRUE) {
         $errors['rule_label'] = E::ts('There is already a rule with this name');
         return $errors;
       }
     } else {
-      if (CRM_Civirules_BAO_Rule::labelExists($fields['rule_label']) == TRUE) {
+      if (CRM_Civirules_BAO_CiviRulesRule::labelExists($fields['rule_label']) == TRUE) {
         $errors['rule_label'] = E::ts('There is already a rule with this name');
         return $errors;
       }
@@ -259,7 +261,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $this->add('text', 'rule_label', E::ts('Name'), array('size' => CRM_Utils_Type::HUGE), TRUE);
       $this->add('text', 'rule_description', E::ts('Description'), array('size' => 100, 'maxlength' => 256));
       $this->add('wysiwyg', 'rule_help_text', E::ts('Help text with purpose of rule'), array('rows' => 6, 'cols' => 80));
-      $this->add('select', 'rule_tag_id', E::ts('Civirule Tag(s)'), CRM_Civirules_BAO_RuleTag::getRuleTagsList(), FALSE,
+      $this->add('select', 'rule_tag_id', E::ts('Civirule Tag(s)'), CRM_Civirules_BAO_CiviRulesRuleTag::getRuleTagsList(), FALSE,
         array('id' => 'rule_tag_id', 'multiple' => 'multiple', 'class' => 'crm-select2 huge'));
       $this->add('checkbox', 'rule_is_active', E::ts('Enabled'));
       $this->add('text', 'rule_created_date', E::ts('Created Date'));
@@ -298,10 +300,6 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     if ($this->_action == CRM_Core_Action::ADD) {
         $this->addButtons(array(
         array('type' => 'next', 'name' => E::ts('Next'), 'isDefault' => TRUE),
-        array('type' => 'cancel', 'name' => E::ts('Cancel'))));
-    } elseif ($this->_action == CRM_Core_Action::DELETE) {
-      $this->addButtons(array(
-        array('type' => 'next', 'name' => E::ts('Delete'), 'isDefault' => TRUE,),
         array('type' => 'cancel', 'name' => E::ts('Cancel'))));
     } else {
       $this->addButtons(array(
@@ -355,37 +353,39 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    * @access protected
    */
   protected function setUpdateDefaults(&$defaults) {
-    $ruleData = CRM_Civirules_BAO_Rule::getValues(array('id' => $this->ruleId));
-    if (!empty($ruleData) && !empty($this->ruleId)) {
-      $defaults['rule_label'] = $ruleData[$this->ruleId]['label'];
-      // get all tags for rule
-      $defaultRuleTags = array();
-      try {
-        $ruleTags = civicrm_api3('CiviRuleRuleTag', 'get', array(
-          'rule_id' => $this->ruleId,
-          'options' => array('limit' => 0)
-        ));
-        foreach ($ruleTags['values'] as $ruleTagId => $ruleTag) {
-          $defaultRuleTags[] = $ruleTag['rule_tag_id'];
-        }
-      } catch (CRM_Core_Exception $ex) {}
-      if (!empty($defaultRuleTags)) {
-        $defaults['rule_tag_id'] = $defaultRuleTags;
-      }
-      if (isset($ruleData[$this->ruleId]['description'])) {
-        $defaults['rule_description'] = $ruleData[$this->ruleId]['description'];
-      }
-      if (isset($ruleData[$this->ruleId]['help_text'])) {
-        $defaults['rule_help_text'] = $ruleData[$this->ruleId]['help_text'];
-      }
-      $defaults['rule_is_active'] = $ruleData[$this->ruleId]['is_active'];
-      $defaults['rule_created_date'] = date('d-m-Y',
-        strtotime($ruleData[$this->ruleId]['created_date']));
-      $defaults['rule_created_contact'] = CRM_Civirules_Utils::
-        getContactName($ruleData[$this->ruleId]['created_user_id']);
-      if (!empty($ruleData[$this->ruleId]['trigger_id'])) {
-        $defaults['rule_trigger_label'] = CRM_Civirules_BAO_Trigger::getTriggerLabelWithId($ruleData[$this->ruleId]['trigger_id']);
-      }
+    if (empty($this->ruleId)) {
+      return;
+    }
+    $ruleData = CiviRulesRule::get(FALSE)
+      ->addWhere('id', '=', $this->ruleId)
+      ->execute()
+      ->first();
+    if (empty($ruleData)) {
+      return;
+    }
+    $defaults['rule_label'] = $ruleData['label'];
+    // get all tags for rule
+    $defaultRuleTags = [];
+    $ruleTags = \Civi\Api4\CiviRulesRuleTag::get(FALSE)
+      ->addWhere('rule_id', '=', $this->ruleId)
+      ->execute();
+    foreach ($ruleTags as $ruleTag) {
+      $defaultRuleTags[] = $ruleTag['rule_tag_id'];
+    }
+    if (!empty($defaultRuleTags)) {
+      $defaults['rule_tag_id'] = $defaultRuleTags;
+    }
+    if (isset($ruleData['description'])) {
+      $defaults['rule_description'] = $ruleData['description'];
+    }
+    if (isset($ruleData['help_text'])) {
+      $defaults['rule_help_text'] = $ruleData['help_text'];
+    }
+    $defaults['rule_is_active'] = $ruleData['is_active'];
+    $defaults['rule_created_date'] = date('d-m-Y', strtotime($ruleData['created_date']));
+    $defaults['rule_created_contact'] = CRM_Civirules_Utils::getContactName($ruleData['created_user_id']);
+    if (!empty($ruleData['trigger_id'])) {
+      $defaults['rule_trigger_label'] = CRM_Civirules_BAO_CiviRulesTrigger::getTriggerLabelWithId($ruleData['trigger_id']);
     }
   }
 
@@ -417,10 +417,11 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    * @access protected
    */
   protected function getRuleActions() {
-    $actionParams = array(
-      'is_active' => 1,
-      'rule_id' => $this->ruleId);
-    $ruleActions = CRM_Civirules_BAO_RuleAction::getValues($actionParams);
+    $ruleActions = CiviRulesRuleAction::get(FALSE)
+      ->addWhere('is_active', '=',TRUE)
+      ->addWhere('rule_id', '=', $this->ruleId)
+      ->execute()
+      ->indexBy('id');
     foreach ($ruleActions as $ruleActionId => $ruleAction) {
       $actionClass = CRM_Civirules_BAO_Action::getActionObjectById($ruleAction['action_id']);
       $actionClass->setRuleActionData($ruleAction);
@@ -492,35 +493,43 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    *
    * @param array $formValues
    * @param int $userId
-   * @access protected
    */
-  protected function saveRule($formValues, $userId) {
+  protected function saveRule(array $formValues, int $userId) {
     if ($this->_action == CRM_Core_Action::ADD) {
-      $ruleParams = array(
-        'created_date' => date('Ymd'),
-        'created_user_id' => $userId);
+      $ruleParams = [
+        'created_user_id' => $userId
+      ];
     } else {
-      $ruleParams = array(
+      $ruleParams = [
         'modified_user_id' => $userId,
-        'id' => $formValues['id']);
+        'id' => $formValues['id']
+      ];
     }
-    $ruleParams['label'] = CRM_Utils_Array::value('rule_label', $formValues);
-    $ruleParams['description'] = CRM_Utils_Array::value('rule_description', $formValues);
-    $ruleParams['help_text'] = CRM_Utils_Array::value('rule_help_text', $formValues);
-    $ruleParams['label'] = CRM_Utils_Array::value('rule_label', $formValues);
+    $ruleParams['label'] = $formValues['rule_label'] ?? '';
+    $ruleParams['description'] = $formValues['rule_description'] ?? '';
+    $ruleParams['help_text'] = $formValues['rule_help_text'] ?? '';
     $ruleParams['name'] = CRM_Civirules_Utils::buildNameFromLabel($formValues['rule_label']);
-    $ruleParams['is_active'] = CRM_Utils_Array::value('rule_is_active', $formValues, 0);
-    $savedRule = CRM_Civirules_BAO_Rule::writeRecord($ruleParams);
-    $this->ruleId = $savedRule->id;
+    $ruleParams['is_active'] = $formValues['rule_is_active'] ?? 0;
+    $this->ruleId = CiviRulesRule::save(FALSE)
+      ->setRecords([$ruleParams])
+      ->execute()
+      ->first()['id'];
     // first delete all tags for the rule if required then save new ones
-    CRM_Civirules_BAO_RuleTag::deleteWithRuleId($this->ruleId);
+    CiviRulesRuleTag::delete(FALSE)
+      ->addWhere('rule_id', '=', $this->ruleId)
+      ->execute();
     if (isset($formValues['rule_tag_id'])) {
       foreach ($formValues['rule_tag_id'] as $ruleTagId) {
-        $ruleTagParams = array(
+        $ruleTag = [
           'rule_id' => $this->ruleId,
           'rule_tag_id' => $ruleTagId
-        );
-        CRM_Civirules_BAO_RuleTag::writeRecord($ruleTagParams);
+        ];
+        $ruleTags[] = $ruleTag;
+      }
+      if (!empty($ruleTags)) {
+        CiviRulesRuleTag::save(FALSE)
+          ->setRecords($ruleTags)
+          ->execute();
       }
     }
   }
@@ -532,11 +541,10 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    */
   protected function saveRuleTrigger($formValues) {
     if (isset($formValues['rule_trigger_select'])) {
-      $ruleParams = array(
-        'id' => $this->ruleId,
-        'trigger_id' => $formValues['rule_trigger_select']
-      );
-      CRM_Civirules_BAO_Rule::writeRecord($ruleParams);
+      CiviRulesRule::update(FALSE)
+        ->addValue('trigger_id', $formValues['rule_trigger_select'])
+        ->addWhere('id', '=', $this->ruleId)
+        ->execute();
     }
   }
 
@@ -547,7 +555,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    * @return bool|string url
    */
   protected function getTriggerRedirect($triggerId) {
-    $trigger = CRM_Civirules_BAO_Trigger::getTriggerObjectByTriggerId($triggerId, true);
+    $trigger = CRM_Civirules_BAO_CiviRulesTrigger::getTriggerObjectByTriggerId($triggerId, true);
     $redirectUrl = $trigger->getExtraDataInputUrl($this->ruleId);
     if (!empty($redirectUrl)) {
       return $redirectUrl;
