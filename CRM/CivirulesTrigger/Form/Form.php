@@ -8,12 +8,12 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
   protected $ruleId = false;
 
   /**
-   * @var \CRM_Civirules_BAO_Rule
+   * @var \CRM_Civirules_BAO_CiviRulesRule
    */
   protected $rule;
 
   /**
-   * @var \CRM_Civirules_BAO_Trigger
+   * @var \CRM_Civirules_BAO_CiviRulesTrigger
    */
   protected $trigger;
 
@@ -33,8 +33,8 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
   public function preProcess() {
     $this->ruleId = CRM_Utils_Request::retrieve('rule_id', 'Integer');
 
-    $this->rule = new CRM_Civirules_BAO_Rule();
-    $this->trigger = new CRM_Civirules_BAO_Trigger();
+    $this->rule = new CRM_Civirules_BAO_CiviRulesRule();
+    $this->trigger = new CRM_Civirules_BAO_CiviRulesTrigger();
 
     $this->rule->id = $this->ruleId;
     if (!$this->rule->find(true)) {
@@ -46,7 +46,7 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
       throw new Exception('Civirules could not find trigger');
     }
 
-    $this->triggerClass = CRM_Civirules_BAO_Trigger::getTriggerObjectByTriggerId($this->trigger->id, true);
+    $this->triggerClass = CRM_Civirules_BAO_CiviRulesTrigger::getTriggerObjectByTriggerId($this->trigger->id, true);
     $this->triggerClass->setTriggerId($this->trigger->id);
     $this->triggerClass->setRuleId($this->rule->id);
     $this->triggerClass->setTriggerParams($this->rule->trigger_params ?? '');
