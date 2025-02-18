@@ -19,7 +19,7 @@ use Civi\Api4\Service\Spec\RequestSpec;
  * @service
  * @internal
  */
-class CiviRulesRuleActionGetSpecProvider extends \Civi\Core\Service\AutoService implements Generic\SpecProviderInterface {
+class CiviRulesRuleConditionGetSpecProvider extends \Civi\Core\Service\AutoService implements Generic\SpecProviderInterface {
 
   /**
    * @param \Civi\Api4\Service\Spec\RequestSpec $spec
@@ -28,11 +28,11 @@ class CiviRulesRuleActionGetSpecProvider extends \Civi\Core\Service\AutoService 
    */
   public function modifySpec(RequestSpec $spec): void {
     // Calculated field gets action parameter description
-    $field = new FieldSpec('action_params_display', 'CiviRulesRuleAction', 'String');
-    $field->setLabel(ts('Action Params Description'))
-      ->setTitle(ts('Action Params Description'))
-      ->setColumnName('action_params')
-      ->setDescription(ts('Human-readable description of action parameters'))
+    $field = new FieldSpec('condition_params_display', 'CiviRulesRuleCondition', 'String');
+    $field->setLabel(ts('Condition Params Description'))
+      ->setTitle(ts('Condition Params Description'))
+      ->setColumnName('condition_params')
+      ->setDescription(ts('Human-readable description of condition parameters'))
       ->setType('Extra')
       ->setReadonly(TRUE)
       ->addOutputFormatter([__CLASS__, 'description']);
@@ -46,15 +46,15 @@ class CiviRulesRuleActionGetSpecProvider extends \Civi\Core\Service\AutoService 
    * @return bool
    */
   public function applies($entity, $action): bool {
-    return $entity === 'CiviRulesRuleAction' && in_array($action, ['get', 'create']);
+    return $entity === 'CiviRulesRuleCondition' && in_array($action, ['get', 'create']);
   }
 
   public static function description(&$value, $row) {
-    if (!empty($row['action_id'])) {
-      $actionClass = \CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($row['action_id']);
-      if ($actionClass) {
-        $actionClass->setRuleActionData(['action_params' => $value]);
-        $value = $actionClass->userFriendlyConditionParams();
+    if (!empty($row['condition_id'])) {
+      $conditionClass = \CRM_Civirules_BAO_CiviRulesCondition::getConditionObjectById($row['condition_id']);
+      if ($conditionClass) {
+        $conditionClass->setRuleConditionData(['condition_params' => $value]);
+        $value = $conditionClass->userFriendlyConditionParams();
       }
     }
     else {
