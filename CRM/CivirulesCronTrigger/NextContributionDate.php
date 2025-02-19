@@ -15,12 +15,12 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
 
   public static function intervals() {
     return [
-      '-days' => ts('Day(s) before next scheduled recurring contribution date'),
-      '-weeks' => ts('Week(s) before next scheduled recurring contribution date'),
-      '-months' => ts('Month(s) before next scheduled recurring contribution date'),
-      '+days' => ts('Day(s) after next scheduled recurring contribution date'),
-      '+weeks' => ts('Week(s) after next scheduled recurring contribution date'),
-      '+months' => ts('Month(s) after next scheduled recurring contribution date'),
+      '-days' => ts('Day(s) before recurring next scheduled contribution date'),
+      '-weeks' => ts('Week(s) before recurring next scheduled contribution date'),
+      '-months' => ts('Month(s) before recurring next scheduled contribution date'),
+      '+days' => ts('Day(s) after recurring next scheduled contribution date'),
+      '+weeks' => ts('Week(s) after recurring next scheduled contribution date'),
+      '+months' => ts('Month(s) after recurring next scheduled contribution date'),
     ];
   }
 
