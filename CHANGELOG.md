@@ -1,6 +1,35 @@
 # CHANGELOG
 
-## Version 3.16 (not yet released)
+## Version 3.16.0 (2025-02-26)
+
+### Features
+* New action participant_update_role
+* Fix action "Remove Contact Sub Types" should be NULL when last sub type is removed.
+* Add Rules Trigger History search display / report
+
+### Internal changes / Bug fixes etc.
+* Small cleanup on action labels
+* Change description on recurring next scheduled contribution date trigger.
+* Add RuleCondition Spec provider
+* Add SpecProvider for formatted description of trigger params and Add links provider for CiviRules actions.
+* Enable scan-classes (this allows for auto-loading of listeners/hooks etc. when defined in classes).
+* Add function to unserialize Rule Condition params
+* Add function to unserialize Rule Action params
+* Rename classes to real (non-alias) names
+* Remove old quickforms that are replaced by formbuilder
+* Simplify upgrader functions and remove old/unused functions
+* Simplify some api3 internals
+* Drop unused CiviRulesRule functions
+* When installing, schema version is empty. This was causing the upgrader steps to be run in some situations.
+* Add function getFormattedExtraDataURL() to help CiviRules actions return a well-formatted URL for all CMSs
+* Switch to API4 to get OptionValue for userfriendlyconditionparams
+* Fix PHP warning on delay unserialize when not set
+* Array syntax and PHP warning fixes
+* REF - use str_starts_with instead of strpos
+* Update to EntityFrameworkV2.
+* Database schema improvements - improve metadata.
+* Remove unnecessary steps from upgrader (triggers/conditions/actions are automatically checked/added on cache refresh from json)
+* Get entity name from table, not class
 
 ## Version 3.15
 

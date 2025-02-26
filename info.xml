@@ -14,15 +14,15 @@
     <author>CiviCooP</author>
     <email>helpdesk@civicoop.org</email>
   </maintainer>
-  <releaseDate>2025-01-14</releaseDate>
-  <version>3.16-dev</version>
+  <releaseDate>2025-02-26</releaseDate>
+  <version>3.16</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>5.68</ver>
   </compatibility>
   <civix>
     <namespace>CRM/Civirules</namespace>
-    <format>25.01.0</format>
+    <format>25.01.1</format>
   </civix>
   <classloader>
     <psr0 prefix="CRM_" path="."/>
