@@ -112,7 +112,7 @@ class CRM_Civirules_Utils_Upgrader {
       $records[] = [
         'name' => $trigger['name'],
         'label' => $trigger['label'],
-        'cron' => (bool) $trigger['cron'] ?? FALSE,
+        'cron' => (bool) ($trigger['cron'] ?? FALSE),
         'object_name' => $trigger['object_name'] ?? NULL,
         'op' => $trigger['op'] ?? NULL,
         'class_name' => $trigger['class_name'] ?? NULL,
