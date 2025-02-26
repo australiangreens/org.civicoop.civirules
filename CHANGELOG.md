@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 3.17.0 (not yet released)
+
 ## Version 3.16.0 (2025-02-26)
 
 ### Features
