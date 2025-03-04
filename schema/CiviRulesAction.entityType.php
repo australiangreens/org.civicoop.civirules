@@ -27,7 +27,6 @@ return [
       'sql_type' => 'varchar(80)',
       'input_type' => 'Text',
       'required' => TRUE,
-      'default' => NULL,
     ],
     'label' => [
       'title' => E::ts('Label'),
