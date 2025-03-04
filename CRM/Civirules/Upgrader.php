@@ -11,17 +11,11 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
    * Create CiviRules tables on extension install. Do not change the
    * sequence as there will be dependencies in the foreign keys
    */
-  public function install() {
+  public function postInstall() {
     $ruleTagOptionGroup = CRM_Civirules_Utils_OptionGroup::getSingleWithName('civirule_rule_tag');
     if (empty($ruleTagOptionGroup)) {
       CRM_Civirules_Utils_OptionGroup::create('civirule_rule_tag', 'Tags for CiviRules', 'Tags used to filter CiviRules on the CiviRules page');
     }
-
-    // Insert the triggers
-    CRM_Civirules_Utils_Upgrader::insertTriggersFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/triggers.json');
-    CRM_Civirules_Utils_Upgrader::insertActionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/actions.json');
-    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson($this->extensionDir . DIRECTORY_SEPARATOR . 'sql/conditions.json');
-
   }
 
   public function uninstall() {
