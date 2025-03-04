@@ -18,6 +18,8 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
    */
   protected $op;
 
+  public static ?CRM_Civirules_TriggerData_TriggerData $triggerDataCache = NULL;
+
   /**
    * Getter for object name
    *
@@ -104,12 +106,19 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
     if (!in_array($op, $extensionConfig->getValidTriggerOperations())) {
       return;
     }
+    // Delete the cached trigger data in case we modify the same record twice in one process.
+    self::$triggerDataCache = NULL;
 
     // find matching rules for this objectName and op
     $triggers = CRM_Civirules_BAO_CiviRulesRule::findRulesByObjectNameAndOp($objectName, $op);
     foreach($triggers as $trigger) {
       if ($trigger instanceof CRM_Civirules_Trigger_Post) {
+        if (self::$triggerDataCache) {
+          $trigger->setTriggerData(self::$triggerDataCache);
+        }
         $trigger->triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
+        // Capture the trigger data for the first trigger so we don't have to query again on future triggers.
+        self::$triggerDataCache ??= $trigger->getTriggerData();
       }
     }
   }
