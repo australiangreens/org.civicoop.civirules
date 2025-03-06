@@ -1,6 +1,22 @@
 # CHANGELOG
 
-## Version 3.17.0 (not yet released)
+## Version 3.17.0 (2025-03-06)
+
+### Install fixes
+*Fixes errors on new install of CiviRules.*
+
+* Remove NULL default from name on CiviRulesAction which causes error on install
+* Inserting triggers/conditions/actions happens during managed reconciliation not during initial install or we get errors
+
+### Performance
+
+* [!284](https://lab.civicrm.org/extensions/civirules/-/merge_requests/284) Cache trigger data.
+* [!283](https://lab.civicrm.org/extensions/civirules/-/merge_requests/283) Reduce API calls when evaluating contributions.
+* [!282](https://lab.civicrm.org/extensions/civirules/-/merge_requests/282) Cache isDate fields.
+
+### Bug fixes
+
+* [!281](https://lab.civicrm.org/extensions/civirules/-/merge_requests/281) Fix for status conditions that were saved with old keys.
 
 ## Version 3.16.0 (2025-02-26)
 
