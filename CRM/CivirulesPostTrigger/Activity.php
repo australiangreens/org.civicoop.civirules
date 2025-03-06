@@ -37,6 +37,9 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
       // Only set it here if not already set by child class
       $triggerData = $this->getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
     }
+    else {
+      $triggerData = $this->getTriggerData();
+    }
 
     if (empty($triggerData->getEntityId())) {
       $triggerData->setEntityId($objectId);

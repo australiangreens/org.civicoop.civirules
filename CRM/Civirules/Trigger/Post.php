@@ -118,7 +118,9 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
         }
         $trigger->triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
         // Capture the trigger data for the first trigger so we don't have to query again on future triggers.
-        self::$triggerDataCache ??= $trigger->getTriggerData();
+        if ($trigger->hasTriggerData()) {
+          self::$triggerDataCache ??= $trigger->getTriggerData();
+        }
       }
     }
   }
