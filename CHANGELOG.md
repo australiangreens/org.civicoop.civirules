@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.17.1 (2025-03-06)
+
+* [!287](https://lab.civicrm.org/extensions/civirules/-/merge_requests/284) Fix crash: Initialize triggerData for activities.
+
 ## Version 3.17.0 (2025-03-06)
 
 ### Install fixes
