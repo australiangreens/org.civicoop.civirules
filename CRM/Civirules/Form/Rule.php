@@ -208,7 +208,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    */
   static function validateTriggerEmpty($fields) {
     if (empty($fields['rule_trigger_select'])) {
-      $errors['rule_trigger_select'] = ts('You have to select a trigger for the rule');
+      $errors['rule_trigger_select'] = E::ts('You have to select a trigger for the rule');
       return $errors;
     }
     return TRUE;
@@ -233,12 +233,12 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $currentLabel = CRM_Civirules_BAO_Rule::getRuleLabelWithId($fields['id']);
       if ($fields['rule_label'] != $currentLabel &&
         CRM_Civirules_BAO_Rule::labelExists($fields['rule_label']) == TRUE) {
-        $errors['rule_label'] = ts('There is already a rule with this name');
+        $errors['rule_label'] = E::ts('There is already a rule with this name');
         return $errors;
       }
     } else {
       if (CRM_Civirules_BAO_Rule::labelExists($fields['rule_label']) == TRUE) {
-        $errors['rule_label'] = ts('There is already a rule with this name');
+        $errors['rule_label'] = E::ts('There is already a rule with this name');
         return $errors;
       }
     }
@@ -251,16 +251,16 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    * @access protected
    */
   protected function createFormElements() {
-    $this->add('hidden', 'id', ts('RuleId'), array('id' => 'ruleId'));
+    $this->add('hidden', 'id', E::ts('RuleId'), array('id' => 'ruleId'));
     if ($this->_action != CRM_Core_Action::DELETE) {
-      $this->add('text', 'rule_label', ts('Name'), array('size' => CRM_Utils_Type::HUGE), TRUE);
-      $this->add('text', 'rule_description', ts('Description'), array('size' => 100, 'maxlength' => 256));
-      $this->add('wysiwyg', 'rule_help_text', ts('Help text with purpose of rule'), array('rows' => 6, 'cols' => 80));
-      $this->add('select', 'rule_tag_id', ts('Civirule Tag(s)'), CRM_Civirules_BAO_RuleTag::getRuleTagsList(), FALSE,
+      $this->add('text', 'rule_label', E::ts('Name'), array('size' => CRM_Utils_Type::HUGE), TRUE);
+      $this->add('text', 'rule_description', E::ts('Description'), array('size' => 100, 'maxlength' => 256));
+      $this->add('wysiwyg', 'rule_help_text', E::ts('Help text with purpose of rule'), array('rows' => 6, 'cols' => 80));
+      $this->add('select', 'rule_tag_id', E::ts('Civirule Tag(s)'), CRM_Civirules_BAO_RuleTag::getRuleTagsList(), FALSE,
         array('id' => 'rule_tag_id', 'multiple' => 'multiple', 'class' => 'crm-select2 huge'));
-      $this->add('checkbox', 'rule_is_active', ts('Enabled'));
-      $this->add('text', 'rule_created_date', ts('Created Date'));
-      $this->add('text', 'rule_created_contact', ts('Created By'));
+      $this->add('checkbox', 'rule_is_active', E::ts('Enabled'));
+      $this->add('text', 'rule_created_date', E::ts('Created Date'));
+      $this->add('text', 'rule_created_contact', E::ts('Created By'));
 
       $triggerList = [' - select - '] + CiviRulesTrigger::get(FALSE)
         ->addOrderBy('label', 'ASC')
@@ -268,29 +268,29 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
         ->indexBy('id')
         ->column('label');
 
-      $this->add('select', 'rule_trigger_select', ts('Select Trigger'), $triggerList, false, array('class' => 'crm-select2 huge'));
+      $this->add('select', 'rule_trigger_select', E::ts('Select Trigger'), $triggerList, false, array('class' => 'crm-select2 huge'));
       if ($this->_action == CRM_Core_Action::UPDATE) {
         $this->createUpdateFormElements();
       }
     }
     if ($this->_action == CRM_Core_Action::ADD) {
         $this->addButtons(array(
-        array('type' => 'next', 'name' => ts('Next'), 'isDefault' => TRUE,),
-        array('type' => 'cancel', 'name' => ts('Cancel'))));
+        array('type' => 'next', 'name' => E::ts('Next'), 'isDefault' => TRUE,),
+        array('type' => 'cancel', 'name' => E::ts('Cancel'))));
     } elseif ($this->_action == CRM_Core_Action::DELETE) {
       $this->addButtons(array(
-        array('type' => 'next', 'name' => ts('Delete'), 'isDefault' => TRUE,),
-        array('type' => 'cancel', 'name' => ts('Cancel'))));
+        array('type' => 'next', 'name' => E::ts('Delete'), 'isDefault' => TRUE,),
+        array('type' => 'cancel', 'name' => E::ts('Cancel'))));
     } else {
       $this->addButtons(array(
-        array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
+        array('type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,),
         [
           'type' => 'upload',
-          'name' => ts('Save and Done'),
+          'name' => E::ts('Save and Done'),
           'subName' => 'done',
         ],
-        array('type' => 'next', 'name' => ts('Clone'), 'subName' => 'clone', 'icon' => 'fa-creative-commons'),
-        array('type' => 'next', 'name' => ts('Close'), 'subName' => 'cancel', 'icon' => 'fa-close')));
+        array('type' => 'next', 'name' => E::ts('Clone'), 'subName' => 'clone', 'icon' => 'fa-creative-commons'),
+        array('type' => 'next', 'name' => E::ts('Close'), 'subName' => 'cancel', 'icon' => 'fa-close')));
     }
   }
 
@@ -309,7 +309,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    * @access protected
    */
   protected function setFormTitle() {
-    $title = 'CiviRules '.  ucfirst(CRM_Core_Action::description($this->_action)).' Rule';
+    $title = E::ts('CiviRules %1 Rule', [1 => ucfirst(CRM_Core_Action::description($this->_action))]);
     CRM_Utils_System::setTitle($title);
   }
 
