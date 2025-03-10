@@ -9,8 +9,7 @@
  */
 
 use Civi\Api4\CiviRulesCondition;
-
-require_once 'CRM/Core/Form.php';
+use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
 
@@ -151,7 +150,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
      * add select list only if it is not the first condition
      */
     $linkList = ['AND' => 'AND', 'OR' =>'OR'];
-    $this->add('select', 'rule_condition_link_select', ts('Select Link Operator'), $linkList);
+    $this->add('select', 'rule_condition_link_select', E::ts('Select Link Operator'), $linkList);
     $foundConditions = $this->buildConditionList();
     if (!empty($foundConditions)) {
       $conditionList = [' - select - '] + $foundConditions;
@@ -160,11 +159,11 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     else {
       $conditionList = [' - select - '];
     }
-    $this->add('select', 'rule_condition_select', ts('Select Condition'), $conditionList, true, ['class' => 'crm-select2 huge']);
+    $this->add('select', 'rule_condition_select', E::ts('Select Condition'), $conditionList, true, ['class' => 'crm-select2 huge']);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')]
     ]);
   }
 
@@ -203,7 +202,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
   static function validateConditionEntities($fields) {
     $conditionClass = CRM_Civirules_BAO_Condition::getConditionObjectById($fields['rule_condition_select'], false);
     if (!$conditionClass) {
-      $errors['rule_condition_select'] = ts('Not a valid condition, condition class is missing');
+      $errors['rule_condition_select'] = E::ts('Not a valid condition, condition class is missing');
       return $errors;
     }
 
@@ -218,7 +217,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     $triggerObject->setTriggerId($trigger->id);
 
     if (!$conditionClass->doesWorkWithTrigger($triggerObject, $rule)) {
-      $errors['rule_condition_select'] = ts('This condition is not available with trigger %1', [1 => $trigger->label]);
+      $errors['rule_condition_select'] = E::ts('This condition is not available with trigger %1', [1 => $trigger->label]);
       return $errors;
     }
 
@@ -235,11 +234,11 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
    */
   static function validateRuleCondition($fields) {
     if (isset($fields['rule_condition_link_select']) && empty($fields['rule_condition_link_select'])) {
-      $errors['rule_condition_link_select'] = ts('Link Operator can only be AND or OR');
+      $errors['rule_condition_link_select'] = E::ts('Link Operator can only be AND or OR');
       return $errors;
     }
     if (isset($fields['rule_condition_select']) && empty($fields['rule_condition_select'])) {
-      $errors['rule_condition_select'] = ts('Condition has to be selected, press CANCEL if you do not want to add a condition');
+      $errors['rule_condition_select'] = E::ts('Condition has to be selected, press CANCEL if you do not want to add a condition');
       return $errors;
     }
     return TRUE;

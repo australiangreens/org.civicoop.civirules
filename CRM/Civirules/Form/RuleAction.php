@@ -7,7 +7,8 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-require_once 'CRM/Core/Form.php';
+
+use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
 
@@ -135,21 +136,21 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
       ->column('label');
     $attributes = ['class' => 'crm-select2 huge'];
     if (empty($this->ruleActionId)) {
-      $this->add('select', 'rule_action_select', ts('Select Action'), $actionList, true, $attributes);
+      $this->add('select', 'rule_action_select', E::ts('Select Action'), $actionList, true, $attributes);
     }
 
     $delayList = [' - No Delay - '] + CRM_Civirules_Delay_Factory::getOptionList();
-    $this->add('select', 'delay_select', ts('Delay action to'), $delayList);
+    $this->add('select', 'delay_select', E::ts('Delay action to'), $delayList);
     foreach(CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->addElements($this, '', $this->rule);
     }
     $this->assign('delayClasses', CRM_Civirules_Delay_Factory::getAllDelayClasses());
     $this->assign('delayPrefix', '');
-    $this->add('checkbox', 'ignore_condition_with_delay', ts('Don\'t recheck condition upon processing of delayed action'));
+    $this->add('checkbox', 'ignore_condition_with_delay', E::ts("Don't recheck condition upon processing of delayed action"));
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')]
     ]);
   }
 
@@ -222,11 +223,11 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
   static function validateRuleAction($fields) {
     $errors = [];
     if (isset($fields['rule_action_select']) && empty($fields['rule_action_select'])) {
-      $errors['rule_action_select'] = ts('Action has to be selected, press CANCEL if you do not want to add an action');
+      $errors['rule_action_select'] = E::ts('Action has to be selected, press CANCEL if you do not want to add an action');
     } else {
       $actionClass = CRM_Civirules_BAO_Action::getActionObjectById($fields['rule_action_select'], false);
       if (!$actionClass) {
-        $errors['rule_action_select'] = ts('Not a valid action, action class is missing');
+        $errors['rule_action_select'] = E::ts('Not a valid action, action class is missing');
       } else {
         $rule = new CRM_Civirules_BAO_Rule();
         $rule->id = $fields['rule_id'];
@@ -238,7 +239,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
         $triggerObject = CRM_Civirules_BAO_Trigger::getPostTriggerObjectByClassName($trigger->class_name, TRUE);
         $triggerObject->setTriggerId($trigger->id);
         if (!$actionClass->doesWorkWithTrigger($triggerObject, $rule)) {
-          $errors['rule_action_select'] = ts('This action is not available with trigger %1', [1 => $trigger->label]);
+          $errors['rule_action_select'] = E::ts('This action is not available with trigger %1', [1 => $trigger->label]);
         }
       }
     }
