@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Version 3.18.0 (not yet released)
+
+* Wrap alterTriggerData() in throwable as it can trigger exceptions. If the rule crashes let the rest of the process complete.
+* Add in Contact entity to 'Daily trigger for case activities' as case client - allows to use eg. 'Send Email' action.
+
 ## Version 3.17.1 (2025-03-06)
 
 * [!287](https://lab.civicrm.org/extensions/civirules/-/merge_requests/284) Fix crash: Initialize triggerData for activities.
