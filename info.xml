@@ -18,7 +18,7 @@
   <version>3.18.0-dev</version>
   <develStage>stable</develStage>
   <compatibility>
-    <ver>5.68</ver>
+    <ver>5.80</ver>
   </compatibility>
   <civix>
     <namespace>CRM/Civirules</namespace>
@@ -31,8 +31,8 @@
   <mixins>
     <mixin>menu-xml@1.0.0</mixin>
     <mixin>mgd-php@1.0.0</mixin>
-    <mixin>smarty-v2@1.0.3</mixin>
     <mixin>entity-types-php@2.0.0</mixin>
+    <mixin>smarty@1.0.3</mixin>
   </mixins>
   <upgrader>CiviMix\Schema\Civirules\AutomaticUpgrader</upgrader>
 </extension>
