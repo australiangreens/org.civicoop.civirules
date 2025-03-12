@@ -114,7 +114,7 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
    *
    * @return string
    */
-  protected function getHelpText() {
+  public function getHelpText() {
     return '';
   }
 }

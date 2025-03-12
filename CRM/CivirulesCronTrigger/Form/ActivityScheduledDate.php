@@ -71,16 +71,4 @@ class CRM_CivirulesCronTrigger_Form_ActivityScheduledDate extends CRM_CivirulesC
     parent::postProcess();
   }
 
-  /**
-   * Returns a help text for this trigger.
-   * The help text is shown to the administrator who is configuring the condition.
-   *
-   * @return string
-   */
-  protected function getHelpText() {
-    return E::ts('The rule will be triggered for activities of selected types when the scheduled date is X days/weeks/months before or after.')
-      . '<br/>'
-      . E::ts('If "Trigger for case activities" is "Yes" then this will only trigger for case activities. If it is "No" then it will only trigger for activities that are not linked to a case.');
-  }
-
 }

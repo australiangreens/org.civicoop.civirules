@@ -48,14 +48,4 @@ class CRM_CivirulesCronTrigger_Form_NextContributionDate extends CRM_CivirulesTr
     parent::postProcess();
   }
 
-  /**
-   * Returns a help text for this trigger.
-   * The help text is shown to the administrator who is configuring the condition.
-   *
-   * @return string
-   */
-  protected function getHelpText() {
-    return E::ts('The rule will be triggered for recurring contributions when the next scheduled contribution date is X days/weeks/months before or after.');
-  }
-
 }

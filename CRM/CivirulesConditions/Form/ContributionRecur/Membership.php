@@ -100,7 +100,7 @@ class CRM_CivirulesConditions_Form_ContributionRecur_Membership
    *
    * @return string
    */
-  protected function getHelpText() {
+  public function getHelpText() {
     return E::ts('This condition checks if the recurring contribution pays for a membership, optionally of certain type(s) and statuses.');
   }
 }

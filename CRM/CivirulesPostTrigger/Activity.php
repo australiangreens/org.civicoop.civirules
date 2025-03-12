@@ -145,4 +145,18 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
     return E::ts('Trigger for %1', [1=>$options[$this->triggerParams['record_type']]]);
   }
 
+  /**
+   * Returns a help text for this trigger.
+   * The help text is shown to the administrator who is configuring the condition.
+   *
+   * @return string
+   */
+  public function getHelpText(): string {
+    return E::ts('When all contacts is selected then the trigger will be fired for every contact. Meaning that trigger might run more than once.')
+      . '<br/>'
+      . E::ts('When you don\'t want that select the record type for which you want to fire the trigger.')
+      . '<br/>'
+      . E::ts('The select record type also defines which contact is available in the conditions and actions.');
+  }
+
 }

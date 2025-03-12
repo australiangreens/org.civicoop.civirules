@@ -186,7 +186,7 @@ class CRM_CivirulesConditions_Form_FieldValueChangeComparison extends CRM_Civiru
    *
    * @return string
    */
-  protected function getHelpText() {
+  public function getHelpText() {
     return E::ts('This condition checks the before and after value of a field. It also works with delayed actions that
       re-check conditions because the original values are saved when it is triggered.');
   }

@@ -69,14 +69,4 @@ class CRM_CivirulesPostTrigger_Form_Event extends CRM_CivirulesTrigger_Form_Form
     parent::postProcess();
   }
 
-  /**
-   * Returns a help text for this trigger.
-   * The help text is shown to the administrator who is configuring the condition.
-   *
-   * @return string
-   */
-  protected function getHelpText() {
-    return E::ts('An event does not have related contacts. So you can trigger without any contact are use the logged in contact (recommended).');
-  }
-
 }

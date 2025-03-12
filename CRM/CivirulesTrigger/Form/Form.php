@@ -54,7 +54,16 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
     parent::preProcess();
 
     $this->setFormTitle();
-    $this->assign('ruleTriggerHelp', $this->getHelpText());
+
+    if (method_exists($this, 'getHelpText')) {
+      // Old location, should be moved to main trigger class
+      $helpText = $this->getHelpText();
+    }
+    elseif (method_exists($this->triggerClass, 'getHelpText')) {
+      // This is the correct location for getHelpText();
+      $helpText = $this->triggerClass->getHelpText();
+    }
+    $this->assign('ruleTriggerHelp', $helpText ?? '');
 
     //set user context
     $session = CRM_Core_Session::singleton();
@@ -91,16 +100,6 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
     $title = 'CiviRules Edit trigger parameters';
     $this->assign('ruleTriggerHeader', 'Edit rule '.$this->rule->label);
     CRM_Utils_System::setTitle($title);
-  }
-
-  /**
-   * Returns a help text for this trigger.
-   * The help text is shown to the administrator who is configuring the condition.
-   *
-   * @return string
-   */
-  protected function getHelpText() {
-    return '';
   }
 
 }

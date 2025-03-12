@@ -63,4 +63,14 @@ class CRM_CivirulesPostTrigger_Event extends CRM_Civirules_Trigger_Post {
     }
   }
 
+  /**
+   * Returns a help text for this trigger.
+   * The help text is shown to the administrator who is configuring the condition.
+   *
+   * @return string
+   */
+  public function getHelpText(): string {
+    return E::ts('An event does not have related contacts. So you can trigger without any contact are use the logged in contact (recommended).');
+  }
+
 }

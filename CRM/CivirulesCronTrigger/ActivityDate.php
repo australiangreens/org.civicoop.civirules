@@ -94,4 +94,16 @@ class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Act
     ]);
   }
 
+  /**
+   * Returns a help text for this trigger.
+   * The help text is shown to the administrator who is configuring the condition.
+   *
+   * @return string
+   */
+  public function getHelpText(): string {
+    return E::ts('Trigger rule when scheduled date for activity with status and type is reached.')
+      . '<br/>'
+      . E::ts('If "Trigger for case activities" is "Yes" then this will only trigger for case activities. If it is "No" then it will only trigger for activities that are not linked to a case.');
+  }
+
 }

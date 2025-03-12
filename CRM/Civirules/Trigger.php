@@ -307,4 +307,31 @@ abstract class CRM_Civirules_Trigger {
     }
   }
 
+  /**
+   * Historically getHelpText() was on the form class.
+   * But we have no way to get the form class - only the path via getExtraDataInputUrl()
+   * The Form *does* have access to the trigger class via $this->triggerClass so if getHelpText()
+   * is on the triggerClass we can just do $this->triggerClass->getHelpText().
+   *
+   * @return string
+   */
+  public function getHelpText(): string {
+    // Child classes should override this function
+    // If not will fallback to Form class
+
+    // getHelpText() doesn't exist on trigger class.
+    // Try to get Form class for trigger and see if getHelpText() exists there
+    $classBits = explode('_', get_class($this));
+
+    $formClass = $classBits[0] . '_' . $classBits[1] . '_Form';
+    for ($i = 2; $i < count($classBits); $i++) {
+      $formClass .= '_' . $classBits[$i];
+    }
+    if (class_exists($formClass)) {
+      $helpText = (new $formClass())->getHelpText();
+    }
+
+    return $helpText ?? '';
+  }
+
 }

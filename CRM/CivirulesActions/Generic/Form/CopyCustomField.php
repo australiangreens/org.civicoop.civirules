@@ -105,7 +105,7 @@ class CRM_CivirulesActions_Generic_Form_CopyCustomField extends CRM_CivirulesAct
    *
    * @return string
    */
-  protected function getHelpText() {
+  public function getHelpText() {
     return E::ts('This action copies the value of a custom field from any entity in the rule to another custom field.');
   }
 

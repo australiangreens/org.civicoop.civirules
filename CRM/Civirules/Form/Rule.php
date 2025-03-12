@@ -262,13 +262,30 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $this->add('text', 'rule_created_date', E::ts('Created Date'));
       $this->add('text', 'rule_created_contact', E::ts('Created By'));
 
-      $triggerList = [' - select - '] + CiviRulesTrigger::get(FALSE)
+      $triggerList = CiviRulesTrigger::get(FALSE)
+        ->addSelect('id', 'label', 'class_name')
         ->addOrderBy('label', 'ASC')
+        ->addWhere('is_active', '=',TRUE)
         ->execute()
-        ->indexBy('id')
-        ->column('label');
+        ->indexBy('id');
+      foreach ($triggerList as $id => $detail) {
+        $description = '';
+        if (!empty($detail['class_name'])) {
+          try {
+            $description = (new $detail['class_name']())->getHelpText();
+          }
+          catch (Throwable $e) {
+            // Do nothing, we'll continue without description
+          }
+        }
+        $triggers[$id] = [
+          'id' => $id,
+          'text' => $detail['label'],
+          'description' => $description,
+        ];
+      }
 
-      $this->add('select', 'rule_trigger_select', E::ts('Select Trigger'), $triggerList, false, array('class' => 'crm-select2 huge'));
+      $this->add('select2', 'rule_trigger_select', E::ts('Select Trigger'), $triggers, TRUE);
       if ($this->_action == CRM_Core_Action::UPDATE) {
         $this->createUpdateFormElements();
       }
