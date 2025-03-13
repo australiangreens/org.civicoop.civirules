@@ -5,6 +5,8 @@
  * @license AGPL-3.0
  */
 
+use CRM_Civirules_ExtensionUtil as E;
+
 class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_CivirulesPostTrigger_Membership {
 
   /**
@@ -22,8 +24,10 @@ class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_CivirulesPostTrigge
     $originalMembership = $triggerData->getOriginalData();
 
     // Check if the Membership has been renewed (end_date has been increased by one membership term)
-    // As a membership runs from [date] to [date - 1 day] we need to check if the new end_date matches the
-    //   calculated end_date based on the original end_date + 1 day.
+    // A membership runs from [start_date] to [start_date + [1 membership term] - [1 day]] (end_date).
+    // We calculate the renewed membership start date based on the original membership end_date.
+    // Then we run getDatesForMembershipType() to get the expected renewed membership dates.
+    // Then we check if the expected renewed membership end_date matches the actual renewed membership end_date.
     $startDate = date('Y-m-d', strtotime("{$originalMembership['end_date']} + 1 day"));
     $membershipDates = CRM_Member_BAO_MembershipType::getDatesForMembershipType(
       $membership['membership_type_id'], $membership['join_date'], $startDate);
@@ -36,6 +40,14 @@ class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_CivirulesPostTrigge
 
     $this->setTriggerData($triggerData);
     parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
+  }
+
+  public function getTriggerDescription() {
+    return $this->getHelpText();
+  }
+
+  public function getHelpText(): string {
+    return E::ts('Trigger when a Membership has been renewed (End Date has been increased by one membership term)');
   }
 
 }

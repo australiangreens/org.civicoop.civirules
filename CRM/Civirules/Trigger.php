@@ -267,11 +267,16 @@ abstract class CRM_Civirules_Trigger {
   }
 
   /**
-   * Returns a description of this trigger
+   * Returns a calculated description of this trigger
+   * If the trigger has parameters this this function should provide a user-friendly description of those parameters
+   * See also: getHelpText()
+   * You could return the contents of getHelpText() if you want a generic description and the trigger has no configurable
+   * parameters.
    *
    * @return string
    */
   public function getTriggerDescription() {
+    // Optionally: return $this->getHelpText()
     return '';
   }
 
