@@ -6,6 +6,7 @@
  * @license AGPL-3.0
  */
 
+use Civi\Api4\CiviRulesRuleAction;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_Civirules_Engine {
@@ -67,10 +68,12 @@ class CRM_Civirules_Engine {
    * @return void
    */
   protected static function executeActions(CRM_Civirules_TriggerData_TriggerData $triggerData): void {
-    $actionParams = [
-      'rule_id' => $triggerData->getTrigger()->getRuleId(),
-    ];
-    $ruleActions = CRM_Civirules_BAO_RuleAction::getValues($actionParams);
+    $ruleActions = CiviRulesRuleAction::get(FALSE)
+      ->addWhere('rule_id', '=', $triggerData->getTrigger()->getRuleId())
+      ->addWhere('is_active', '=', 1)
+      ->addOrderBy('weight', 'ASC')
+      ->addOrderBy('id', 'ASC')
+      ->execute();
     foreach ($ruleActions as $ruleAction) {
       self::executeAction($triggerData, $ruleAction);
     }
