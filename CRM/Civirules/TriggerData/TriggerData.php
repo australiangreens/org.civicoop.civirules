@@ -181,6 +181,15 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
   }
 
   /**
+   * Get data for all entities that this trigger knows about
+   *
+   * @return array
+   */
+  public function getAllEntityData(): array {
+    return $this->entity_data;
+  }
+
+  /**
    * Method to return originalData if present
    *
    * @return array
