@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civirules_ExtensionUtil as E;
+
 class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
 
   /**
