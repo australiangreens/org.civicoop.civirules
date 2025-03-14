@@ -219,4 +219,17 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
     }
     return FALSE;
   }
+
+  /**
+   * Function to unserialize the CiviRulesRule trigger_params
+   *
+   * @return array
+   */
+  public function unserializeParams(): array {
+    if (!empty($this->trigger_params) && !is_array($this->trigger_params)) {
+      return unserialize($this->trigger_params);
+    }
+    return [];
+  }
+
 }

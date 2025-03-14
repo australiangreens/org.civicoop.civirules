@@ -24,7 +24,7 @@ class CRM_CivirulesCronTrigger_Form_ActivityDate extends CRM_CivirulesCronTrigge
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->rule->trigger_params);
+    $data = $this->rule->unserializeParams();
     if (!empty($data['activity_type_id'])) {
       $defaultValues['activity_type_id'] = $data['activity_type_id'];
     }
