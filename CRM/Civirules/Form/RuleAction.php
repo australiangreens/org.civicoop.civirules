@@ -8,6 +8,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
 
+use Civi\Api4\CiviRulesAction;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
@@ -42,7 +43,14 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     $this->ruleId = CRM_Utils_Request::retrieve('rule_id', 'Integer');
     $this->ruleActionId = CRM_Utils_Request::retrieve('id', 'Integer');
 
-    $this->rule = new CRM_Civirules_BAO_Rule();
+    if (!$this->ruleId && $this->getAction()) {
+      CRM_Core_Error::statusBounce('Missing rule ID');
+    }
+    if (!$this->ruleActionId && $this->getAction() !== CRM_Core_Action::ADD) {
+      CRM_Core_Error::statusBounce('Missing RuleAction ID');
+    }
+
+    $this->rule = new CRM_Civirules_BAO_CiviRulesRule();
     $this->rule->id = $this->ruleId;
     $this->rule->find(true);
 
@@ -129,14 +137,32 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     if ($this->ruleActionId) {
       $this->add('hidden', 'id');
     }
-    $actionList = [' - select - '] + \Civi\Api4\CiviRulesAction::get(FALSE)
+
+    $actionList = CiviRulesAction::get(FALSE)
+      ->addSelect('id', 'label', 'name', 'class_name')
       ->addOrderBy('label', 'ASC')
+      ->addWhere('is_active', '=',TRUE)
       ->execute()
-      ->indexBy('id')
-      ->column('label');
-    $attributes = ['class' => 'crm-select2 huge'];
-    if (empty($this->ruleActionId)) {
-      $this->add('select', 'rule_action_select', E::ts('Select Action'), $actionList, true, $attributes);
+      ->indexBy('id');
+    foreach ($actionList as $id => $detail) {
+      $description = '';
+      if (!empty($detail['class_name'])) {
+        try {
+          $description = (new $detail['class_name']($detail))->getHelpText('actionDescription');
+        }
+        catch (Throwable $e) {
+          // Do nothing, we'll continue without description
+        }
+      }
+      $actions[$id] = [
+        'id' => $id,
+        'text' => $detail['label'],
+        'description' => $description,
+      ];
+    }
+
+    if ($this->getAction() === CRM_Core_Action::ADD) {
+      $this->add('select2', 'rule_action_select', E::ts('Select Action'), $actions, TRUE);
     }
 
     $delayList = [' - No Delay - '] + CRM_Civirules_Delay_Factory::getOptionList();
@@ -149,7 +175,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     $this->add('checkbox', 'ignore_condition_with_delay', E::ts("Don't recheck condition upon processing of delayed action"));
 
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'next', 'name' => E::ts('Next'), 'isDefault' => TRUE,],
       ['type' => 'cancel', 'name' => E::ts('Cancel')]
     ]);
   }

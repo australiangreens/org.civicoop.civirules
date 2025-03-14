@@ -172,4 +172,46 @@ abstract class CRM_Civirules_Action {
   public function getRuleId() {
     return $this->ruleAction['rule_id'];
   }
+
+  /**
+   * Get various types of help text for the action:
+   *   - actionDescription: When choosing from a list of actions, explains what the action does.
+   *   - actionDescriptionWithParams: When a action has been configured for a rule provides a
+   *       user friendly description of the action and params (see $this->userFriendlyConditionParams())
+   *   - actionParamsHelp (default): If the action has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context): string {
+    // Child classes should override this function
+
+    switch ($context) {
+      case 'actionDescriptionWithParams':
+        return $this->userFriendlyConditionParams();
+
+      case 'actionDescription':
+      case 'actionParamsHelp':
+      default:
+        // Historically getHelpText() was on the form class.
+        // But we have no way to get the form class - only the path via getExtraDataInputUrl()
+        // The Form *does* have access to the action class via $this->actionClass so if getHelpText()
+        //   is on the actionClass we can just do $this->actionClass->getHelpText().
+
+        // getHelpText() doesn't exist on action class.
+        // Try to get Form class for action and see if getHelpText() exists there
+        $classBits = explode('_', get_class($this));
+
+        $formClass = $classBits[0] . '_' . $classBits[1] . '_Form';
+        for ($i = 2; $i < count($classBits); $i++) {
+          $formClass .= '_' . $classBits[$i];
+        }
+        if (class_exists($formClass)) {
+          $helpText = (new $formClass())->getHelpText();
+        }
+    }
+
+    return $helpText ?? '';
+  }
+
 }

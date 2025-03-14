@@ -1,5 +1,7 @@
 <?php
 
+use Civi\Api4\CiviRulesAction;
+use Civi\Api4\CiviRulesRuleAction;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
@@ -18,6 +20,11 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
    * @var CRM_Civirules_Trigger
    */
   protected $triggerClass;
+
+  /**
+   * @var CRM_Civirules_Action
+   */
+  protected CRM_Civirules_Action $actionClass;
 
   /**
    * Overridden parent method to perform processing before form is build
@@ -41,6 +48,16 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
       throw new Exception('Civirules could not find action');
     }
 
+    // Instantiate the action class
+    $action = CiviRulesAction::get(FALSE)
+      ->addSelect('id', 'class_name')
+      ->addWhere('id', '=', $this->action->id)
+      ->execute()
+      ->first();
+    if (class_exists($action['class_name'])) {
+      $this->actionClass = new $action['class_name'];
+    }
+
     $this->rule->id = $this->ruleAction->rule_id;
     if (!$this->rule->find(true)) {
       throw new Exception('Civirules could not find rule');
@@ -62,7 +79,16 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
     parent::preProcess();
 
     $this->setFormTitle();
-    $this->assign('ruleActionHelp', $this->getHelpText());
+
+    if (method_exists($this, 'getHelpText')) {
+      // Old location, should be moved to main trigger class
+      $helpText = $this->getHelpText();
+    }
+    elseif (method_exists($this->actionClass, 'getHelpText')) {
+      // This is the correct location for getHelpText();
+      $helpText = $this->actionClass->getHelpText('actionParamsHelp');
+    }
+    $this->assign('ruleActionHelp', $helpText ?? '');
   }
 
   function cancelAction() {
@@ -108,13 +134,4 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
     CRM_Utils_System::setTitle($title);
   }
 
-  /**
-   * Returns help text for this action.
-   * The help text is shown to the administrator who is configuring the action.
-   *
-   * @return string
-   */
-  public function getHelpText() {
-    return '';
-  }
 }
