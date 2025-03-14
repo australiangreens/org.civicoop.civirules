@@ -169,7 +169,11 @@ function civicrm_api3_civi_rules_rule_clone($params) {
       ->execute();
   }
 
-  $ruleActions = CRM_Civirules_BAO_CiviRulesRuleAction::getValues(['rule_id' => $Id]);
+  $ruleActions = CiviRulesRuleAction::get(FALSE)
+    ->addWhere('rule_id', '=', $ruleID)
+    ->addOrderBy('weight', 'ASC')
+    ->addOrderBy('id', 'ASC')
+    ->execute();
   foreach ($ruleActions as $ruleAction) {
     $newAction = [];
     $newAction['rule_id'] = $cloneId;

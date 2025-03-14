@@ -8,8 +8,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
 
-use Civi\Api4\CiviRulesAction;
 use CRM_Civirules_ExtensionUtil as E;
+use Civi\Api4\CiviRulesAction;
+use Civi\Api4\CiviRulesRuleAction;
 
 class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
 
@@ -17,11 +18,11 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
 
   protected $ruleActionId;
 
-  protected $ruleAction;
+  protected CRM_Civirules_BAO_CiviRulesRuleAction $ruleAction;
 
-  protected $action;
+  protected CRM_Civirules_BAO_CiviRulesAction $action;
 
-  protected $rule;
+  protected CRM_Civirules_BAO_CiviRulesRule $rule;
 
   /**
    * Function to buildQuickForm (extends parent function)
@@ -55,13 +56,13 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     $this->rule->find(true);
 
     if ($this->ruleActionId) {
-      $this->ruleAction = new CRM_Civirules_BAO_RuleAction();
+      $this->ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
       $this->ruleAction->id = $this->ruleActionId;
       if (!$this->ruleAction->find(true)) {
         throw new Exception('Civirules could not find ruleAction (RuleAction)');
       }
 
-      $this->action = new CRM_Civirules_BAO_Action();
+      $this->action = new CRM_Civirules_BAO_CiviRulesAction();
       $this->action->id = $this->ruleAction->action_id;
       if (!$this->action->find(true)) {
         throw new Exception('Civirules could not find action');
@@ -75,7 +76,11 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     $session->pushUserContext($redirectUrl);
     if ($this->_action == CRM_Core_Action::DELETE) {
       $ruleActionId = CRM_Utils_Request::retrieve('id', 'Integer');
-      CRM_Civirules_BAO_RuleAction::deleteWithId($ruleActionId);
+      if (!empty($ruleActionId)) {
+        CiviRulesRuleAction::delete(FALSE)
+          ->addWhere('id', '=', $ruleActionId)
+          ->execute();
+      }
       CRM_Utils_System::redirect($redirectUrl);
     }
   }
@@ -87,15 +92,15 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
    */
   function postProcess() {
     $saveParams = [];
-    $saveParams['rule_id'] = $this->_submitValues['rule_id'];
-    $saveParams['delay'] = 'null';
+    $saveParams['rule_id'] = $this->getSubmittedValue('rule_id');
+    $saveParams['delay'] = NULL;
     $saveParams['ignore_condition_with_delay'] = '0';
-    if (!empty($this->_submitValues['rule_action_select'])) {
-      if (!$this->ruleAction) {
-        $this->ruleAction = new CRM_Civirules_BAO_RuleAction();
+    if (!empty($this->getSubmittedValue('rule_action_select'))) {
+      if (!isset($this->ruleAction)) {
+        $this->ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
       }
-      $this->ruleAction->action_id = $this->_submitValues['rule_action_select'];
-      $saveParams['action_id'] = $this->_submitValues['rule_action_select'];
+      $this->ruleAction->action_id = $this->getSubmittedValue('rule_action_select');
+      $saveParams['action_id'] = $this->getSubmittedValue('rule_action_select');
     }
     if ($this->ruleActionId) {
       $saveParams['id'] = $this->ruleActionId;
@@ -110,16 +115,19 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
       }
     }
 
-    $ruleAction = CRM_Civirules_BAO_RuleAction::writeRecord($saveParams);
+    $ruleAction = CiviRulesRuleAction::save(FALSE)
+      ->setRecords([$saveParams])
+      ->execute()
+      ->first();
 
     $session = CRM_Core_Session::singleton();
-    $session->setStatus('Action added to CiviRule '.CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->_submitValues['rule_id']),
+    $session->setStatus('Action added to CiviRule '.CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->getSubmittedValue('rule_id')),
       'Action added', 'success');
 
-    $action = CRM_Civirules_BAO_Action::getActionObjectById($this->ruleAction->action_id, true);
-    $redirectUrl = $action->getExtraDataInputUrl($ruleAction->id);
+    $action = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($this->ruleAction->action_id, true);
+    $redirectUrl = $action->getExtraDataInputUrl($ruleAction['id']);
     if (empty($redirectUrl) || $this->ruleActionId) {
-      $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->_submitValues['rule_id'], TRUE);
+      $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->getSubmittedValue('rule_id'), TRUE);
     } elseif (!$this->ruleActionId) {
       $redirectUrl .= '&action=add';
     }
@@ -216,7 +224,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
    */
   protected function setFormTitle() {
     $title = 'CiviRules Add Action';
-    $this->assign('ruleActionHeader', 'Add Action to CiviRule '.CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->ruleId));
+    $this->assign('ruleActionHeader', 'Add Action to CiviRule '.CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->ruleId));
     CRM_Utils_System::setTitle($title);
   }
 
@@ -251,18 +259,18 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     if (isset($fields['rule_action_select']) && empty($fields['rule_action_select'])) {
       $errors['rule_action_select'] = E::ts('Action has to be selected, press CANCEL if you do not want to add an action');
     } else {
-      $actionClass = CRM_Civirules_BAO_Action::getActionObjectById($fields['rule_action_select'], false);
+      $actionClass = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($fields['rule_action_select'], false);
       if (!$actionClass) {
         $errors['rule_action_select'] = E::ts('Not a valid action, action class is missing');
       } else {
-        $rule = new CRM_Civirules_BAO_Rule();
+        $rule = new CRM_Civirules_BAO_CiviRulesRule();
         $rule->id = $fields['rule_id'];
         $rule->find(TRUE);
-        $trigger = new CRM_Civirules_BAO_Trigger();
+        $trigger = new CRM_Civirules_BAO_CiviRulesTrigger();
         $trigger->id = $rule->trigger_id;
         $trigger->find(TRUE);
 
-        $triggerObject = CRM_Civirules_BAO_Trigger::getPostTriggerObjectByClassName($trigger->class_name, TRUE);
+        $triggerObject = CRM_Civirules_BAO_CiviRulesTrigger::getPostTriggerObjectByClassName($trigger->class_name, TRUE);
         $triggerObject->setTriggerId($trigger->id);
         if (!$actionClass->doesWorkWithTrigger($triggerObject, $rule)) {
           $errors['rule_action_select'] = E::ts('This action is not available with trigger %1', [1 => $trigger->label]);
@@ -289,10 +297,10 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     $errors = [];
     if (!empty($fields['delay_select'])) {
       $ruleActionId = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');
-      $ruleAction = new CRM_Civirules_BAO_RuleAction();
+      $ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
       $ruleAction->id = $ruleActionId;
       $ruleAction->find(true);
-      $rule = new CRM_Civirules_BAO_Rule();
+      $rule = new CRM_Civirules_BAO_CiviRulesRule();
       $rule->id = $ruleAction->rule_id;
       $rule->find(true);
 

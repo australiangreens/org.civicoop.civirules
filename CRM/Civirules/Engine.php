@@ -6,6 +6,7 @@
  * @license AGPL-3.0
  */
 
+use Civi\Api4\CiviRulesRuleAction;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_Civirules_Engine {
@@ -67,10 +68,12 @@ class CRM_Civirules_Engine {
    * @return void
    */
   protected static function executeActions(CRM_Civirules_TriggerData_TriggerData $triggerData): void {
-    $actionParams = [
-      'rule_id' => $triggerData->getTrigger()->getRuleId(),
-    ];
-    $ruleActions = CRM_Civirules_BAO_RuleAction::getValues($actionParams);
+    $ruleActions = CiviRulesRuleAction::get(FALSE)
+      ->addWhere('rule_id', '=', $triggerData->getTrigger()->getRuleId())
+      ->addWhere('is_active', '=', 1)
+      ->addOrderBy('weight', 'ASC')
+      ->addOrderBy('id', 'ASC')
+      ->execute();
     foreach ($ruleActions as $ruleAction) {
       self::executeAction($triggerData, $ruleAction);
     }
@@ -295,7 +298,7 @@ class CRM_Civirules_Engine {
       if (!empty($ruleConditions)) {
         $context = [];
         $context['rule_id'] = $triggerData->getTrigger()->getRuleId();
-        $context['conditions_valid'] = implode(';', $conditionsValid);
+        $context['conditions_valid'] = implode(';', $conditionsValid ?? []);
         $context['contact_id'] = $triggerData->getContactId();
         $context['entity_id'] = $triggerData->getEntityId();
         CRM_Civirules_Utils_LoggerFactory::log("Rule {$context['rule_id']}: Conditions: {$context['conditions_valid']}",
@@ -329,7 +332,6 @@ class CRM_Civirules_Engine {
    * This function writes a record to the log table to indicate that this rule for this trigger is triggered
    *
    * The data this function stores is required by the cron type events.
-   * @todo: think of a better handling for cron type events
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    */
@@ -337,38 +339,22 @@ class CRM_Civirules_Engine {
     $trigger = $triggerData->getTrigger();
     $reactOnEntity = $trigger->getReactOnEntity();
     $daoClass = $reactOnEntity->daoClass;
-    if($daoClass) {
+    if(!empty($daoClass)) {
       $table = $daoClass::getTableName();
     }
-    $ruleId = $trigger->getRuleId();
-    $contactId = $triggerData->getContactId();
 
-    $params = [];
-    if ($triggerData->getEntityId() && $table && $contactId) {
-      $sql = "INSERT INTO `civirule_rule_log` (`rule_id`, `contact_id`, `entity_table`, `entity_id`, `log_date`) VALUES (%1, %2, %3, %4, NOW())";
-      $params[1] = [$ruleId, 'Integer'];
-      $params[2] = [$contactId, 'Integer'];
-      $params[3] = [$table, 'String'];
-      $params[4] = [$triggerData->getEntityId(), 'Integer'];
-    } elseif ($triggerData->getEntityId() && $table) {
-      $sql = "INSERT INTO `civirule_rule_log` (`rule_id`, `entity_table`, `entity_id`, `log_date`) VALUES (%1, %2, %3, NOW())";
-      $params[1] = [$ruleId, 'Integer'];
-      $params[2] = [$table, 'String'];
-      $params[3] = [$triggerData->getEntityId(), 'Integer'];
-    } elseif ($contactId) {
-      $sql = "INSERT INTO `civirule_rule_log` (`rule_id`, `contact_id`, `log_date`) VALUES (%1, %2, NOW())";
-      $params[1] = [$ruleId, 'Integer'];
-      $params[2] = [$contactId, 'Integer'];
-    } else {
-      $sql = "INSERT INTO `civirule_rule_log` (`rule_id`, `log_date`) VALUES (%1, NOW())";
-      $params[1] = [$ruleId, 'Integer'];
+    $ruleLog = \Civi\Api4\CiviRulesRuleLog::create(FALSE)
+      ->addValue('rule_id', $trigger->getRuleId());
+    if ($triggerData->getContactId()) {
+      $ruleLog->addValue('contact_id', $triggerData->getContactId());
     }
-
-    if (empty($ruleId)) {
-      CRM_Civirules_Utils_LoggerFactory::logError("Failed log rule", "RuleId not set", $triggerData);
-    } elseif ($sql) {
-      CRM_Core_DAO::executeQuery($sql, $params);
+    if (!empty($table)) {
+      $ruleLog->addValue('entity_table', $table);
     }
+    if ($triggerData->getEntityId()) {
+      $ruleLog->addValue('entity_id', $triggerData->getEntityId());
+    }
+    $ruleLog->execute();
   }
 
 }

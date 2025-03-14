@@ -166,7 +166,12 @@ abstract class CRM_Civirules_Trigger {
    */
   public function getRuleConditions(): array {
     if (!isset($this->ruleConditions) && !empty($this->ruleId)) {
-      $this->ruleConditions = CRM_Civirules_BAO_RuleCondition::getValues(['rule_id' => $this->ruleId]);
+      $this->ruleConditions = \Civi\Api4\CiviRulesRuleCondition::get(FALSE)
+        ->addWhere('rule_id', '=', $this->ruleId)
+        ->addOrderBy('weight', 'ASC')
+        ->addOrderBy('id', 'ASC')
+        ->execute()
+        ->getArrayCopy();
     }
     return $this->ruleConditions ?? [];
   }
