@@ -164,13 +164,27 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
   }
 
   /**
-   * Returns a help text for this trigger.
-   * The help text is shown to the administrator who is configuring the condition.
+   * Get various types of help text for the trigger:
+   *   - triggerDescription: When choosing from a list of triggers, explains what the trigger does.
+   *   - triggerDescriptionWithParams: When a trigger has been configured for a rule provides a
+   *       user friendly description of the trigger and params (see $this->getTriggerDescription())
+   *   - triggerParamsHelp (default): If the trigger has configurable params, show this help text when configuring
+   * @param string $context
    *
    * @return string
    */
-  public function getHelpText(): string {
-    return E::ts('The rule will be triggered for memberships of selected membership types when the end date is X days/weeks/months before or after.');
+  public function getHelpText(string $context = 'triggerParamsHelp'): string {
+    switch ($context) {
+      case 'triggerDescriptionWithParams':
+        return $this->getTriggerDescription();
+
+      case 'triggerDescription':
+      case 'triggerParamsHelp':
+        return E::ts('Trigger for memberships of selected membership types when the end date is X days/weeks/months before or after.');
+
+      default:
+        return parent::getHelpText($context);
+    }
   }
 
 }

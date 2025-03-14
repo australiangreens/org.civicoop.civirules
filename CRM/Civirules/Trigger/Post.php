@@ -20,6 +20,14 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
 
   public static ?CRM_Civirules_TriggerData_TriggerData $triggerDataCache = NULL;
 
+  public function __construct($trigger = NULL) {
+    if (isset($trigger)) {
+      $this->op = $trigger['op'] ?? NULL;
+      $this->objectName = $trigger['object_name'] ?? NULL;
+    }
+    parent::__construct($trigger);
+  }
+
   /**
    * Getter for object name
    *

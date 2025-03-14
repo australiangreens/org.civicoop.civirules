@@ -43,11 +43,31 @@ class CRM_CivirulesPostTrigger_MembershipRenewed extends CRM_CivirulesPostTrigge
   }
 
   public function getTriggerDescription() {
-    return $this->getHelpText();
+    return $this->getHelpText('triggerDescriptionWithParams');
   }
 
-  public function getHelpText(): string {
-    return E::ts('Trigger when a Membership has been renewed (End Date has been increased by one membership term)');
+  /**
+   * Get various types of help text for the trigger:
+   *   - triggerDescription: When choosing from a list of triggers, explains what the trigger does.
+   *   - triggerDescriptionWithParams: When a trigger has been configured for a rule provides a
+   *       user friendly description of the trigger and params (see $this->getTriggerDescription())
+   *   - triggerParamsHelp (default): If the trigger has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context = 'triggerParamsHelp'): string {
+    switch ($context) {
+      case 'triggerDescription':
+      case 'triggerDescriptionWithParams':
+        return E::ts('Trigger on Membership Renewal (End Date + 1 term)');
+
+      case 'triggerParamsHelp':
+        return E::ts('Trigger when a Membership has been renewed (End Date has been increased by one membership term)');
+
+      default:
+        return parent::getHelpText($context);
+    }
   }
 
 }

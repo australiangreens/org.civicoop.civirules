@@ -96,7 +96,7 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
     $sql = "SELECT r.id AS `contribution_recur_id`, r.*
             FROM `civicrm_contribution_recur` `r`
             LEFT JOIN `civirule_rule_log` `rule_log`
-              ON `rule_log`.entity_table = 'civicrm_contribution_recur' 
+              ON `rule_log`.entity_table = 'civicrm_contribution_recur'
               AND `rule_log`.entity_id = r.id
               AND `rule_log`.`contact_id` = `r`.`contact_id`
               AND DATE(`rule_log`.`log_date`) = DATE(NOW())
@@ -150,13 +150,27 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
   }
 
   /**
-   * Returns a help text for this trigger.
-   * The help text is shown to the administrator who is configuring the condition.
+   * Get various types of help text for the trigger:
+   *   - triggerDescription: When choosing from a list of triggers, explains what the trigger does.
+   *   - triggerDescriptionWithParams: When a trigger has been configured for a rule provides a
+   *       user friendly description of the trigger and params (see $this->getTriggerDescription())
+   *   - triggerParamsHelp (default): If the trigger has configurable params, show this help text when configuring
+   * @param string $context
    *
    * @return string
    */
-  public function getHelpText(): string {
-    return E::ts('The rule will be triggered for recurring contributions when the next scheduled contribution date is X days/weeks/months before or after.');
+  public function getHelpText(string $context = 'triggerParamsHelp'): string {
+    switch ($context) {
+      case 'triggerDescriptionWithParams':
+        return $this->getTriggerDescription();
+
+      case 'triggerDescription':
+      case 'triggerParamsHelp':
+        return E::ts('Trigger for recurring contributions when the next scheduled contribution date is X days/weeks/months before or after.');
+
+      default:
+        return parent::getHelpText($context);
+    }
   }
 
 }

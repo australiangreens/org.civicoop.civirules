@@ -71,8 +71,12 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
     $this->ruleId = CRM_Utils_Request::retrieve('id', 'Integer');
 
-    $this->rule = new CRM_Civirules_BAO_Rule();
-    $this->trigger = new CRM_Civirules_BAO_Trigger();
+    if (!$this->ruleId && $this->getAction() !== CRM_Core_Action::ADD) {
+      CRM_Core_Error::statusBounce('Missing rule ID');
+    }
+
+    $this->rule = new CRM_Civirules_BAO_CiviRulesRule();
+    $this->trigger = new CRM_Civirules_BAO_CiviRulesTrigger();
 
     $this->assign('trigger_edit_params', false);
     $this->triggerClass = false;
@@ -139,23 +143,22 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $this->ruleId = $result['values']['clone_id'];
       $session->setStatus('Rule cloned succesfully', 'CiviRule clone', 'success');
     } else {
-      $this->saveRule($this->_submitValues, $userId);
-      $this->saveRuleTrigger($this->_submitValues);
-      $session->setStatus("Rule: '{$this->_submitValues['rule_label']}' saved succesfully", 'CiviRule saved', 'success');
+      $this->saveRule($this->getSubmittedValues(), $userId);
+      $this->saveRuleTrigger($this->getSubmittedValues());
+      $session->setStatus("Rule: '{$this->getSubmittedValue('rule_label')}' saved succesfully", 'CiviRule saved', 'success');
       if (isset($this->_submitValues['_qf_Rule_upload_done'])) {
         CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/civirules/form/rulesview', 'reset=1'));
       }
     }
-    /*
-     * if add mode, set user context to form in edit mode to add conditions and actions
-     */
+
+    // if add mode, set user context to form in edit mode to add conditions and actions
     if ($this->_action == CRM_Core_Action::ADD || $this->_action == CRM_Core_Action::UPDATE) {
       $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->ruleId, TRUE);
       $session->pushUserContext($editUrl);
     }
 
-    if (isset($this->_submitValues['rule_trigger_select'])) {
-      $redirectUrl = $this->getTriggerRedirect($this->_submitValues['rule_trigger_select']);
+    if ($this->getSubmittedValue('rule_trigger_select')) {
+      $redirectUrl = $this->getTriggerRedirect($this->getSubmittedValue('rule_trigger_select'));
       $session->pushUserContext($redirectUrl);
     }
 
@@ -263,7 +266,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $this->add('text', 'rule_created_contact', E::ts('Created By'));
 
       $triggerList = CiviRulesTrigger::get(FALSE)
-        ->addSelect('id', 'label', 'class_name')
+        ->addSelect('id', 'label', 'name', 'class_name', 'object_name', 'op')
         ->addOrderBy('label', 'ASC')
         ->addWhere('is_active', '=',TRUE)
         ->execute()
@@ -272,7 +275,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
         $description = '';
         if (!empty($detail['class_name'])) {
           try {
-            $description = (new $detail['class_name']())->getHelpText();
+            $description = (new $detail['class_name']($detail))->getHelpText('triggerDescription');
           }
           catch (Throwable $e) {
             // Do nothing, we'll continue without description
@@ -285,14 +288,16 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
         ];
       }
 
-      $this->add('select2', 'rule_trigger_select', E::ts('Select Trigger'), $triggers, TRUE);
+      if ($this->getAction() === CRM_Core_Action::ADD) {
+        $this->add('select2', 'rule_trigger_select', E::ts('Select Trigger'), $triggers, TRUE);
+      }
       if ($this->_action == CRM_Core_Action::UPDATE) {
         $this->createUpdateFormElements();
       }
     }
     if ($this->_action == CRM_Core_Action::ADD) {
         $this->addButtons(array(
-        array('type' => 'next', 'name' => E::ts('Next'), 'isDefault' => TRUE,),
+        array('type' => 'next', 'name' => E::ts('Next'), 'isDefault' => TRUE),
         array('type' => 'cancel', 'name' => E::ts('Cancel'))));
     } elseif ($this->_action == CRM_Core_Action::DELETE) {
       $this->addButtons(array(
@@ -300,7 +305,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
         array('type' => 'cancel', 'name' => E::ts('Cancel'))));
     } else {
       $this->addButtons(array(
-        array('type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,),
+        array('type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE),
         [
           'type' => 'upload',
           'name' => E::ts('Save and Done'),

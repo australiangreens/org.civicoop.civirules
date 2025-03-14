@@ -138,25 +138,50 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
     $result = civicrm_api3('ActivityContact', 'getoptions', [
       'field' => "record_type_id",
     ]);
-    $options[0] = E::ts('For all contacts');
+    $options[0] = E::ts('All contacts');
     foreach($result['values'] as $val => $opt) {
       $options[$val] = $opt;
     }
-    return E::ts('Trigger for %1', [1=>$options[$this->triggerParams['record_type']]]);
+    return E::ts('Trigger for %1', [1=>$options[$this->triggerParams['record_type'] ?? 0]]);
   }
 
   /**
-   * Returns a help text for this trigger.
-   * The help text is shown to the administrator who is configuring the condition.
+   * Get various types of help text for the trigger:
+   *   - triggerDescription: When choosing from a list of triggers, explains what the trigger does.
+   *   - triggerDescriptionWithParams: When a trigger has been configured for a rule provides a
+   *       user friendly description of the trigger and params (see $this->getTriggerDescription())
+   *   - triggerParamsHelp (default): If the trigger has configurable params, show this help text when configuring
+   * @param string $context
    *
    * @return string
    */
-  public function getHelpText(): string {
-    return E::ts('When all contacts is selected then the trigger will be fired for every contact. Meaning that trigger might run more than once.')
-      . '<br/>'
-      . E::ts('When you don\'t want that select the record type for which you want to fire the trigger.')
-      . '<br/>'
-      . E::ts('The select record type also defines which contact is available in the conditions and actions.');
+  public function getHelpText(string $context = 'triggerParamsHelp'): string {
+    switch ($context) {
+      case 'triggerDescription':
+        return E::ts('Trigger on Activities');
+
+      case 'triggerDescriptionWithParams':
+        return $this->getTriggerDescription();
+
+      case 'triggerParamsHelp':
+        if (get_class($this) === 'CRM_CivirulesPostTrigger_Activity') {
+          switch ($this->getOp()) {
+            case 'create':
+            case 'edit':
+              return E::ts('When all contacts is selected then the trigger will be fired for every contact. Meaning that trigger might run more than once.')
+                . '<br/>'
+                . E::ts('When you don\'t want that select the record type for which you want to fire the trigger.')
+                . '<br/>'
+                . E::ts('The select record type also defines which contact is available in the conditions and actions.');
+
+            case 'delete':
+            default:
+              return '';
+          }
+        }
+      default:
+        return parent::getHelpText($context);
+    }
   }
 
 }

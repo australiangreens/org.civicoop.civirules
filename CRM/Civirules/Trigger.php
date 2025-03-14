@@ -16,6 +16,8 @@ abstract class CRM_Civirules_Trigger {
    */
   protected $triggerId;
 
+  protected string $triggerName;
+
   /**
    * The Trigger Params
    *
@@ -45,6 +47,13 @@ abstract class CRM_Civirules_Trigger {
    * @var array
    */
   protected $ruleConditions;
+
+  public function __construct($trigger = NULL) {
+    if (isset($trigger)) {
+      $this->triggerId = $trigger['id'] ?? NULL;
+      $this->triggerName = $trigger['name'] ?? NULL;
+    }
+  }
 
   /**
    * @param int $ruleId
@@ -270,13 +279,13 @@ abstract class CRM_Civirules_Trigger {
    * Returns a calculated description of this trigger
    * If the trigger has parameters this this function should provide a user-friendly description of those parameters
    * See also: getHelpText()
-   * You could return the contents of getHelpText() if you want a generic description and the trigger has no configurable
+   * You could return the contents of getHelpText('triggerDescriptionWithParams') if you want a generic description and the trigger has no configurable
    * parameters.
    *
    * @return string
    */
   public function getTriggerDescription() {
-    // Optionally: return $this->getHelpText()
+    // If you implement getHelpText('triggerDescriptionWithParams') then you don't need to implement this function!
     return '';
   }
 
@@ -313,27 +322,41 @@ abstract class CRM_Civirules_Trigger {
   }
 
   /**
-   * Historically getHelpText() was on the form class.
-   * But we have no way to get the form class - only the path via getExtraDataInputUrl()
-   * The Form *does* have access to the trigger class via $this->triggerClass so if getHelpText()
-   * is on the triggerClass we can just do $this->triggerClass->getHelpText().
+   * Get various types of help text for the trigger:
+   *   - triggerDescription: When choosing from a list of triggers, explains what the trigger does.
+   *   - triggerDescriptionWithParams: When a trigger has been configured for a rule provides a
+   *       user friendly description of the trigger and params (see $this->getTriggerDescription())
+   *   - triggerParamsHelp (default): If the trigger has configurable params, show this help text when configuring
+   * @param string $context
    *
    * @return string
    */
-  public function getHelpText(): string {
+  public function getHelpText(string $context): string {
     // Child classes should override this function
-    // If not will fallback to Form class
 
-    // getHelpText() doesn't exist on trigger class.
-    // Try to get Form class for trigger and see if getHelpText() exists there
-    $classBits = explode('_', get_class($this));
+    switch ($context) {
+      case 'triggerDescriptionWithParams':
+        return $this->getTriggerDescription();
 
-    $formClass = $classBits[0] . '_' . $classBits[1] . '_Form';
-    for ($i = 2; $i < count($classBits); $i++) {
-      $formClass .= '_' . $classBits[$i];
-    }
-    if (class_exists($formClass)) {
-      $helpText = (new $formClass())->getHelpText();
+      case 'triggerDescription':
+      case 'triggerParamsHelp':
+      default:
+        // Historically getHelpText() was on the form class.
+        // But we have no way to get the form class - only the path via getExtraDataInputUrl()
+        // The Form *does* have access to the trigger class via $this->triggerClass so if getHelpText()
+        //   is on the triggerClass we can just do $this->triggerClass->getHelpText().
+
+        // getHelpText() doesn't exist on trigger class.
+        // Try to get Form class for trigger and see if getHelpText() exists there
+        $classBits = explode('_', get_class($this));
+
+        $formClass = $classBits[0] . '_' . $classBits[1] . '_Form';
+        for ($i = 2; $i < count($classBits); $i++) {
+          $formClass .= '_' . $classBits[$i];
+        }
+        if (class_exists($formClass)) {
+          $helpText = (new $formClass())->getHelpText();
+        }
     }
 
     return $helpText ?? '';

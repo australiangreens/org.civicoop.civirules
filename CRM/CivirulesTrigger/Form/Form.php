@@ -61,7 +61,7 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
     }
     elseif (method_exists($this->triggerClass, 'getHelpText')) {
       // This is the correct location for getHelpText();
-      $helpText = $this->triggerClass->getHelpText();
+      $helpText = $this->triggerClass->getHelpText('triggerParamsHelp');
     }
     $this->assign('ruleTriggerHelp', $helpText ?? '');
 
@@ -97,8 +97,8 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
    * Method to set the form title
    */
   protected function setFormTitle() {
-    $title = 'CiviRules Edit trigger parameters';
-    $this->assign('ruleTriggerHeader', 'Edit rule '.$this->rule->label);
+    $title = E::ts('Rule: %1', [1 => $this->rule->label]);
+    $this->assign('ruleTriggerHeader', E::ts('Edit "%1" trigger parameters.', [1 => $this->trigger->label]));
     CRM_Utils_System::setTitle($title);
   }
 
