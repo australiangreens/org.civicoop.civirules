@@ -83,12 +83,12 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     if (!empty($this->ruleId)) {
       $this->rule->id = $this->ruleId;
       if (!$this->rule->find(TRUE)) {
-        throw new Exception('Civirules could not find rule');
+        CRM_Core_Error::statusBounce('Could not find rule with ID: ' . $this->ruleId);
       }
 
       $this->trigger->id = $this->rule->trigger_id;
       if (!$this->trigger->find(TRUE)) {
-        throw new Exception('Civirules could not find trigger');
+        CRM_Core_Error::statusBounce('Could not find trigger with ID: ' . $this->rule->trigger_id);
       }
 
       $this->triggerClass = CRM_Civirules_BAO_Trigger::getTriggerObjectByTriggerId($this->trigger->id, TRUE);
