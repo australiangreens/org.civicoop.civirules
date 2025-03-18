@@ -259,8 +259,8 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $this->add('text', 'rule_label', E::ts('Name'), array('size' => CRM_Utils_Type::HUGE), TRUE);
       $this->add('text', 'rule_description', E::ts('Description'), array('size' => 100, 'maxlength' => 256));
       $this->add('wysiwyg', 'rule_help_text', E::ts('Help text with purpose of rule'), array('rows' => 6, 'cols' => 80));
-      $this->add('select', 'rule_tag_id', E::ts('Civirule Tag(s)'), CRM_Civirules_BAO_CiviRulesRuleTag::getRuleTagsList(), FALSE,
-        array('id' => 'rule_tag_id', 'multiple' => 'multiple', 'class' => 'crm-select2 huge'));
+      $this->add('select2', 'rule_tag_id', E::ts('Civirule Tag(s)'), Civi::entity('CiviRulesRuleTag')->getOptions('rule_tag_id'), FALSE,
+        ['id' => 'rule_tag_id', 'multiple' => 'multiple', 'class' => 'huge']);
       $this->add('checkbox', 'rule_is_active', E::ts('Enabled'));
       $this->add('text', 'rule_created_date', E::ts('Created Date'));
       $this->add('text', 'rule_created_contact', E::ts('Created By'));
