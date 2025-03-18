@@ -1,9 +1,26 @@
 # CHANGELOG
 
 ## Version 3.18.0 (not yet released)
+**Warning: This release contains significant changes. Please test well before upgrading.**
 
+**This release contains database changes which cannot easily be rolled back!**
+
+### Major changes
+* Schema changes: created/modified dates. Add weight to RuleAction and RuleCondition tables.
+* Edit Rule: Convert actions list and trigger history to searchkit. You can now disable and change the order of actions.
+
+### Other changes
 * Wrap alterTriggerData() in throwable as it can trigger exceptions. If the rule crashes let the rest of the process complete.
 * Add in Contact entity to 'Daily trigger for case activities' as case client - allows to use eg. 'Send Email' action.
+* Add 'Log' action to write a log entry to CiviCRM logs containing the available entity data.
+* Add unserializeParams() function for trigger params (prevents crashes/warnings if params are empty/invalid).
+* Add specProvider to render a friendly description for action delay params.
+* Refactor getHelpText() for Triggers and Actions. You can now specify 3 different types of help text.
+* Improve display of Trigger info when viewing rule.
+* When selecting from list of Triggers/Actions you'll see a brief description if available (see getHelpText() actionDescription)
+* Duplicate cleanup APIs now cleanup multiple duplicates.
+* CiviCRM 5.82 is required for drag and drop sorting to work on Actions.
+* Translation improvements.
 
 ## Version 3.17.1 (2025-03-06)
 
