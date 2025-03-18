@@ -115,32 +115,34 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
    * @return array
    */
   public static function findRulesByObjectNameAndOp($objectName, $op) {
-    $triggers = [];
-    $sql = "SELECT r.id AS rule_id, t.id AS trigger_id, t.class_name, r.trigger_params
+    if (empty(\Civi::$statics[__CLASS__]['findRulesByObjectNameAndOp'][$objectName][$op])) {
+      $triggers = [];
+      $sql = "SELECT r.id AS rule_id, t.id AS trigger_id, t.class_name, r.trigger_params
             FROM `civirule_rule` r
             INNER JOIN `civirule_trigger` t ON r.trigger_id = t.id AND t.is_active = 1";
-    // If $objectName is a Contact Type, also search for "Contact".
-    if ($objectName == 'Individual' || $objectName == 'Organization' || $objectName == 'Household') {
-      $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND (t.object_name = %1 OR t.object_name = 'Contact') AND t.op = %2";
-    }
-    else {
-      $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND t.object_name = %1 AND t.op LIKE %2";
-    }
-    $sql .= $sqlWhere;
-    $params[1] = [$objectName, 'String'];
-    $params[2] = ["%$op%", 'String'];
-
-    $dao = CRM_Core_DAO::executeQuery($sql, $params);
-    while ($dao->fetch()) {
-      $triggerObject = CRM_Civirules_BAO_Trigger::getPostTriggerObjectByClassName($dao->class_name, FALSE);
-      if ($triggerObject !== FALSE) {
-        $triggerObject->setTriggerId($dao->trigger_id);
-        $triggerObject->setRuleId($dao->rule_id);
-        $triggerObject->setTriggerParams($dao->trigger_params ?? '');
-        $triggers[] = $triggerObject;
+      // If $objectName is a Contact Type, also search for "Contact".
+      if ($objectName == 'Individual' || $objectName == 'Organization' || $objectName == 'Household') {
+        $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND (t.object_name = %1 OR t.object_name = 'Contact') AND t.op = %2";
+      } else {
+        $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND t.object_name = %1 AND t.op LIKE %2";
       }
+      $sql .= $sqlWhere;
+      $params[1] = [$objectName, 'String'];
+      $params[2] = ["%$op%", 'String'];
+
+      $dao = CRM_Core_DAO::executeQuery($sql, $params);
+      while ($dao->fetch()) {
+        $triggerObject = CRM_Civirules_BAO_Trigger::getPostTriggerObjectByClassName($dao->class_name, FALSE);
+        if ($triggerObject !== FALSE) {
+          $triggerObject->setTriggerId($dao->trigger_id);
+          $triggerObject->setRuleId($dao->rule_id);
+          $triggerObject->setTriggerParams($dao->trigger_params ?? '');
+          $triggers[] = $triggerObject;
+        }
+      }
+      \Civi::$statics[__CLASS__]['findRulesByObjectNameAndOp'][$objectName][$op] = $triggers;
     }
-    return $triggers;
+    return \Civi::$statics[__CLASS__]['findRulesByObjectNameAndOp'][$objectName][$op];
   }
 
   /**
