@@ -7,15 +7,6 @@
  */
 class CRM_Civirules_BAO_CiviRulesRuleAction extends CRM_Civirules_DAO_CiviRulesRuleAction implements \Civi\Core\HookInterface {
 
-  public function save($hook = TRUE) {
-    $oldWeight = NULL;
-    if ($this->id) {
-      $oldWeight = CRM_Core_DAO::getFieldValue('CRM_Civirules_DAO_CiviRulesRuleAction', $this->id, 'weight', 'id');
-    }
-    $this->weight = CRM_Utils_Weight::updateOtherWeights('CRM_Civirules_DAO_CiviRulesRuleAction', $oldWeight, $this->weight);
-    parent::save($hook);
-  }
-
   /**
    * Function to unserialize the CiviRulesRuleAction action_params
    *
