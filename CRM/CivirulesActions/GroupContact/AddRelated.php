@@ -193,4 +193,31 @@ class CRM_CivirulesActions_GroupContact_AddRelated extends CRM_CivirulesActions_
     return parent::importActionParameters($action_params);
   }
 
+  /**
+   * Get various types of help text for the action:
+   *   - actionDescription: When choosing from a list of actions, explains what the action does.
+   *   - actionDescriptionWithParams: When a action has been configured for a rule provides a
+   *       user friendly description of the action and params (see $this->userFriendlyConditionParams())
+   *   - actionParamsHelp (default): If the action has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context): string {
+    switch ($context) {
+      case 'actionDescriptionWithParams':
+        return $this->userFriendlyConditionParams();
+
+      case 'actionDescription':
+        return E::ts('All related contacts of the selected relationship types will be added to the selected group.');
+
+      case 'actionParamsHelp':
+        return E::ts('All related contacts of the selected relationship types will be added to the selected group.')
+          . '<br /><strong>' . E::ts('Relationship type') . ':</strong><br />'
+          . E::ts('The relationship type to find target contacts.');
+    }
+
+    return $helpText ?? '';
+  }
+
 }

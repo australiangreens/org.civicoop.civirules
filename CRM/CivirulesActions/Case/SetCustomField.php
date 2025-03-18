@@ -115,4 +115,29 @@ class CRM_CivirulesActions_Case_SetCustomField extends CRM_Civirules_Action {
     }
     return FALSE;
   }
+
+  /**
+   * Get various types of help text for the action:
+   *   - actionDescription: When choosing from a list of actions, explains what the action does.
+   *   - actionDescriptionWithParams: When a action has been configured for a rule provides a
+   *       user friendly description of the action and params (see $this->userFriendlyConditionParams())
+   *   - actionParamsHelp (default): If the action has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context): string {
+    switch ($context) {
+      case 'actionDescriptionWithParams':
+        return $this->userFriendlyConditionParams();
+
+      case 'actionDescription':
+        return E::ts('This action will set the custom field to the provided value');
+
+      case 'actionParamsHelp':
+        return E::ts('This action will set the custom field to the provided value. In case of option groups, you need to provide the <code>value</code> instead of the label. You can find this in the "Option Groups" overview in the system administration menu. Complex values can be set using JSON expressions.');
+    }
+
+    return $helpText ?? '';
+  }
 }

@@ -125,4 +125,27 @@ class CRM_CivirulesActions_Contact_CopyCustomField extends CRM_Civirules_Action 
   public function getExtraDataInputUrl($ruleActionId) {
     return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/contact/copycustomvalue', $ruleActionId);
   }
+
+  /**
+   * Get various types of help text for the action:
+   *   - actionDescription: When choosing from a list of actions, explains what the action does.
+   *   - actionDescriptionWithParams: When a action has been configured for a rule provides a
+   *       user friendly description of the action and params (see $this->userFriendlyConditionParams())
+   *   - actionParamsHelp (default): If the action has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context): string {
+    switch ($context) {
+      case 'actionDescriptionWithParams':
+        return $this->userFriendlyConditionParams();
+
+      case 'actionDescription':
+      case 'actionParamsHelp':
+        return E::ts('This action will set the custom field to the value from another custom field.');
+    }
+
+    return $helpText ?? '';
+  }
 }

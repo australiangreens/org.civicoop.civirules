@@ -250,4 +250,30 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
     }
     return parent::importActionParameters($action_params);
   }
+
+  /**
+   * Get various types of help text for the action:
+   *   - actionDescription: When choosing from a list of actions, explains what the action does.
+   *   - actionDescriptionWithParams: When a action has been configured for a rule provides a
+   *       user friendly description of the action and params (see $this->userFriendlyConditionParams())
+   *   - actionParamsHelp (default): If the action has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context): string {
+    switch ($context) {
+      case 'actionDescriptionWithParams':
+        return $this->userFriendlyConditionParams();
+
+      case 'actionDescription':
+        return E::ts("This action takes the value from the contact field specified in 'Source', applies the operator and the operand, and stores the result in the field specified in 'Target'.");
+
+      case 'actionParamsHelp':
+        return E::ts("This action takes the value from the contact field specified in 'Source', applies the operator and the operand, and stores the result in the field specified in 'Target'. Only numeric fields will be considered.");
+    }
+
+    return $helpText ?? '';
+  }
+
 }

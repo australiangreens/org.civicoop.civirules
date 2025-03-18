@@ -305,4 +305,30 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
     // Built in Fields
     return ucwords(str_replace('_', ' ', $field_identifier));
   }
+
+  /**
+   * Get various types of help text for the action:
+   *   - actionDescription: When choosing from a list of actions, explains what the action does.
+   *   - actionDescriptionWithParams: When a action has been configured for a rule provides a
+   *       user friendly description of the action and params (see $this->userFriendlyConditionParams())
+   *   - actionParamsHelp (default): If the action has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context): string {
+    switch ($context) {
+      case 'actionDescriptionWithParams':
+        return $this->userFriendlyConditionParams();
+
+      case 'actionDescription':
+        return E::ts("'This action takes the value from the contact field specified in 'Source', applies the operator and the operand, and stores the result in the field specified in 'Target'");
+
+      case 'actionParamsHelp':
+        return E::ts("This action takes the value from the contact field specified in 'Source', applies the operator and the operand, and stores the result in the field specified in 'Target'. Only date fields will be considered. For 'Set', the 'Operand' will be passed to <a href=\"https://www.php.net/manual/en/datetime.construct.php\">DateTime::__construct</a> is a valid entry.  For 'Modify', the 'Operand' will be passed to <a href=\"https://www.php.net/manual/en/datetime.modify.php\">DateTime::modify</a> is a valid entry.");
+    }
+
+    return $helpText ?? '';
+  }
+
 }

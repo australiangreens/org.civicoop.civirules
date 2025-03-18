@@ -196,5 +196,39 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
     return parent::importActionParameters($action_params);
   }
 
+  /**
+   * Get various types of help text for the action:
+   *   - actionDescription: When choosing from a list of actions, explains what the action does.
+   *   - actionDescriptionWithParams: When a action has been configured for a rule provides a
+   *       user friendly description of the action and params (see $this->userFriendlyConditionParams())
+   *   - actionParamsHelp (default): If the action has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context): string {
+    // Child classes should override this function
+
+    switch ($context) {
+      case 'actionDescriptionWithParams':
+        return $this->userFriendlyConditionParams();
+
+      case 'actionDescription':
+        return E::ts('Sync tags to related contacts.');
+
+      case 'actionParamsHelp':
+        return E::ts('      <strong>Type:</strong><br />
+      <ul>
+        <li><strong>Copy</strong> means that tags who are present in <em>source</em> but not in the <em>target</em> will be <em>added</em>.</li>
+        <li><strong>Synchronize</strong> means that tags who are present in <em>target</em> but not in the <em>source</em> will be removed. And that tags who are present in <em>source</em> but not in the <em>target</em> will be <em>added</em>.</li>
+      </ul>
+      <strong>Tags:</strong><br />
+      The selected tags to check.<br />
+      <strong>Relationship type:</strong><br />
+      The relationship type to find target contacts.<br />');
+    }
+
+    return $helpText ?? '';
+  }
 
 }

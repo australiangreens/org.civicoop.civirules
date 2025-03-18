@@ -206,7 +206,7 @@ abstract class CRM_Civirules_Action {
         for ($i = 2; $i < count($classBits); $i++) {
           $formClass .= '_' . $classBits[$i];
         }
-        if (class_exists($formClass)) {
+        if (class_exists($formClass) && method_exists($formClass, 'getHelpText')) {
           $helpText = (new $formClass())->getHelpText();
         }
     }
