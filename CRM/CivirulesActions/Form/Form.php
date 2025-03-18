@@ -76,8 +76,6 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
     $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->rule->id, TRUE);
     $session->pushUserContext($editUrl);
 
-    parent::preProcess();
-
     $this->setFormTitle();
 
     if (method_exists($this, 'getHelpText')) {

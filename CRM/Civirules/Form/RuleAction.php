@@ -25,6 +25,12 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
   protected CRM_Civirules_BAO_CiviRulesRule $rule;
 
   /**
+   * If TRUE, only edit the delay params
+   * @var bool
+   */
+  protected bool $editDelay = FALSE;
+
+  /**
    * Function to buildQuickForm (extends parent function)
    *
    * @access public
@@ -43,6 +49,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
   function preProcess() {
     $this->ruleId = CRM_Utils_Request::retrieve('rule_id', 'Integer');
     $this->ruleActionId = CRM_Utils_Request::retrieve('id', 'Integer');
+    $this->editDelay = CRM_Utils_Request::retrieveValue('editdelay', 'Boolean') ?? FALSE;
 
     if (!$this->ruleId && $this->getAction()) {
       CRM_Core_Error::statusBounce('Missing rule ID');
@@ -110,10 +117,12 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     $session = CRM_Core_Session::singleton();
     $action = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($this->ruleAction->action_id, true);
     $redirectUrl = $action->getExtraDataInputUrl($ruleAction['id']);
-    if (empty($redirectUrl)) {
+    if (empty($redirectUrl) || $this->editDelay) {
       $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->getSubmittedValue('rule_id'), TRUE);
-      $session->setStatus('Action added to CiviRule '.CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->getSubmittedValue('rule_id')),
-        'Action added', 'success');
+      if (empty($this->ruleActionId)) {
+        $session->setStatus('Action added to CiviRule ' . CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->getSubmittedValue('rule_id')),
+          'Action added', 'success');
+      }
     }
     else {
       // Redirect to action configuration (required to redirect popup without closing
