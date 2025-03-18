@@ -281,7 +281,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
             // Do nothing, we'll continue without description
           }
         }
-        $triggers[$id] = [
+        $triggers[] = [
           'id' => $id,
           'text' => $detail['label'],
           'description' => $description,
@@ -289,7 +289,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       }
 
       if ($this->getAction() === CRM_Core_Action::ADD) {
-        $this->add('select2', 'rule_trigger_select', E::ts('Select Trigger'), $triggers, TRUE);
+        $this->add('select2', 'rule_trigger_select', E::ts('Select Trigger'), $triggers, TRUE, ['class' => 'huge']);
       }
       if ($this->_action == CRM_Core_Action::UPDATE) {
         $this->createUpdateFormElements();

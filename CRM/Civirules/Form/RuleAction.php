@@ -151,7 +151,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
           // Do nothing, we'll continue without description
         }
       }
-      $actions[$id] = [
+      $actions[] = [
         'id' => $id,
         'text' => $detail['label'],
         'description' => $description,
@@ -159,7 +159,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     }
 
     if ($this->getAction() === CRM_Core_Action::ADD) {
-      $this->add('select2', 'rule_action_select', E::ts('Select Action'), $actions, TRUE);
+      $this->add('select2', 'rule_action_select', E::ts('Select Action'), $actions, TRUE, ['class' => 'huge']);
     }
 
     $delayList = [' - No Delay - '] + CRM_Civirules_Delay_Factory::getOptionList();
