@@ -7,14 +7,14 @@ abstract class CRM_Civirules_Trigger {
    *
    * @var int
    */
-  protected $ruleId;
+  protected int $ruleId;
 
   /**
    * The Rule Trigger ID
    *
    * @var int
    */
-  protected $triggerId;
+  protected int $triggerId;
 
   protected string $triggerName;
 
@@ -23,7 +23,7 @@ abstract class CRM_Civirules_Trigger {
    *
    * @var array
    */
-  protected $triggerParams;
+  protected array $triggerParams;
 
   /**
    * @var \CRM_Civirules_TriggerData_TriggerData
@@ -33,12 +33,12 @@ abstract class CRM_Civirules_Trigger {
   /**
    * @var string
    */
-  protected $ruleTitle;
+  protected string $ruleTitle;
 
   /**
    * @var bool
    */
-  protected $ruleDebugEnabled;
+  protected bool $ruleDebugEnabled;
 
   /**
    * The Rule Conditions
@@ -46,7 +46,7 @@ abstract class CRM_Civirules_Trigger {
    *
    * @var array
    */
-  protected $ruleConditions;
+  protected array $ruleConditions;
 
   public function __construct($trigger = NULL) {
     if (isset($trigger)) {
@@ -72,13 +72,15 @@ abstract class CRM_Civirules_Trigger {
    * @return void
    */
   public function setTriggerParams(string $triggerParams) {
-    // Initialise as empty array in case we fail to unserialize (so we don't crash when trying to access uninitialised data).
-    $this->triggerParams = [];
     try {
-      $this->triggerParams = unserialize($triggerParams);
+      $triggerParams = unserialize($triggerParams);
+      // If unserialize fails, FALSE is returned. We need an array
+      $this->triggerParams = $triggerParams ?: [];
     }
     catch (TypeError $e) {
       \Civi::log()->error('CiviRules setTriggerParams: Could not unserialize trigger params.');
+      // Something went wrong, set to empty array
+      $this->triggerParams = [];
     }
   }
 
