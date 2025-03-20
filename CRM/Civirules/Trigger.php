@@ -85,6 +85,13 @@ abstract class CRM_Civirules_Trigger {
   }
 
   /**
+   * @return array
+   */
+  public function getTriggerParams(): array {
+    return $this->triggerParams;
+  }
+
+  /**
    * @return int
    */
   public function getRuleId(): int {

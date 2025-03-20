@@ -67,6 +67,10 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
     }
     $this->assign('ruleTriggerHelp', $helpText ?? '');
 
+    if ($this->supportsMultipleTriggerOps()) {
+      $this->add('select2', 'trigger_op', E::ts('Trigger on'), self::getTriggerOptions(), TRUE, ['multiple' => TRUE]);
+    }
+
     //set user context
     $session = CRM_Core_Session::singleton();
     $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
@@ -81,10 +85,16 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
   public function setDefaultValues() {
     $defaultValues = [];
     $defaultValues['rule_id'] = $this->ruleId;
+    if ($this->supportsMultipleTriggerOps()) {
+      $defaultValues['trigger_op'] = $this->triggerClass->getTriggerParams()['trigger_op'] ?? 'create';
+    }
     return $defaultValues;
   }
 
   public function postProcess() {
+    if ($this->supportsMultipleTriggerOps()) {
+      $this->triggerParams['trigger_op'] = $this->getSubmittedValue('trigger_op');
+    }
     $this->rule->trigger_params = serialize($this->triggerParams);
     $this->rule->save();
 
@@ -102,6 +112,27 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
     $title = E::ts('Rule: %1', [1 => $this->rule->label]);
     $this->assign('ruleTriggerHeader', E::ts('Edit "%1" trigger parameters.', [1 => $this->trigger->label]));
     CRM_Utils_System::setTitle($title);
+  }
+
+  protected function supportsMultipleTriggerOps(): bool {
+    return str_contains($this->trigger->op, '|');
+  }
+
+  /**
+   * Get the valid trigger options (for Post triggers)
+   * @return array[]
+   */
+  public static function getTriggerOptions(): array {
+    return [
+      [
+        'id' => 'create',
+        'text' => E::ts('Create'),
+      ],
+      [
+        'id' => 'edit',
+        'text' => E::ts('Edit/Update'),
+      ],
+    ];
   }
 
 }
