@@ -10,6 +10,11 @@
     <div class="content">{$form.contact_id_b.html}</div>
     <div class="clear"></div>
   </div>
+  <div class="crm-section reverse_relationship-section">
+    <div class="label">{$form.reverse_relationship.label}</div>
+    <div class="content">{$form.reverse_relationship.html}</div>
+    <div class="clear"></div>
+  </div>
 </div>
 <div class="crm-submit-buttons">
     {include file="CRM/common/formButtons.tpl" location="bottom"}
