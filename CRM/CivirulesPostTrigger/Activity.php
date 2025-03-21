@@ -168,11 +168,10 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
           switch ($this->getOp()) {
             case 'create':
             case 'edit':
-              return E::ts('When all contacts is selected then the trigger will be fired for every contact. Meaning that trigger might run more than once.')
+              return E::ts('Select a record type to run the trigger only once.')
+                . ' ' . E::ts('When all contacts is selected then the trigger will be fired for every contact. Meaning that trigger might run more than once.')
                 . '<br/>'
-                . E::ts('When you don\'t want that select the record type for which you want to fire the trigger.')
-                . '<br/>'
-                . E::ts('The select record type also defines which contact is available in the conditions and actions.');
+                . E::ts('The selected record type also defines which contact is available in the conditions and actions.');
 
             case 'delete':
             default:
