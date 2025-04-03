@@ -122,7 +122,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
             INNER JOIN `civirule_trigger` t ON r.trigger_id = t.id AND t.is_active = 1";
       // If $objectName is a Contact Type, also search for "Contact".
       if ($objectName == 'Individual' || $objectName == 'Organization' || $objectName == 'Household') {
-        $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND (t.object_name = %1 OR t.object_name = 'Contact') AND t.op = %2";
+        $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND (t.object_name = %1 OR t.object_name = 'Contact') AND t.op LIKE %2";
       } else {
         $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND t.object_name = %1 AND t.op LIKE %2";
       }
