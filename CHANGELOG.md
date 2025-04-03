@@ -21,6 +21,7 @@
 * Duplicate cleanup APIs now cleanup multiple duplicates.
 * CiviCRM 5.82 is required for drag and drop sorting to work on Actions.
 * Translation improvements.
+* Added 'Has Valid Email' condition. The use case is for creating external accounts (on NextCloud, or Drupal) that need an email.
 
 ## Version 3.17.1 (2025-03-06)
 
