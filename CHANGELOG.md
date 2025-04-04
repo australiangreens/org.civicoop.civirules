@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 3.18.0 (not yet released)
+## Version 3.18.0 (2025-04-04)
 **Warning: This release contains significant changes. Please test well before upgrading.**
 
 **This release contains database changes which cannot easily be rolled back!**
