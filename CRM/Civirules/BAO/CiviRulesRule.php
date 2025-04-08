@@ -142,7 +142,13 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
       }
       \Civi::$statics[__CLASS__]['findRulesByObjectNameAndOp'][$objectName][$op] = $triggers;
     }
-    return \Civi::$statics[__CLASS__]['findRulesByObjectNameAndOp'][$objectName][$op];
+
+    // This function is called for multiple triggers and the cached triggers are returned
+    // But downstream code modifies the triggers to add triggerData etc. that is specific to the instance of the rule
+    // Eg. If we trigger on Activity Create and then create an Activity as an action we will trigger the same rule again
+    //   but with different triggerData. So we need to return the clean triggerObject *without* any modifications.
+    $clonedTriggerObjects = array_map(function ($object) { return clone $object; }, \Civi::$statics[__CLASS__]['findRulesByObjectNameAndOp'][$objectName][$op]);
+    return $clonedTriggerObjects;
   }
 
   /**
