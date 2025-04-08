@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Version 3.18.1 (2025-04-08)
+
+* Fix caching bug that caused some rules to go into infinite loop when triggered (eg. if an activity create trigger creates an activity of a different type).
+* Fix saving tags on rule.
+
 ## Version 3.18.0 (2025-04-04)
 **Warning: This release contains significant changes. Please test well before upgrading.**
 
