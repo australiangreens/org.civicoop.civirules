@@ -461,8 +461,8 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     CiviRulesRuleTag::delete(FALSE)
       ->addWhere('rule_id', '=', $this->ruleId)
       ->execute();
-    if (isset($formValues['rule_tag_id'])) {
-      foreach ($formValues['rule_tag_id'] as $ruleTagId) {
+    if (!empty($formValues['rule_tag_id'])) {
+      foreach (explode(',', $formValues['rule_tag_id']) as $ruleTagId) {
         $ruleTag = [
           'rule_id' => $this->ruleId,
           'rule_tag_id' => $ruleTagId
