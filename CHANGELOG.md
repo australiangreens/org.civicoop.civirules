@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.18.2 (2025-04-11)
+
+* Fix [#258](https://lab.civicrm.org/extensions/civirules/-/issues/258) - Multiple conditions always evaluate to false.
+
 ## Version 3.18.1 (2025-04-08)
 
 * Fix caching bug that caused some rules to go into infinite loop when triggered (eg. if an activity create trigger creates an activity of a different type).
