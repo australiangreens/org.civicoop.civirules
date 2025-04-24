@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Version 3.19.0 (2025-04-24)
+
+* [!296](https://lab.civicrm.org/extensions/civirules/-/merge_requests/296) Wrap all the execution steps for a rule in try/catch with Throwable so a broken rule should never kill the whole process.
+* [!295](https://lab.civicrm.org/extensions/civirules/-/merge_requests/295) Fix financial type comparison when no financial types selected.
+
 ## Version 3.18.2 (2025-04-11)
 
 * Fix [#258](https://lab.civicrm.org/extensions/civirules/-/issues/258) - Multiple conditions always evaluate to false.
