@@ -39,24 +39,34 @@ class CRM_Civirules_Engine {
           $triggerData->setContactId($triggerData->getEntityId());
         }
       }
+    } catch (Throwable $e) {
+      // Catch *any* error when loading the triggerData and log it.
+      \Civi::log('civirules')->error('CiviRules: Failed loading triggerData for ruleID: ' . $trigger->getRuleId() . ' with error: ' . $e->getMessage());
+      return FALSE;
+    }
 
-      // Check if the conditions are valid
+    // Check if the conditions are valid
+    try {
       $isRuleValid = self::areConditionsValid($triggerData);
+    } catch (Throwable $e) {
+      // Catch *any* error when executing the conditions and log it.
+      \Civi::log('civirules')->error('CiviRules: One or more conditions is crashing for ruleID: ' . $trigger->getRuleId() . ' with error: ' . $e->getMessage());
+      return FALSE;
+    }
 
+    try {
       if ($isRuleValid) {
         // Log and execute the actions for the rule
         self::logRule($triggerData);
         self::executeActions($triggerData);
         return TRUE;
       }
-    } catch (Exception $e) {
-      $message = "Error on {file} (Line {line})\r\n\r\n{exception_message}";
-      $context = [];
-      $context['line'] = $e->getLine();
-      $context['file'] = $e->getFile();
-      $context['exception_message'] = $e->getMessage();
-      CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute rule',  $message, $triggerData, $context);
+    } catch (Throwable $e) {
+      // Catch *any* error when executing the actions and log it.
+      \Civi::log('civirules')->error('CiviRules: Failed executing actions for ruleID: ' . $trigger->getRuleId() . ' with error: ' . $e->getMessage());
+      return FALSE;
     }
+
     return FALSE;
   }
 
