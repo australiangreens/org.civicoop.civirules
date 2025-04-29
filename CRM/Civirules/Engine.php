@@ -171,9 +171,22 @@ class CRM_Civirules_Engine {
         $entity = $triggerData->getEntity();
         if ($entity) {
           try {
-            $entityData = civicrm_api3($entity, 'getsingle', ['id' => $triggerData->getEntityId()]);
-            $entityData = self::useCanonicalFieldNames($entity, $entityData);
-            $triggerData->setEntityData($entity, $entityData);
+            $entityData = civicrm_api3($entity, 'get', ['id' => $triggerData->getEntityId(), 'sequential' => 1]);
+            if ($entityData['count'] === 0) {
+              // Since this is a delayed action, it's possible the entity has
+              // been deleted by now, so don't compare against the original.
+              $triggerData->setEntityData($entity, []);
+            }
+            elseif ($entityData['count'] > 1) {
+              // Unlikely because we're getting via entity id, but just in case.
+              // Since probably will never see this, don't bother with ts().
+              throw new \CRM_Core_Exception('Expected one ' . $entity . ' but found ' . $entityData['count']);
+            }
+            else {
+              $entityData = $entityData['values'][0];
+              $entityData = self::useCanonicalFieldNames($entity, $entityData);
+              $triggerData->setEntityData($entity, $entityData);
+            }
           }
           catch (Exception $e) {
             // leave $triggerData as is
