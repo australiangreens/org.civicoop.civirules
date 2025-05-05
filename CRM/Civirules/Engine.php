@@ -296,24 +296,47 @@ class CRM_Civirules_Engine {
   public static function areConditionsValid(CRM_Civirules_TriggerData_TriggerData $triggerData): bool {
     $isValid = TRUE;
     $firstCondition = TRUE;
+    $previousConditionLink = '';
 
     $ruleConditions = $triggerData->getTrigger()->getRuleConditions();
     foreach ($ruleConditions as $ruleConditionId => $ruleCondition) {
       if ($firstCondition) {
+        // Always check the first condition
         $isValid = self::checkCondition($ruleCondition, $triggerData);
+        $conditionsValid[$ruleConditionId] = $ruleConditionId . '=' . ($isValid ? 'true' : 'false');
         $firstCondition = FALSE;
-      } elseif ($ruleCondition['condition_link'] == 'AND') {
-        if ($isValid) {
-          $isValid = self::checkCondition($ruleCondition, $triggerData);
-        }
-      } elseif ($ruleCondition['condition_link'] == 'OR') {
-        if (!$isValid) {
-          $isValid = self::checkCondition($ruleCondition, $triggerData);
-        }
-      } else {
-        $isValid = FALSE; // we should never reach this statement
+        // We always check the next condition because it might have condition_link=OR.
+        continue;
       }
-      $conditionsValid[$ruleConditionId] = "$ruleConditionId=" . ($isValid ? 'true' : 'false');
+      switch ($ruleCondition['condition_link']) {
+        case 'AND':
+          // If the previous condition evaluated to TRUE then we need this condition to be TRUE as well
+          if (!$isValid) {
+            // Previous condition was not valid so conditions are not met.
+            // Don't check any more conditions
+            break 2;
+          }
+          $isValid = self::checkCondition($ruleCondition, $triggerData);
+          $conditionsValid[$ruleConditionId] = $ruleCondition['condition_link'] . $ruleConditionId . '=' . ($isValid ? 'true' : 'false');
+          break;
+
+        case 'OR':
+          if ($isValid) {
+            // Previous condition was valid so conditions are met.
+            $conditionsValid[$ruleConditionId] = $ruleCondition['condition_link'] . $ruleConditionId . '=' . ('notchecked');
+            break;
+          }
+          $isValid = self::checkCondition($ruleCondition, $triggerData);
+          $conditionsValid[$ruleConditionId] = $ruleCondition['condition_link'] . $ruleConditionId . '=' . ($isValid ? 'true' : 'false');
+          break;
+
+        default:
+          \Civi::log('civirules')->error(
+            'CiviRules: RuleID: ' . $triggerData->getTrigger()->getRuleId() . ', ConditionID: ' . $ruleConditionId
+            . ' has invalid condition_link operator: ' . $ruleCondition['condition_link']);
+          $isValid = FALSE;
+          break 2;
+      }
     }
 
     if ($triggerData->getTrigger()->getRuleDebugEnabled()) {
@@ -321,7 +344,7 @@ class CRM_Civirules_Engine {
       if (!empty($ruleConditions)) {
         $context = [];
         $context['rule_id'] = $triggerData->getTrigger()->getRuleId();
-        $context['conditions_valid'] = implode(';', $conditionsValid ?? []);
+        $context['conditions_valid'] = ($isValid ? 'true' : 'false') . '; Detail: ' . implode(';', $conditionsValid ?? []);
         $context['contact_id'] = $triggerData->getContactId();
         $context['entity_id'] = $triggerData->getEntityId();
         CRM_Civirules_Utils_LoggerFactory::log("Rule {$context['rule_id']}: Conditions: {$context['conditions_valid']}",
