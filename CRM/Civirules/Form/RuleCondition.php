@@ -92,7 +92,12 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     if (isset($this->_submitValues['rule_condition_link_select'])) {
       $saveParams['condition_link'] = $this->_submitValues['rule_condition_link_select'];
     }
-    $ruleCondition = CRM_Civirules_BAO_RuleCondition::writeRecord($saveParams);
+
+    // Use save not writeRecord to make sure "weight" is set correctly
+    $ruleCondition = CiviRulesRuleCondition::save(FALSE)
+      ->setRecords([$saveParams])
+      ->execute()
+      ->first();
 
     $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition->condition_id, true);
     $redirectUrl = $condition->getExtraDataInputUrl($ruleCondition->id);
