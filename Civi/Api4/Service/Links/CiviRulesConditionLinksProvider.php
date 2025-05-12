@@ -13,29 +13,29 @@
 namespace Civi\Api4\Service\Links;
 
 use Civi\API\Event\RespondEvent;
-use Civi\Api4\CiviRulesAction;
+use Civi\Api4\CiviRulesCondition;
 
 /**
  * @service
  * @internal
  */
-class CiviRulesActionLinksProvider extends \Civi\Core\Service\AutoSubscriber {
+class CiviRulesConditionLinksProvider extends \Civi\Core\Service\AutoSubscriber {
   use LinksProviderTrait;
 
   public static function getSubscribedEvents(): array {
     return [
-      'civi.api.respond' => 'alterCiviRulesActionLinksResult',
+      'civi.api.respond' => 'alterCiviRulesConditionLinksResult',
     ];
   }
 
-  public static function alterCiviRulesActionLinksResult(RespondEvent $e): void {
+  public static function alterCiviRulesConditionLinksResult(RespondEvent $e): void {
     $request = $e->getApiRequest();
-    if ($request['version'] == 4 && $request->getEntityName() === 'CiviRulesRuleAction' && is_a($request, '\Civi\Api4\Action\GetLinks')) {
+    if ($request['version'] == 4 && $request->getEntityName() === 'CiviRulesRuleCondition' && is_a($request, '\Civi\Api4\Action\GetLinks')) {
       $links = (array) $e->getResponse();
       // $addLinkIndex = self::getActionIndex($links, 'add');
       $editLinkIndex = self::getActionIndex($links, 'update');
 
-      // Expand the "update" link to multiple CiviRule Actions if it exists (otherwise the WHERE clause excluded it and we should too)
+      // Expand the "update" link to multiple CiviRule Conditions if it exists (otherwise the WHERE clause excluded it and we should too)
       $where = $request->getWhere();
       $isEditLink = FALSE;
       foreach ($where as $whereValue) {
@@ -45,11 +45,11 @@ class CiviRulesActionLinksProvider extends \Civi\Core\Service\AutoSubscriber {
       }
       if ($isEditLink && isset($editLinkIndex)) {
         $ruleID = $request->getValue('rule_id');
-        $ruleActionID = $request->getValue('id');
-        $actionID = $request->getValue('action_id');
+        $ruleConditionID = $request->getValue('id');
+        $conditionID = $request->getValue('condition_id');
         if ($ruleID) {
           // Ensure links contain exactly the return values requested in the SELECT clause
-          $editLink = self::getCiviRulesActionEditLink($ruleActionID, $actionID, $request->getCheckPermissions());
+          $editLink = self::getCiviRulesConditionEditLink($ruleConditionID, $conditionID, $request->getCheckPermissions());
           $links[$editLinkIndex] = array_merge($links[$editLinkIndex], $editLink);
         }
       }
@@ -57,17 +57,17 @@ class CiviRulesActionLinksProvider extends \Civi\Core\Service\AutoSubscriber {
     }
   }
 
-  private static function getCiviRulesActionEditLink($ruleActionID, $actionID, $checkPermissions): array {
-    $action = CiviRulesAction::get($checkPermissions)
-      ->addWhere('id', '=', $actionID)
+  private static function getCiviRulesConditionEditLink($ruleConditionID, $conditionID, $checkPermissions): array {
+    $condition = CiviRulesCondition::get($checkPermissions)
+      ->addWhere('id', '=', $conditionID)
       ->execute()
       ->first();
 
-    if (!empty($action['class_name'])) {
-      $actionClass = new $action['class_name']();
-      $editLink['path'] = $actionClass->getExtraDataInputUrl($ruleActionID);
-      $editLink['icon'] = $action['icon'] ?? 'fa-plus-square-o';
-      $editLink['text'] = $action['label'];
+    if (!empty($condition['class_name'])) {
+      $conditionClass = new $condition['class_name']();
+      $editLink['path'] = $conditionClass->getExtraDataInputUrl($ruleConditionID);
+      $editLink['icon'] = $condition['icon'] ?? 'fa-plus-square-o';
+      $editLink['text'] = $condition['label'];
       return $editLink;
     }
     return [];
