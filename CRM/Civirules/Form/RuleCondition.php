@@ -160,7 +160,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     /*
      * add select list only if it is not the first condition
      */
-    $linkList = ['AND' => 'AND', 'OR' => 'OR'];
+    $linkList = CRM_Civirules_BAO_CiviRulesRuleCondition::getConditionLinkOptions();
     $this->add('select', 'rule_condition_link_select', E::ts('Select Link Operator'), $linkList);
     $foundConditions = $this->buildConditionList();
     if (!empty($foundConditions)) {
