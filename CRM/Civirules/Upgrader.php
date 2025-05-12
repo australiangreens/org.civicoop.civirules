@@ -8,14 +8,14 @@ use CRM_Civirules_ExtensionUtil as E;
 class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
 
   /**
-   * Create CiviRules tables on extension install. Do not change the
-   * sequence as there will be dependencies in the foreign keys
+   * Perform actions after install
    */
   public function postInstall() {
     $ruleTagOptionGroup = CRM_Civirules_Utils_OptionGroup::getSingleWithName('civirule_rule_tag');
     if (empty($ruleTagOptionGroup)) {
       CRM_Civirules_Utils_OptionGroup::create('civirule_rule_tag', 'Tags for CiviRules', 'Tags used to filter CiviRules on the CiviRules page');
     }
+    self::postUpgrade();
   }
 
   public function uninstall() {
@@ -30,7 +30,7 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
     // First create a backup because the managed entities are gone
     // so the actions and conditions table are first going to be emptied
     self::civirules_upgrade_to_2x_backup();
-    // Check triggers, actions and conditions
+    // Check and add/update triggers, actions and conditions
     CRM_Civirules_Utils_Upgrader::insertTriggersFromJson(E::path('sql/triggers.json'));
     CRM_Civirules_Utils_Upgrader::insertConditionsFromJson(E::path('sql/conditions.json'));
     CRM_Civirules_Utils_Upgrader::insertActionsFromJson(E::path('sql/actions.json'));
