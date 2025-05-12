@@ -7,7 +7,13 @@
   {include file="CRM/Civirules/Form/RuleBlocks/RuleBlock.tpl"}
   {include file="CRM/Civirules/Form/RuleBlocks/TriggerBlock.tpl"}
   {if $action ne 1}
-    {include file="CRM/Civirules/Form/RuleBlocks/ConditionBlock.tpl"}
+    <h3>{ts}Linked Condition(s){/ts}</h3>
+    <crm-angular-js modules="afsearchRuleConditions">
+      <div id='bootstrap-theme'>
+        <afsearch-rule-conditions options="{ldelim}rule_id: {$rule->id}{rdelim}">
+        </afsearch-rule-conditions>
+      </div>
+    </crm-angular-js>
     <h3>{ts}Linked Action(s){/ts}</h3>
     <crm-angular-js modules="afsearchRuleActions">
       <div id='bootstrap-theme'>
