@@ -21,6 +21,55 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
   public function uninstall() {
   }
 
+  /**
+   * This inserts the triggers/conditions/actions every time extension upgrades are run
+   * @return true
+   * @throws \Exception
+   */
+  public static function postUpgrade() {
+    // First create a backup because the managed entities are gone
+    // so the actions and conditions table are first going to be emptied
+    self::civirules_upgrade_to_2x_backup();
+    // Check triggers, actions and conditions
+    CRM_Civirules_Utils_Upgrader::insertTriggersFromJson(E::path('sql/triggers.json'));
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson(E::path('sql/conditions.json'));
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson(E::path('sql/actions.json'));
+    return TRUE;
+  }
+
+  /**
+   * Helper function to create a backup if the current schema version is of a 1.x version.
+   * We need this backup to restore missing actions and rules after upgrading.
+   */
+  public static function civirules_upgrade_to_2x_backup() {
+    // Check schema version
+    // Schema version 1023 is inserted by a 2x version
+    // So if the schema version is lower than 1023 we are still on a 1x version.
+    // If empty, we are installing
+    $schemaVersion = CRM_Core_DAO::singleValueQuery("SELECT schema_version FROM civicrm_extension WHERE `name` = 'CiviRules'");
+    if ($schemaVersion >= 1023 || empty($schemaVersion)) {
+      return; // No need for preparing the update.
+    }
+
+    if (!CRM_Core_DAO::checkTableExists('civirule_rule_action_backup')) {
+      // Backup the current action and condition connected to a civirule
+      CRM_Core_DAO::executeQuery("
+      CREATE TABLE `civirule_rule_action_backup`
+      SELECT `civirule_rule_action`.*, `civirule_action`.`class_name` as `action_class_name`
+      FROM `civirule_rule_action`
+      INNER JOIN `civirule_action` ON `civirule_rule_action`.`action_id` = `civirule_action`.`id`
+    ");
+    }
+    if (!CRM_Core_DAO::checkTableExists('civirule_rule_action_backup')) {
+      CRM_Core_DAO::executeQuery("
+      CREATE TABLE `civirule_rule_condition_backup`
+      SELECT `civirule_rule_condition`.*, `civirule_condition`.`class_name` as `condition_class_name`
+      FROM `civirule_rule_condition`
+      INNER JOIN `civirule_condition` ON `civirule_rule_condition`.`condition_id` = `civirule_condition`.`id`
+    ");
+    }
+  }
+
   public function upgrade_1001() {
     if (CRM_Core_DAO::checkTableExists('civirule_rule')) {
       if (CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civirule_rule', 'event_id')) {
