@@ -334,6 +334,7 @@ class CRM_Civirules_Engine {
           \Civi::log('civirules')->error(
             'CiviRules: RuleID: ' . $triggerData->getTrigger()->getRuleId() . ', ConditionID: ' . $ruleConditionId
             . ' has invalid condition_link operator: ' . $ruleCondition['condition_link']);
+          $conditionsValid[$ruleConditionId] = $ruleCondition['condition_link'] . $ruleConditionId . '=invalid condition_link operator';
           $isValid = FALSE;
           break 2;
       }
