@@ -146,7 +146,8 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
         if (!isset($field['name'])) {
           continue;
         }
-        switch( $field['type'] ) {
+        // Certain fields don't have types (eg. Contact group/tag).
+        switch($field['type'] ?? '') {
           case $dateType:
           case $timeType:
           case $dateTimeType:
