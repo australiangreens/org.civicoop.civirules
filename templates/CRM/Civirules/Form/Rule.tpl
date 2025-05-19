@@ -1,8 +1,9 @@
 {crmScope extensionKey='org.civicoop.civirules'}
+  {if $action ne 1}
   <div class="crm-submit-buttons">
     {include file="CRM/common/formButtons.tpl" location="top"}
   </div>
-
+  {/if}
   {include file="CRM/Civirules/Form/RuleBlocks/RuleBlock.tpl"}
   {include file="CRM/Civirules/Form/RuleBlocks/TriggerBlock.tpl"}
   {if $action ne 1}
