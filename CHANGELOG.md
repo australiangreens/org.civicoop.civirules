@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## Version 3.21.0 (2025-05-19)
+
+* [!300](https://lab.civicrm.org/extensions/civirules/-/merge_requests/300) Fix undefined method when trigger does not define getHelpText().
+* Move insert triggers/conditions/actions to install/upgrade because it causes performance issues when called via managed.
+* Execute conditions by weight (now we fixed the issue - see https://lab.civicrm.org/extensions/civirules/-/commit/d25d13353313e109e5989c3738dccc9b06fd3037)
+* Add 'invalid condition link' to condition logging - if there is a misconfiguration it will be logged.
+* Use pseudoconstant for Condition Link Operator so it can be used with 'edit in place' in SearchKit etc.
+* Formatting and add Conditions links provider so we can generate condition-specific links in SearchKit.
+* Improve filters for Manage Rules display.
+* Hide top buttons when adding a new rule.
+* Use getFormattedExtraDataInputUrl function for conditions to make sure we generate a correctly formatted URL.
+
 ## Version 3.20.0 (2025-05-08)
 
 * [!298](https://lab.civicrm.org/extensions/civirules/-/merge_requests/298) Refactor condition checking so we stop checking conditions when all conditions will evaluate to false and improve logging.
