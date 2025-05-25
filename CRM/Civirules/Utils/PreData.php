@@ -69,7 +69,16 @@ class CRM_Civirules_Utils_PreData {
       return;
     }
     try {
-      $data = civicrm_api3($entity, 'getsingle', array('id' => $id));
+      $api4Entities = ['AfformSubmission'];
+      if (in_array($entity, $api4Entities)) {
+        $data = civicrm_api4($entity, 'get', [
+          'where' => [['id', '=', $id]],
+          'checkPermissions' => FALSE,
+        ])->first();
+      }
+      else {
+        $data = civicrm_api3($entity, 'getsingle', ['id' => $id]);
+      }
     } catch (Exception $e) {
       return;
     }

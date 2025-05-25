@@ -195,7 +195,12 @@ abstract class CRM_CivirulesConditions_Generic_Status extends CRM_Civirules_Cond
       $statusLabel = $statusList[$this->conditionParams['status_id']];
     }
 
-    return "{$this->getEntity()} Status {$operator} {$statusLabel}";
+    $entityName = $this->getEntity();
+    if (method_exists($this, 'getEntityAlias')) {
+      $entityName = $this->getEntityAlias();
+    }
+
+    return "{$entityName} Status {$operator} {$statusLabel}";
   }
 
 }

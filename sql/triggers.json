@@ -107,5 +107,6 @@
   {"name": "relationship_deactivated", "label": "Relationship end date reached", "object_name": "Relationship", "op": "edit", "class_name": "CRM_CivirulesCronTrigger_RelationshipEndDate", "cron": "1"},
   {"name": "next_scheduled_contribution", "label": "Daily trigger on Next Scheduled (Recurring) Contribution", "object_name": null, "op": null, "class_name": "CRM_CivirulesCronTrigger_NextContributionDate", "cron": "1"},
   {"name":"membership_activity","label":"Membership Activity","object_name":"Activity","op":"create|edit","class_name":"CRM_CivirulesPostTrigger_MembershipActivity","cron":"0"},
-  {"name":"nocaseactivitysince","label":"No Case Activity Since","object_name":null,"op":null,"class_name":"CRM_CivirulesCronTrigger_NoCaseActivitySince","cron":"1"}
+  {"name":"nocaseactivitysince","label":"No Case Activity Since","object_name":null,"op":null,"class_name":"CRM_CivirulesCronTrigger_NoCaseActivitySince","cron":"1"},
+  {"name":"afformsubmission_contact","label":"FormBuilder submission","object_name":"AfformSubmission","op":"create|edit","class_name":"CRM_CivirulesPostTrigger_AfformSubmission","cron":"0"}
 ]
