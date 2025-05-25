@@ -441,7 +441,11 @@ function civirules_civicrm_scanClasses(&$classes) {
 function civirules_civicrm_buildForm($formName, &$form) {
   switch ($formName) {
     case 'CRM_Civirules_Form_Rule':
-      Civi::service('angularjs.loader')->addModules(['afsearchRuleActions', 'afsearchRuleTriggerHistory']);
+      Civi::service('angularjs.loader')->addModules([
+        'afsearchRuleConditions',
+        'afsearchRuleActions',
+        'afsearchRuleTriggerHistory'
+      ]);
       break;
   }
 }
