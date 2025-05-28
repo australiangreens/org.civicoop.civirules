@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.22.0 (2025-05-28)
+
+* Changed action Add Case role to add the triggering contact as a role on the case.
+
 ## Version 3.21.0 (2025-05-19)
 
 * [!300](https://lab.civicrm.org/extensions/civirules/-/merge_requests/300) Fix undefined method when trigger does not define getHelpText().
