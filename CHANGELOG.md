@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.23.0 (development)
+
+* Added 'Case is created' trigger
+
 ## Version 3.22.0 (2025-05-28)
 
 * Changed action Add Case role to add the triggering contact as a role on the case.
