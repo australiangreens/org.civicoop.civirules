@@ -94,12 +94,7 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
    * @return array
    */
   public function getEntityTags() {
-    if (CRM_Civirules_Utils::isApi4Active()) {
-      return $this->getApi4Tags();
-    }
-    else {
-      return $this->getApi3Tags();
-    }
+    return $this->getApi4Tags();
   }
 
   /**
@@ -118,29 +113,7 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
         }
       }
     }
-    catch (API_Exception $ex) {
-    }
-    return $tags;
-  }
-
-  /**
-   * Method to get all contact tags with API3
-   */
-  private function getApi3Tags() {
-    $tags = [];
-    try {
-      $apiTags = civicrm_api3('Tag', 'get', [
-        'return' => ["name"],
-        'used_for' => ['LIKE' => "%" . $this->entityTable ."%"],
-        'options' => ['limit' => 0],
-      ]);
-      foreach ($apiTags['values'] as $apiTagId => $apiTag) {
-        if (!isset($tags[$apiTagId])) {
-          $tags[$apiTagId] = $apiTag['name'];
-        }
-      }
-    }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
     }
     return $tags;
   }

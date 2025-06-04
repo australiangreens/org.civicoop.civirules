@@ -19,59 +19,11 @@ class CRM_CivirulesActions_Tag_EntityTag {
         }
       }
     }
-    catch (API_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
       Civi::log()->error(E::ts("Error from API4 Tag get in ") . __METHOD__
         . E::ts("with message: ") . $ex->getMessage());
     }
     return $tags;
-  }
-
-  /**
-   * Method to get all contact tags with API3
-   */
-  public static function getApi3Tags($table) {
-    $tags = [];
-    try {
-      $apiTags = civicrm_api3('Tag', 'get', [
-        'return' => ["name"],
-        'used_for' => ['LIKE' => "%" . $table ."%"],
-        'options' => ['limit' => 0],
-      ]);
-      foreach ($apiTags['values'] as $apiTagId => $apiTag) {
-        if (!isset($tags[$apiTagId])) {
-          $tags[$apiTagId] = $apiTag['name'];
-        }
-      }
-    }
-    catch (CRM_Core_Exception $ex) {
-      Civi::log()->error(E::ts("Error from API3 Tag get in ") . __METHOD__
-        . E::ts("with message: ") . $ex->getMessage());
-    }
-    return $tags;
-  }
-
-  /**
-   * Method to add entity tag with API3
-   *
-   * @param $entityTable
-   * @param $entityId
-   * @param $tagId
-   */
-  public static function createApi3EntityTag($entityTable, $entityId, $tagId) {
-    if (empty($entityTable) || empty($entityId) || empty($tagId)) {
-      Civi::log()->error(E::ts("Empty parameter entityTable, entityId or tagId in ") . __METHOD__);
-      return;
-    }
-    try {
-      civicrm_api3('EntityTag', 'create', [
-        'entity_table' => $entityTable,
-        'entity_id' => $entityId,
-        'tag_id' => $tagId,
-      ]);
-    }
-    catch (CRM_Core_Exception $ex) {
-      Civi::log()->error(E::ts("Error from API3 EntityTag create in ") . __METHOD__ . E::ts(" with message: ") . $ex->getMessage());
-    }
   }
 
   /**
@@ -92,7 +44,7 @@ class CRM_CivirulesActions_Tag_EntityTag {
         ->addValue('tag_id', $tagId)
         ->execute();
     }
-    catch (API_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
       Civi::log()->error(E::ts("Error from API4 EntityTag create in ") . __METHOD__ . E::ts(" with message: ") . $ex->getMessage());
     }
   }
@@ -115,31 +67,8 @@ class CRM_CivirulesActions_Tag_EntityTag {
         ->addWhere('tag_id', '=', $tagId)
         ->execute();
     }
-    catch (API_Exception $ex) {
-    }
-  }
-
-  /**
-   * Method to remove entity tag with API3
-   *
-   * @param $entityTable
-   * @param $entityId
-   * @param $tagId
-   */
-  public static function deleteApi3EntityTag($entityTable, $entityId, $tagId) {
-    if (empty($entityTable) || empty($entityId) || empty($tagId)) {
-      Civi::log()->error(E::ts("Empty parameter entityTable, entityId or tagId in ") . __METHOD__);
-      return;
-    }
-    try {
-      civicrm_api3('EntityTag', 'delete', [
-        'entity_table' => $entityTable,
-        'entity_id' => $entityId,
-        'tag_id' => $tagId,
-      ]);
-    }
     catch (CRM_Core_Exception $ex) {
-      Civi::log()->error(E::ts("Error from API3 EntityTag delete in ") . __METHOD__ . E::ts(" with message: ") . $ex->getMessage());
+      Civi::log()->error(E::ts("Error from API4 EntityTag delete in ") . __METHOD__ . E::ts(" with message: ") . $ex->getMessage());
     }
   }
 

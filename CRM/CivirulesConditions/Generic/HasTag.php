@@ -31,28 +31,7 @@ class CRM_CivirulesConditions_Generic_HasTag {
         ->addWhere('entity_id', '=', $entityId)
         ->execute()->column('tag_id');
     }
-    catch (API_Exception $ex) {
-    }
-    return $tags;
-  }
-
-  /**
-   * Method to get tags with API3
-   *
-   * @param $entityId
-   * @return array
-   */
-  public function getApi3TagsWithEntityId($entityId) {
-    $tags = [];
-    try {
-      $tags = civicrm_api3('Tag', 'get', [
-        'options' => ['limit' => 0],
-        'entity_table' => $this->entityTable,
-        'entity_id' => $entityId,
-        'return' => 'id',
-      ])['values'];
-    }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
     }
     return $tags;
   }
@@ -64,12 +43,7 @@ class CRM_CivirulesConditions_Generic_HasTag {
    */
   public function entityHasNotTag(int $entityId, array $tagIds): bool {
     $isValid = TRUE;
-    if (CRM_Civirules_Utils::isApi4Active()) {
-      $tags = $this->getApi4TagsWithEntityId($entityId);
-    }
-    else {
-      $tags = $this->getApi3TagsWithEntityId($entityId);
-    }
+    $tags = $this->getApi4TagsWithEntityId($entityId);
     foreach ($tagIds as $tagId) {
       if (in_array($tagId, $tags)) {
         $isValid = FALSE;
@@ -85,12 +59,7 @@ class CRM_CivirulesConditions_Generic_HasTag {
    */
   public function entityHasAllTags(int $entityId, array $tagIds):bool {
     $isValid = 0;
-    if (CRM_Civirules_Utils::isApi4Active()) {
-      $tags = $this->getApi4TagsWithEntityId($entityId);
-    }
-    else {
-      $tags = $this->getApi3TagsWithEntityId($entityId);
-    }
+    $tags = $this->getApi4TagsWithEntityId($entityId);
     foreach($tagIds as $tagId) {
       if (in_array($tagId, $tags)) {
         $isValid++;
@@ -109,12 +78,7 @@ class CRM_CivirulesConditions_Generic_HasTag {
    */
   public function entityHasOneOfTags(int $entityId, array $tagIds): bool {
     $isValid = FALSE;
-    if (CRM_Civirules_Utils::isApi4Active()) {
-      $tags = $this->getApi4TagsWithEntityId($entityId);
-    }
-    else {
-      $tags = $this->getApi3TagsWithEntityId($entityId);
-    }
+    $tags = $this->getApi4TagsWithEntityId($entityId);
     foreach($tagIds as $tagId) {
       if (in_array($tagId, $tags)) {
         $isValid = TRUE;
@@ -143,12 +107,7 @@ class CRM_CivirulesConditions_Generic_HasTag {
    * @return array
    */
   public function getEntityTags() {
-    if (CRM_Civirules_Utils::isApi4Active()) {
-      return $this->getApi4Tags();
-    }
-    else {
-      return $this->getApi3Tags();
-    }
+    return $this->getApi4Tags();
   }
 
   /**
@@ -167,29 +126,7 @@ class CRM_CivirulesConditions_Generic_HasTag {
         }
       }
     }
-    catch (API_Exception $ex) {
-    }
-    return $tags;
-  }
-
-  /**
-   * Method to get all contact tags with API3
-   */
-  private function getApi3Tags() {
-    $tags = [];
-    try {
-      $apiTags = civicrm_api3('Tag', 'get', [
-        'return' => ["name"],
-        'used_for' => ['LIKE' => "%" . $this->entityTable ."%"],
-        'options' => ['limit' => 0],
-      ]);
-      foreach ($apiTags['values'] as $apiTagId => $apiTag) {
-        if (!isset($tags[$apiTagId])) {
-          $tags[$apiTagId] = $apiTag['name'];
-        }
-      }
-    }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
     }
     return $tags;
   }
