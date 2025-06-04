@@ -4,6 +4,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
 
+use Civi\Api4\Tag;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged extends CRM_CivirulesTrigger_Form_Form {
@@ -92,28 +93,19 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
    * Method to get the tags for the entity
    *
    * @return array
+   * @throws \CRM_Core_Exception
+   * @throws \Civi\API\Exception\UnauthorizedException
    */
   public function getEntityTags() {
-    return $this->getApi4Tags();
-  }
-
-  /**
-   * Method to get all contact tags with API4
-   */
-  private function getApi4Tags() {
     $tags = [];
-    try {
-      $apiTags = \Civi\Api4\Tag::get()
-        ->addSelect('name')
-        ->addWhere('used_for', 'LIKE', '%' . $this->entityTable . '%')
-        ->execute();
-      foreach ($apiTags as $apiTag) {
-        if (!isset($tags[$apiTag['id']])) {
-          $tags[$apiTag['id']] = $apiTag['name'];
-        }
+    $apiTags = Tag::get(FALSE)
+      ->addSelect('name')
+      ->addWhere('used_for', 'LIKE', '%' . $this->entityTable . '%')
+      ->execute();
+    foreach ($apiTags as $apiTag) {
+      if (!isset($tags[$apiTag['id']])) {
+        $tags[$apiTag['id']] = $apiTag['name'];
       }
-    }
-    catch (CRM_Core_Exception $ex) {
     }
     return $tags;
   }

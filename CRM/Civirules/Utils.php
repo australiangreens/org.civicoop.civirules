@@ -616,6 +616,7 @@ class CRM_Civirules_Utils {
    * Method to check if Api4 is active in the current installation
    *
    * @return bool
+   * @deprecated
    */
   public static function isApi4Active() {
     if (function_exists('civicrm_api4')) {
