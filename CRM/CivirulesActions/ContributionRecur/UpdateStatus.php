@@ -119,7 +119,7 @@ class CRM_CivirulesActions_ContributionRecur_UpdateStatus extends CRM_CivirulesA
 
     $contributionRecurData = $triggerData->getEntityData('ContributionRecur');
     if (empty($contributionRecurData['id'])) {
-      $this->logAction('No Recur ID found to update status of ContributionRecur');
+      $this->logAction('No Recur ID found to update status of ContributionRecur', $triggerData);
     }
     else {
       // execute the action

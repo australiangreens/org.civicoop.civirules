@@ -21,7 +21,7 @@ class CRM_Civirules_Utils_LoggerFactory {
     return self::$logger;
   }
 
-  public static function log($message, $context=array(), $level=\Psr\Log\LogLevel::INFO) {
+  public static function log($message, $context=[], $level=\Psr\Log\LogLevel::INFO) {
     $logger = CRM_Civirules_Utils_LoggerFactory::getLogger();
     if (empty($logger)) {
       return;
@@ -29,17 +29,25 @@ class CRM_Civirules_Utils_LoggerFactory {
     $logger->log($level, $message, $context);
   }
 
-  public static function logError($reason, $original_error, CRM_Civirules_TriggerData_TriggerData $triggerData, $context=array()) {
+  /**
+   * @param string $reason
+   * @param string $original_error
+   * @param \CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param array $context
+   *
+   * @return void
+   */
+  public static function logError(string $reason, string $original_error, CRM_Civirules_TriggerData_TriggerData $triggerData, $context=[]) {
     $logger = CRM_Civirules_Utils_LoggerFactory::getLogger();
     if (empty($logger)) {
       return;
     }
-    $error = "Rule: '{rule_title}' with id {rule_id} failed for contact {contact_id} because of {reason}";
     $context['rule_id'] = $triggerData->getTrigger()->getRuleId();
     $context['rule_title'] = $triggerData->getTrigger()->getRuleTitle();
     $context['original_error'] = $original_error;
     $context['contact_id'] = $triggerData->getContactId();
     $context['reason'] = $reason;
+    $error = "Rule: '{$context['rule_title']}' with id {$context['rule_id']} failed for contact {$context['contact_id']} because: {$context['reason']}";
     $logger->error($error, $context);
   }
 

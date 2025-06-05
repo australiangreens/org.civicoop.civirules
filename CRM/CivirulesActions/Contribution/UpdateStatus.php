@@ -105,7 +105,7 @@ class CRM_CivirulesActions_Contribution_UpdateStatus extends CRM_CivirulesAction
     $data = $triggerData->getEntityData('Contribution');
 
     if (empty($data['id'])) {
-      $this->logAction('Could not find a contribution to update');
+      $this->logAction('Could not find a contribution to update', $triggerData);
     }
     else {
       $this->executeApiAction($entity, $action, $params);
