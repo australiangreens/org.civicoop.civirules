@@ -113,7 +113,7 @@ class CRM_Civirules_Engine {
         $actionEngine->execute();
       }
       catch (Throwable $e) {
-        CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute action',  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
+        CRM_Civirules_Utils_LoggerFactory::logError(E::ts('Failed to execute action'),  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
       }
     }
   }
@@ -198,7 +198,7 @@ class CRM_Civirules_Engine {
         $actionEngine->execute();
       }
     } catch (Throwable $e) {
-      CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute delayed action',  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
+      CRM_Civirules_Utils_LoggerFactory::logError(E::ts('Failed to execute delayed action'),  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
     }
     return TRUE;
   }

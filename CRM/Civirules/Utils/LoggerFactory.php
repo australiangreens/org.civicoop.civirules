@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civirules_ExtensionUtil as E;
+
 class CRM_Civirules_Utils_LoggerFactory {
 
   private static $logger = null;
@@ -47,7 +49,15 @@ class CRM_Civirules_Utils_LoggerFactory {
     $context['original_error'] = $original_error;
     $context['contact_id'] = $triggerData->getContactId();
     $context['reason'] = $reason;
-    $error = "Rule: '{$context['rule_title']}' with id {$context['rule_id']} failed for contact {$context['contact_id']} because: {$context['reason']}";
+    $error = E::ts(
+      "Rule: '%1' with id %2 failed for contact %3 because: %4",
+      [
+        1 => $context['rule_title'],
+        2 => $context['rule_id'],
+        3 => $context['contact_id'],
+        4 => $context['reason'],
+      ]
+    );
     $logger->error($error, $context);
   }
 
