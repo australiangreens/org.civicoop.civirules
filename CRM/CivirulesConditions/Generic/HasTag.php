@@ -1,4 +1,8 @@
 <?php
+
+use Civi\Api4\EntityTag;
+use Civi\Api4\Tag;
+
 /**
  * Class for CiviRules generic HasTag condition
  *
@@ -22,18 +26,12 @@ class CRM_CivirulesConditions_Generic_HasTag {
    * @return array
    */
   public function getApi4TagsWithEntityId($entityId) {
-    $tags = [];
-    try {
-      $tags = \Civi\Api4\EntityTag::get()
-        ->setCheckPermissions(FALSE)
-        ->addSelect('tag_id')
-        ->addWhere('entity_table', '=', $this->entityTable)
-        ->addWhere('entity_id', '=', $entityId)
-        ->execute()->column('tag_id');
-    }
-    catch (CRM_Core_Exception $ex) {
-    }
-    return $tags;
+    return EntityTag::get(FALSE)
+      ->setCheckPermissions(FALSE)
+      ->addSelect('tag_id')
+      ->addWhere('entity_table', '=', $this->entityTable)
+      ->addWhere('entity_id', '=', $entityId)
+      ->execute()->column('tag_id');
   }
 
   /**
@@ -115,18 +113,14 @@ class CRM_CivirulesConditions_Generic_HasTag {
    */
   private function getApi4Tags() {
     $tags = [];
-    try {
-      $apiTags = \Civi\Api4\Tag::get()
-        ->addSelect('name')
-        ->addWhere('used_for', 'LIKE', '%' . $this->entityTable . '%')
-        ->execute();
-      foreach ($apiTags as $apiTag) {
-        if (!isset($tags[$apiTag['id']])) {
-          $tags[$apiTag['id']] = $apiTag['name'];
-        }
+    $apiTags = Tag::get(FALSE)
+      ->addSelect('name')
+      ->addWhere('used_for', 'LIKE', '%' . $this->entityTable . '%')
+      ->execute();
+    foreach ($apiTags as $apiTag) {
+      if (!isset($tags[$apiTag['id']])) {
+        $tags[$apiTag['id']] = $apiTag['name'];
       }
-    }
-    catch (CRM_Core_Exception $ex) {
     }
     return $tags;
   }

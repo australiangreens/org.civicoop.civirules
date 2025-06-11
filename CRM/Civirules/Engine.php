@@ -50,7 +50,7 @@ class CRM_Civirules_Engine {
       $isRuleValid = self::areConditionsValid($triggerData);
     } catch (Throwable $e) {
       // Catch *any* error when executing the conditions and log it.
-      \Civi::log('civirules')->error('CiviRules: One or more conditions is crashing for ruleID: ' . $trigger->getRuleId() . ' with error: ' . $e->getMessage());
+      \Civi::log('civirules')->error('CiviRules: One or more conditions is failing for ruleID: ' . $trigger->getRuleId() . ' with error: ' . $e->getMessage());
       return FALSE;
     }
 
@@ -113,7 +113,7 @@ class CRM_Civirules_Engine {
         $actionEngine->execute();
       }
       catch (Throwable $e) {
-        CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute action for Rule ID: ' . $triggerData->getTrigger()->getRuleId(),  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
+        CRM_Civirules_Utils_LoggerFactory::logError(E::ts('Failed to execute action'),  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
       }
     }
   }
@@ -198,7 +198,7 @@ class CRM_Civirules_Engine {
         $actionEngine->execute();
       }
     } catch (Throwable $e) {
-      CRM_Civirules_Utils_LoggerFactory::logError('Failed to execute delayed action for Rule ID: ' . $triggerData->getTrigger()->getRuleId(),  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
+      CRM_Civirules_Utils_LoggerFactory::logError(E::ts('Failed to execute delayed action'),  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
     }
     return TRUE;
   }
