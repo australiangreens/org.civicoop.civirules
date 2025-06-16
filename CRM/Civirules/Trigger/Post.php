@@ -6,6 +6,8 @@
  * @license AGPL-3.0
  */
 
+use CRM_Civirules_ExtensionUtil as E;
+
 class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
 
   /**
@@ -218,6 +220,65 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
    */
   public function alterPreData($data, $op, $objectName, $objectId, $params, $eventID) {
     return $data;
+  }
+
+  /**
+   * Get various types of help text for the trigger:
+   *   - triggerDescription: When choosing from a list of triggers, explains what the trigger does.
+   *   - triggerDescriptionWithParams: When a trigger has been configured for a rule provides a
+   *       user friendly description of the trigger and params (see $this->getTriggerDescription())
+   *   - triggerParamsHelp (default): If the trigger has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context = 'triggerParamsHelp'): string {
+    switch ($context) {
+      case 'triggerDescription':
+        return E::ts('Trigger on Activities');
+
+      case 'triggerDescriptionWithParams':
+        return $this->getTriggerDescription();
+
+      case 'triggerParamsHelp':
+        if (get_class($this) === 'CRM_CivirulesPostTrigger_Activity') {
+          switch ($this->getOp()) {
+            case 'create':
+            case 'edit':
+              return E::ts('Select a record type to run the trigger only once.')
+                . ' ' . E::ts('When all contacts is selected then the trigger will be fired for every contact. Meaning that trigger might run more than once.')
+                . '<br/>'
+                . E::ts('The selected record type also defines which contact is available in the conditions and actions.');
+
+            case 'delete':
+            default:
+              return '';
+          }
+        }
+      default:
+        return parent::getHelpText($context);
+    }
+  }
+
+  /**
+   * Returns a description of this trigger
+   *
+   * @return string
+   */
+  public function getTriggerDescription(): string {
+    $text = parent::getTriggerDescription();
+    $options = CRM_CivirulesTrigger_Form_Form::getTriggerOptions();
+    $triggerOps = explode(',', $this->triggerParams['trigger_op'] ?? '');
+    foreach ($options as $option) {
+      if (in_array($option['id'], $triggerOps)) {
+        $triggerOptions[] = $option['text'];
+      }
+    }
+    if (empty($text)) {
+      $text = E::ts('Trigger');
+    }
+    $text .= ' on ' . implode(', ', $triggerOptions ?? []);
+    return $text;
   }
 
 }
