@@ -290,6 +290,16 @@ abstract class CRM_Civirules_Trigger {
   }
 
   /**
+   * @param string $url
+   * @param int $ruleID
+   *
+   * @return string
+   */
+  public function getFormattedExtraDataInputUrl(string $url, int $ruleID): string {
+    return CRM_Utils_System::url($url, 'rule_id=' . $ruleID, FALSE, NULL, FALSE, FALSE, TRUE);
+  }
+
+  /**
    * Returns a calculated description of this trigger
    * If the trigger has parameters this this function should provide a user-friendly description of those parameters
    * See also: getHelpText()
