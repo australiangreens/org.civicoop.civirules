@@ -308,7 +308,7 @@ abstract class CRM_Civirules_Trigger {
    *
    * @return string
    */
-  public function getTriggerDescription() {
+  public function getTriggerDescription(): string {
     // If you implement getHelpText('triggerDescriptionWithParams') then you don't need to implement this function!
     return '';
   }
