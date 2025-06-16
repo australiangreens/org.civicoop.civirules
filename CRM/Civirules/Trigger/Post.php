@@ -235,26 +235,20 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
   public function getHelpText(string $context = 'triggerParamsHelp'): string {
     switch ($context) {
       case 'triggerDescription':
-        return E::ts('Trigger on Activities');
+        return E::ts('Trigger on %1', [1 => $this->getObjectName()]);
 
       case 'triggerDescriptionWithParams':
         return $this->getTriggerDescription();
 
       case 'triggerParamsHelp':
-        if (get_class($this) === 'CRM_CivirulesPostTrigger_Activity') {
           switch ($this->getOp()) {
-            case 'create':
-            case 'edit':
-              return E::ts('Select a record type to run the trigger only once.')
-                . ' ' . E::ts('When all contacts is selected then the trigger will be fired for every contact. Meaning that trigger might run more than once.')
-                . '<br/>'
-                . E::ts('The selected record type also defines which contact is available in the conditions and actions.');
+            case 'create|edit':
+              return E::ts('Select if you want to trigger on Create and/or Edit');
 
             case 'delete':
             default:
               return '';
           }
-        }
       default:
         return parent::getHelpText($context);
     }
