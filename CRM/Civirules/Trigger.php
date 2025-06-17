@@ -177,6 +177,7 @@ abstract class CRM_Civirules_Trigger {
     if (!isset($this->ruleConditions) && !empty($this->ruleId)) {
       $this->ruleConditions = \Civi\Api4\CiviRulesRuleCondition::get(FALSE)
         ->addWhere('rule_id', '=', $this->ruleId)
+        ->addWhere('is_active', '=', TRUE)
         ->addOrderBy('weight', 'ASC')
         ->addOrderBy('id', 'ASC')
         ->execute()

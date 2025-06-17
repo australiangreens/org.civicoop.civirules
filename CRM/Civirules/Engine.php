@@ -80,7 +80,7 @@ class CRM_Civirules_Engine {
   protected static function executeActions(CRM_Civirules_TriggerData_TriggerData $triggerData): void {
     $ruleActions = CiviRulesRuleAction::get(FALSE)
       ->addWhere('rule_id', '=', $triggerData->getTrigger()->getRuleId())
-      ->addWhere('is_active', '=', 1)
+      ->addWhere('is_active', '=', TRUE)
       ->addOrderBy('weight', 'ASC')
       ->addOrderBy('id', 'ASC')
       ->execute();
@@ -296,7 +296,6 @@ class CRM_Civirules_Engine {
   public static function areConditionsValid(CRM_Civirules_TriggerData_TriggerData $triggerData): bool {
     $isValid = TRUE;
     $firstCondition = TRUE;
-    $previousConditionLink = '';
 
     $ruleConditions = $triggerData->getTrigger()->getRuleConditions();
     foreach ($ruleConditions as $ruleConditionId => $ruleCondition) {
