@@ -699,4 +699,10 @@
     <access_arguments>access CiviCRM</access_arguments>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/civirule/form/action/set_field_value</path>
+    <page_callback>CRM_CivirulesActions_Generic_Form_SetField</page_callback>
+    <title>Set Field Value</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
 </menu>
