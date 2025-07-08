@@ -40,12 +40,17 @@ class CRM_CivirulesConditions_Contribution_Campaign extends CRM_Civirules_Condit
         if (in_array($contribution['campaign_id'], $this->conditionParams['campaign_id'])) {
           $isConditionValid = TRUE;
         }
-      break;
+        break;
       case 1:
         if (!in_array($contribution['campaign_id'], $this->conditionParams['campaign_id'])) {
           $isConditionValid = TRUE;
         }
-      break;
+        break;
+      case 2:
+        if (empty($contribution['campaign_id'])) {
+          $isConditionValid = TRUE;
+        }
+        break;
     }
     return $isConditionValid;
   }
@@ -119,6 +124,9 @@ class CRM_CivirulesConditions_Contribution_Campaign extends CRM_Civirules_Condit
     }
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Is NOT in of these campaigns: ';
+    }
+    if ($this->conditionParams['operator'] == 2) {
+      $friendlyText = 'Is not in any campaigns at all.';
     }
     $campaignText = array();
     foreach ($this->conditionParams['campaign_id'] as $campaignId) {
