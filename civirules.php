@@ -222,6 +222,10 @@ function civirules_trigger_postinsert($event) {
 function civirules_trigger_preupdate(\Civi\Core\DAO\Event\PreUpdate $event) {
   try {
     $objectName = CRM_Civirules_Utils::getObjectNameFromObject($event->object);
+    if (empty($objectName)) {
+      // If the object name is empty, we cannot proceed with the pre-update.
+      return;
+    }
     $objectId = $event->object->id;
     $eventID = $event->eventID ?? 1;
     $params = [];
