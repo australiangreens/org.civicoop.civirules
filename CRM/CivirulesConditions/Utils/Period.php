@@ -362,4 +362,34 @@ class CRM_CivirulesConditions_Utils_Period {
     return false;
   }
 
+ /**
+   * Returns the friendly conditional parameters
+   *
+   * @param string $operator
+   * @return string
+   */
+  public static function generateFriendlyOperator($operator) {
+    $friendlyOperator = '';
+    switch ($operator) {
+      case 1:
+        $friendlyOperator = 'is not equal to';
+        break;
+      case 2:
+        $friendlyOperator = 'more than';
+        break;
+      case 3:
+        $friendlyOperator = 'more than or equal to';
+        break;
+      case 4:
+        $friendlyOperator = 'less than';
+        break;
+      case 5:
+        $friendlyOperator = 'less than or equal to';
+        break;
+      default:
+        $friendlyOperator = 'is equal to';
+        break;
+    }
+    return $friendlyOperator;
+  }
 }
