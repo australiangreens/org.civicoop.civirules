@@ -63,7 +63,7 @@ class CRM_CivirulesActions_ContributionRecur_CancelRecurring extends CRM_Civirul
    * @return bool|string
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/contributionrecur_cancelrecurring', $ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/contributionrecur_cancel_recurring', $ruleActionId);
   }
 
   /**

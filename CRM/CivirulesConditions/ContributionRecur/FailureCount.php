@@ -54,7 +54,7 @@ class CRM_CivirulesConditions_ContributionRecur_FailureCount extends CRM_Civirul
    * @abstract
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/recurfailurecount/', 'rule_condition_id='.$ruleConditionId);
+    return CRM_Utils_System::url('civicrm/civirule/form/condition/contribution_recur_failurecount/', 'rule_condition_id='.$ruleConditionId);
   }
 
   /**
