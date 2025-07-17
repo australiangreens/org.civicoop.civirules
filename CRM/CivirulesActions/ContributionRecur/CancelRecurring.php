@@ -9,8 +9,6 @@ class CRM_CivirulesActions_ContributionRecur_CancelRecurring extends CRM_Civirul
   /**
    * Method to get the api entity to process in this CiviRule action
    *
-   * @access protected
-   * @abstract
    */
   protected function getApiEntity() {
     return 'ContributionRecur';
@@ -19,8 +17,6 @@ class CRM_CivirulesActions_ContributionRecur_CancelRecurring extends CRM_Civirul
   /**
    * Method to get the api action to process in this CiviRule action
    *
-   * @access protected
-   * @abstract
    */
   protected function getApiAction() {
     return 'Update';
@@ -86,7 +82,7 @@ class CRM_CivirulesActions_ContributionRecur_CancelRecurring extends CRM_Civirul
       ->addWhere('option_group_id:name', '=', 'contribution_recur_status')
       ->execute()
       ->first()['label'];
-    $return .= ts("Cancel Recurring Contribution (Status: %1, Reason: %2)", [1 => $status, 2 => $params['cancel_reason']]);
+    $return .= E::ts("Cancel Recurring Contribution (Status: %1, Reason: %2)", [1 => $status, 2 => $params['cancel_reason']]);
     return $return;
   }
 

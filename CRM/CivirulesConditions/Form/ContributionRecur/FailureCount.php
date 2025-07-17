@@ -14,22 +14,22 @@ class CRM_CivirulesConditions_Form_ContributionRecur_FailureCount extends CRM_Ci
    * @access public
    */
   public function buildQuickForm() {
-    $operatorList[0] = 'equals (=)';
-    $operatorList[1] = 'is not equal (!=)';
-    $operatorList[2] = 'is more than (>)';
-    $operatorList[3] = 'is more than or equal (>=)';
-    $operatorList[4] = 'is less than (<)';
-    $operatorList[5] = 'is less than or equal (<=)';
+    $operatorList[0] = E::ts('equals (=)');
+    $operatorList[1] = E::ts('is not equal (!=)');
+    $operatorList[2] = E::ts('is more than (>)');
+    $operatorList[3] = E::ts('is more than or equal (>=)');
+    $operatorList[4] = E::ts('is less than (<)');
+    $operatorList[5] = E::ts('is less than or equal (<=)');
 
     $this->add('hidden', 'rule_condition_id');
-    $this->add('select', 'operator', ts('Operator'), $operatorList, true);
-    $this->add('text', 'failure_count', ts('Number of Failed Attempts'), array(), true);
+    $this->add('select', 'operator', E::ts('Operator'), $operatorList, true);
+    $this->add('text', 'failure_count', E::ts('Number of Failed Attempts'), array(), true);
     $this->addRule('failure_count','Number of Recurring Contribution Collections must be a whole number','numeric');
     $this->addRule('failure_count','Number of Recurring Contribution Collections must be a whole number','nopunctuation');
 
     $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+      array('type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,),
+      array('type' => 'cancel', 'name' => E::ts('Cancel'))));
   }
 
   /**
