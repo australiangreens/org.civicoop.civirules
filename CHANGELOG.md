@@ -1,8 +1,17 @@
 # CHANGELOG
 
-## Version 3.23.0 (development)
+## Version 3.23.0 (2025-07-07)
 
-* Added 'Case is created' trigger
+* Added 'Case is created' trigger.
+* [!304](https://lab.civicrm.org/extensions/civirules/-/merge_requests/304) Add action: Set Field Value.
+* Update managedEntities/forms.
+* Only check active conditions.
+* Add a generic Trigger parameters form - allows you to configure the 'Trigger on create/edit|update' when available.
+* Add getFormattedExtraInputURL() function for triggers.
+* [!303](https://lab.civicrm.org/extensions/civirules/-/merge_requests/303) Remove error handling (try/catch) in Tag actions/conditions so we see more useful generic error including rule ID etc.
+  * Rework logError,logAction,logCondition messages so they are easier to read.
+  * Allow for log messages to be translated.
+* Drop API3 support for tags (API4 has been supported for a long time now!).
 
 ## Version 3.22.0 (2025-05-28)
 
