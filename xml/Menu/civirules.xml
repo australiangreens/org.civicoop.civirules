@@ -217,6 +217,12 @@
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/condition/contribution_recur_failurecount</path>
+    <page_callback>CRM_CivirulesConditions_Form_ContributionRecur_FailureCount</page_callback>
+    <title>Recurring Contribution Failure Count</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/condition/contribution_recur_xth_contribution</path>
     <page_callback>CRM_CivirulesConditions_Form_ContributionRecur_xthContribution</page_callback>
     <title>xth recurring contribution</title>
@@ -684,6 +690,12 @@
     <path>civicrm/civirule/form/action/contributionrecur_update_status</path>
     <page_callback>CRM_CivirulesActions_ContributionRecur_Form_UpdateStatus</page_callback>
     <title>Update Recurring Contribution status</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/action/contributionrecur_cancel_recurring</path>
+    <page_callback>CRM_CivirulesActions_ContributionRecur_Form_CancelRecurring</page_callback>
+    <title>Cancel Recurring Contribution</title>
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
   <item>
