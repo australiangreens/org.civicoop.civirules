@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 3.24.0 (2025-07-23)
+
+* Fix [#265](https://lab.civicrm.org/extensions/civirules/-/issues/265) Navigation menu items out of place on install.
+* [!306](https://lab.civicrm.org/extensions/civirules/-/merge_requests/306) Add Contribution Recurring Cancel Action and FailureCount conditions.
+* [!305](https://lab.civicrm.org/extensions/civirules/-/merge_requests/305) Fix crash inline editing with CiviImport.
+
 ## Version 3.23.0 (2025-07-07)
 
 * Added 'Case is created' trigger.
