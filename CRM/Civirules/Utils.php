@@ -774,7 +774,7 @@ class CRM_Civirules_Utils {
         try {
           $events = \Civi\Api4\Event::get()
             ->addSelect('title')
-            ->addWhere('id', '=', 1)
+            ->addWhere('id', '=', $eventId)
             ->execute();
           $event = $events->first();
           if ($event['title']) {
