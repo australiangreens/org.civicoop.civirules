@@ -99,12 +99,12 @@ class CRM_CivirulesConditions_Activity_Type extends CRM_Civirules_Condition {
 
     switch ($this->conditionParams['operator']) {
       case 0:
-        if (in_array($activityData['activity_type_id'], $this->conditionParams['activity_type_id'])) {
+        if (in_array($activityData['activity_type_id'], $this->conditionParams['activity_type_id'] ?? [])) {
           $isConditionValid = TRUE;
         }
         break;
       case 1:
-        if (!in_array($activityData['activity_type_id'], $this->conditionParams['activity_type_id'])) {
+        if (!in_array($activityData['activity_type_id'], $this->conditionParams['activity_type_id']) ?? []) {
           $isConditionValid = TRUE;
         }
         break;
