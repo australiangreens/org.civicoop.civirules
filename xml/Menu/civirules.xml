@@ -541,6 +541,12 @@
     <title>Participant Role</title>
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
+    <item>
+    <path>civicrm/civirule/form/trigger/nocaseactivitysince</path>
+    <page_callback>CRM_CivirulesCronTrigger_Form_NoCaseActivitySince</page_callback>
+    <title>No Case Activity Since</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
   <item>
     <path>civicrm/civirule/form/trigger/eventdate</path>
     <page_callback>CRM_CivirulesCronTrigger_Form_EventDate</page_callback>

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.25.0
+
+* Fix [#272](https://lab.civicrm.org/extensions/civirules/-/issues/272) Add trigger for X days since last activity on case
+
 ## Version 3.24.0 (2025-07-23)
 
 * Fix [#265](https://lab.civicrm.org/extensions/civirules/-/issues/265) Navigation menu items out of place on install.
