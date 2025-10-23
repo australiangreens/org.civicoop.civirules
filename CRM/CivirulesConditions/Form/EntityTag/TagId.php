@@ -25,7 +25,7 @@ class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditio
         $result[$tag['id']] = $tag['name'];
       }
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
     }
     return $result;
   }
@@ -100,7 +100,7 @@ class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditio
             return $errors;
           }
         }
-        catch (CiviCRM_API3_Exception $ex) {}
+        catch (CRM_Core_Exception $ex) {}
       }
     }
     return TRUE;

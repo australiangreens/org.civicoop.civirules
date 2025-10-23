@@ -678,7 +678,7 @@ class CRM_Civirules_Utils {
           return $group['title'];
         }
       }
-      catch (API_Exception $ex) {
+      catch (CRM_Core_Exception $ex) {
       }
     }
     else {
@@ -740,7 +740,7 @@ class CRM_Civirules_Utils {
           $units[$optionValue['value']] = $optionValue['label'];
         }
       }
-      catch (API_Exception $ex) {
+      catch (CRM_Core_Exception $ex) {
       }
     }
     else {
@@ -781,7 +781,7 @@ class CRM_Civirules_Utils {
             return $event['title'];
           }
         }
-        catch (API_Exception $ex) {
+        catch (CRM_Core_Exception $ex) {
         }
       }
       else {
@@ -854,7 +854,7 @@ class CRM_Civirules_Utils {
         $statusId = $membershipStatus['id'];
       }
     }
-    catch (\API_Exception $ex) {
+    catch (\CRM_Core_Exception $ex) {
     }
     return $statusId;
   }

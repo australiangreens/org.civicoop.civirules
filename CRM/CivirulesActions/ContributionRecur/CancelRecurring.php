@@ -71,7 +71,7 @@ class CRM_CivirulesActions_ContributionRecur_CancelRecurring extends CRM_Civirul
    * e.g. 'Older than 65'
    *
    * @return string
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public function userFriendlyConditionParams() {
     $return = '';

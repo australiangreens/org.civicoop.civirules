@@ -33,7 +33,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
     }
     try {
       $case = civicrm_api3('Case', 'getsingle', $caseParams);
-    } catch (\CiviCRM_API3_Exception $ex) {
+    } catch (\CRM_Core_Exception $ex) {
       $formattedCaseParams = '';
       foreach($caseParams as $key => $param) {
         if (strlen($formattedCaseParams)) {
@@ -78,7 +78,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
         'value' => $action_params['case_status_id'],
         'option_group_id' => 'case_status',
       ]);
-    } catch (CiviCRM_API3_Exception $e) {
+    } catch (CRM_Core_Exception $e) {
     }
     try {
       $action_params['case_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
@@ -86,7 +86,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
         'value' => $action_params['case_type_id'],
         'option_group_id' => 'case_type',
       ]);
-    } catch (CiviCRM_API3_Exception $e) {
+    } catch (CRM_Core_Exception $e) {
     }
     return $action_params;
   }
@@ -104,7 +104,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
         'name' => $action_params['case_status_id'],
         'option_group_id' => 'case_status',
       ]);
-    } catch (CiviCRM_API3_Exception $e) {
+    } catch (CRM_Core_Exception $e) {
     }
     try {
       $action_params['case_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
@@ -112,7 +112,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
         'name' => $action_params['case_type_id'],
         'option_group_id' => 'case_type',
       ]);
-    } catch (CiviCRM_API3_Exception $e) {
+    } catch (CRM_Core_Exception $e) {
     }
     return parent::importActionParameters($action_params);
   }
@@ -136,7 +136,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
    *
    * @return string
    * @access public
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public function userFriendlyConditionParams() {
     $return = '';
