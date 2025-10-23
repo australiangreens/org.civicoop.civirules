@@ -53,7 +53,7 @@ abstract class CRM_CivirulesConditions_Generic_Status extends CRM_Civirules_Cond
       foreach ($options as $option) {
         $return[$option['value']] = $option['label'];
       }
-    } catch (CiviCRM_API3_Exception $ex) {}
+    } catch (CRM_Core_Exception $ex) {}
     return $return;
   }
 

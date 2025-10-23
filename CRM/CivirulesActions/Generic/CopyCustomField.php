@@ -154,7 +154,7 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
         $action_params['copy_from_field_id'] = $customField['id'];
         unset($action_params['copy_from_custom_group']);
         unset($action_params['copy_from_custom_field']);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

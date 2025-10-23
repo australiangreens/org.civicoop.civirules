@@ -106,7 +106,7 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CiviCRM_API3_Exception $e) {
+        } catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -117,7 +117,7 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CiviCRM_API3_Exception $e) {
+        } catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -138,7 +138,7 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CiviCRM_API3_Exception $e) {
+        } catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -149,7 +149,7 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CiviCRM_API3_Exception $e) {
+        } catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -205,7 +205,7 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
         $label .= "<li>" . ts('Membership Type') . " {$operator} <b>{$values}</b> <br>";
       }
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
     }
 
     try {
@@ -228,7 +228,7 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
         $label .= "<li>" . ts('Membership Status') . " {$operator} <b>{$values}</b> <br>";
       }
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
     }
 
     $dateFields = [
