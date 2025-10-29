@@ -173,13 +173,7 @@ class CRM_CivirulesConditions_Form_FieldValueChangeComparison extends CRM_Civiru
     $this->ruleCondition->condition_params = serialize($data);
     $this->ruleCondition->save();
 
-    $session = CRM_Core_Session::singleton();
-    $session->setStatus('Condition '.$this->condition->label.' parameters updated to CiviRule '
-      .CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->ruleCondition->rule_id),
-      'Condition parameters updated', 'success');
-
-    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->ruleCondition->rule_id, TRUE);
-    CRM_Utils_System::redirect($redirectUrl);
+    parent::postProcess();
   }
 
   /**
