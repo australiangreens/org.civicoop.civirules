@@ -420,21 +420,14 @@ function civirules_civicrm_permission(&$permissions) {
  * @param $classes
  *
  * @return void
+ *
+ * Implements hook_civicrm_scanClasses
+ *
+ * @see CRM_Utils_Hook::scanClasses()
  */
 function civirules_civicrm_scanClasses(&$classes) {
-  $cache = ClassScanner::cache('structure');
-  $cacheKey = E::LONG_NAME;
-  $all = $cache->get($cacheKey);
-  if ($all === NULL) {
-    $baseDir = CRM_Utils_File::addTrailingSlash(E::path());
-    $all = [];
-
-    ClassScanner::scanFolders($all, $baseDir, 'CRM', '_');
-    ClassScanner::scanFolders($all, $baseDir, 'Civi', '\\', ';(ConfigItems);');
-    $cache->set($cacheKey, $all, ClassScanner::TTL);
-  }
-
-  $classes = array_merge($classes, $all);
+  ClassScanner::scanFolders($classes, __DIR__, 'CRM', '_');
+  ClassScanner::scanFolders($classes, __DIR__, 'Civi', '\\', ';(ConfigItems);');
 }
 
 /**

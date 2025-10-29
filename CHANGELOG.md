@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## Version 3.26.0 (2025-10-29)
+
+* [!302](https://lab.civicrm.org/extensions/civirules/-/merge_requests/302) Add FormBuilder Submission Triggers and Conditions.
+* Fix redirect when saving "Status Changed" conditions.
+* [!316](https://lab.civicrm.org/extensions/civirules/-/merge_requests/316) Fix concatenated variables in ts() (translation).
+* [!315](https://lab.civicrm.org/extensions/civirules/-/merge_requests/315) Replace reference to deprecated exception class.
+* [!314](https://lab.civicrm.org/extensions/civirules/-/merge_requests/314) Remove calls to deprecated CRM_Utils_Array::value.
+* [!313](https://lab.civicrm.org/extensions/civirules/-/merge_requests/313) Fix deprecation notice - mark $queue as nullable.
+
 ## Version 3.25.0
 
 * Fix [#272](https://lab.civicrm.org/extensions/civirules/-/issues/272) Add trigger for X days since last activity on case
