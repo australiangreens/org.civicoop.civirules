@@ -3,6 +3,7 @@
  * @author Shane Bill (SymbioTIC Coop) <shane@symbiotic.coop>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
+use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesActions_ContributionRecur_CancelRecurring extends CRM_CivirulesActions_Generic_Api {
 
