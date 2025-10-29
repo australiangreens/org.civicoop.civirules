@@ -566,6 +566,12 @@
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/trigger/afformsubmission</path>
+    <page_callback>CRM_CivirulesPostTrigger_Form_AfformSubmission</page_callback>
+    <title>FormBuilder Submssion</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/action/participant_update_role</path>
     <!-- <page_callback>CRM_Civirules_Form_UpdateRole</page_callback> -->
     <page_callback>CRM_CivirulesActions_Participant_Form_UpdateRole</page_callback>

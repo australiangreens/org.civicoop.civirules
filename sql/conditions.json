@@ -91,5 +91,7 @@
   {"name":"relationship_is_activated", "label":"Relationship is activated", "class_name":"CRM_CivirulesConditions_Relationship_IsActivated"},
   {"name":"contact_in_group_since", "label":"Contact In Group Since", "class_name":"CRM_CivirulesConditions_GroupContact_InGroupSince"},
   {"name":"user_is_logged_in", "label":"User is Logged In", "class_name":"CRM_CivirulesConditions_Contact_LoggedIn"},
-  {"name":"contribution_recur_xth_contribution", "label":"xth Contribution of the Recurring Contribution", "class_name":"CRM_CivirulesConditions_ContributionRecur_xthContribution"}
+  {"name":"contribution_recur_xth_contribution", "label":"xth Contribution of the Recurring Contribution", "class_name":"CRM_CivirulesConditions_ContributionRecur_xthContribution"},
+  {"name":"afformsubmission_status", "label":"FormBuilder Submission status", "class_name":"CRM_CivirulesConditions_AfformSubmission_Status"},
+  {"name":"afformsubmission_statuschanged", "label":"FormBuilder Submission status changed", "class_name":"CRM_CivirulesConditions_AfformSubmission_StatusChanged"}
 ]
