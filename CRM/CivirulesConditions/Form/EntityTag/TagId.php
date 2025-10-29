@@ -96,7 +96,7 @@ class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditio
             'id' => $tagId
           ));
           if (strpos($tag['used_for'], 'civicrm_contact') === FALSE) {
-            $errors['tag_id'] = ts('Can not use the selected tag '.$tag['name'].' with contacts, condition only allowed for tags that are used for contacts');
+            $errors['tag_id'] = ts('Can not use the selected tag "%1" with contacts, condition only allowed for tags that are used for contacts.', [1 => $tag['name']]);
             return $errors;
           }
         }
