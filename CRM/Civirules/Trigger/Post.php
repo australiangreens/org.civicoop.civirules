@@ -268,10 +268,9 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
         $triggerOptions[] = $option['text'];
       }
     }
-    if (empty($text)) {
-      $text = E::ts('Trigger');
+    if (empty($text) && !empty($triggerOptions)) {
+      $text = E::ts('Trigger on %1', [1 => implode(', ', $triggerOptions ?? [])]);
     }
-    $text .= ' on ' . implode(', ', $triggerOptions ?? []);
     return $text;
   }
 
