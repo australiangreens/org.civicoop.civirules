@@ -158,16 +158,20 @@ class CRM_CivirulesConditions_Form_FieldValueChangeComparison extends CRM_Civiru
    */
   public function postProcess() {
     $data = $this->ruleCondition->unserializeParams();
-    $data['original_operator'] = $this->_submitValues['original_operator'];
-    $data['original_value'] = $this->_submitValues['original_value'];
-    if (isset($this->_submitValues['original_multi_value'])) {
-      $data['original_multi_value'] = explode("\r\n", $this->_submitValues['original_multi_value']);
+    $data['original_operator'] = $this->getSubmittedValue('original_operator');
+    $data['original_value'] = $this->getSubmittedValue('original_value');
+    $originalMultiValue = $this->getSubmittedValue('original_multi_value');
+    if (!empty($originalMultiValue)) {
+      $originalMultiValue = str_replace('\r\n', '\n', $originalMultiValue);
+      $data['original_multi_value'] = explode("\n", $originalMultiValue);
     }
 
-    $data['operator'] = $this->_submitValues['operator'];
-    $data['value'] = $this->_submitValues['value'];
-    if (isset($this->_submitValues['multi_value'])) {
-      $data['multi_value'] = explode("\r\n", $this->_submitValues['multi_value']);
+    $data['operator'] = $this->getSubmittedValue('operator');
+    $data['value'] = $this->getSubmittedValue('value');
+    $newMultiValue = $this->getSubmittedValue('multi_value');
+    if (!empty($newMultiValue)) {
+      $newMultiValue = str_replace('\r\n', '\n', $newMultiValue);
+      $data['multi_value'] = explode("\n", $newMultiValue);
     }
 
     $this->ruleCondition->condition_params = serialize($data);
