@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Version 3.27.0 (2025-10-30)
+
+* Fix Contribution status changed (and maybe other status changed) condition not loading/saving multivalue correctly.
+* Fix loading of trigger description in some situations.
+* Link to 'edit form' in description for formbuilder trigger.
+* [!318](https://lab.civicrm.org/extensions/civirules/-/merge_requests/318) Add use statement where necessary.
+
 ## Version 3.26.0 (2025-10-29)
 
 * [!302](https://lab.civicrm.org/extensions/civirules/-/merge_requests/302) Add FormBuilder Submission Triggers and Conditions.
