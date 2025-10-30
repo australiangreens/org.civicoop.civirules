@@ -134,11 +134,10 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
     $selectedForms = explode(',', $this->triggerParams['rule_afform_select'] ?? '');
     foreach ($selectedForms as $formName) {
       if (in_array($formName, array_keys($afforms))) {
-        $formTitles[] = $afforms[$formName]['title'] . ' (' . $formName . ')';
+        $formTitles[] = '<a href=' . Civi::url('backend://civicrm/admin/afform#/edit/' . $formName) . ' target="_blank">' . $afforms[$formName]['title'] . '</a>';
       }
     }
 
-    $text = implode(', ', $formTitles ?? []);
     $options = CRM_CivirulesTrigger_Form_Form::getTriggerOptions();
     $triggerOps = explode(',', $this->triggerParams['trigger_op'] ?? '');
     foreach ($options as $option) {
@@ -146,7 +145,7 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
         $triggerOptions[] = $option['text'];
       }
     }
-    $text .= ' on ' . implode(', ', $triggerOptions ?? []);
+    $text = E::ts('Trigger for forms: %1 on %2', [1 => implode(', ', $formTitles ?? []), 2 => implode(', ', $triggerOptions ?? [])]);
     return $text;
   }
 
