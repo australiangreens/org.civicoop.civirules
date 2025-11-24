@@ -33,10 +33,11 @@ class CRM_CivirulesConditions_ContributionRecur_FailureCountChanged extends CRM_
    * @return bool
    */
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
-    if ($trigger instanceof CRM_Civirules_TriggerData_Interface_OriginalData) {
-      return $trigger->doesProvideEntity($this->getEntity());
+    $entities = $trigger->getProvidedEntities();
+    if (isset($entities[$this->getEntity()])) {
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
 }
