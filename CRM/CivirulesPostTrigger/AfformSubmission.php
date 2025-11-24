@@ -1,5 +1,6 @@
 <?php
 
+use Civi\Api4\Afform;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Post {
@@ -14,7 +15,8 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
   }
 
   /**
-   * Return the name of the DAO Class. If a dao class does not exist return an empty value
+   * Return the name of the DAO Class. If a dao class does not exist return an
+   * empty value
    *
    * @return string
    */
@@ -30,16 +32,10 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
    * @return bool
    */
   public function doesProvideEntity(string $entity): bool {
-    if ($entity == 'Contact') {
-      return TRUE;
-    }
-    $availableEntities = $this->getProvidedEntities();
-    foreach($availableEntities as $providedEntity) {
-      if (strtolower($providedEntity->entity) == strtolower($entity)) {
-        return TRUE;
-      }
-    }
-    return FALSE;
+    // Ideally we'd check if Afform supports the entity first
+    // Even better, we'd load the specific Afform and check what entities it has.
+    // For now just say we support all entities.
+    return TRUE;
   }
 
   /**
@@ -50,27 +46,15 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
    * @return bool
    */
   public function doesProvideEntities($entities): bool {
-    $availableEntities = $this->getProvidedEntities();
-    foreach($entities as $entity) {
-      $entityPresent = false;
-      if ($entity == 'Contact') {
-        $entityPresent = true;
-      } else {
-        foreach ($availableEntities as $providedEntity) {
-          if (strtolower($providedEntity->entity) == strtolower($entity)) {
-            $entityPresent = TRUE;
-          }
-        }
-      }
-      if (!$entityPresent) {
-        return false;
-      }
-    }
-    return true;
+    // Ideally we'd check if Afform supports the entity first
+    // Even better, we'd load the specific Afform and check what entities it has.
+    // For now just say we support all entities.
+    return TRUE;
   }
 
   /**
-   * Returns a redirect url to extra data input from the user after adding a trigger
+   * Returns a redirect url to extra data input from the user after adding a
+   * trigger
    *
    * Return false if you do not need extra data input
    *
@@ -84,10 +68,14 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
 
   /**
    * Get various types of help text for the trigger:
-   *   - triggerDescription: When choosing from a list of triggers, explains what the trigger does.
-   *   - triggerDescriptionWithParams: When a trigger has been configured for a rule provides a
-   *       user friendly description of the trigger and params (see $this->getTriggerDescription())
-   *   - triggerParamsHelp (default): If the trigger has configurable params, show this help text when configuring
+   *   - triggerDescription: When choosing from a list of triggers, explains
+   * what the trigger does.
+   *   - triggerDescriptionWithParams: When a trigger has been configured for a
+   * rule provides a user friendly description of the trigger and params (see
+   * $this->getTriggerDescription())
+   *   - triggerParamsHelp (default): If the trigger has configurable params,
+   * show this help text when configuring
+   *
    * @param string $context
    *
    * @return string
@@ -103,9 +91,9 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
       case 'triggerParamsHelp':
         switch ($this->getOp()) {
           case 'create|edit':
-            return E::ts('Choose the Formbuilder forms to trigger on. The first "Contact" on the form 
-            will be available as context for the rule (eg. for conditions/actions etc).')
-             . '<br> ' . E::ts('Select if you want to trigger on Create and/or Edit');
+            return E::ts('Choose the Formbuilder forms to trigger on. The first Entity of each type will 
+            be available as context for the rule (eg. for conditions/actions etc). Eg. Individual1=Contact,Activity1=Activity,Case1=Case etc.')
+              . '<br> ' . E::ts('Select if you want to trigger on Create and/or Edit');
 
           case 'delete':
           default:
@@ -118,15 +106,16 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
 
   /**
    * Returns a calculated description of this trigger
-   * If the trigger has parameters this this function should provide a user-friendly description of those parameters
-   * See also: getHelpText()
-   * You could return the contents of getHelpText('triggerDescriptionWithParams') if you want a generic description and the trigger has no configurable
+   * If the trigger has parameters this this function should provide a
+   * user-friendly description of those parameters See also: getHelpText() You
+   * could return the contents of getHelpText('triggerDescriptionWithParams')
+   * if you want a generic description and the trigger has no configurable
    * parameters.
    *
    * @return string
    */
   public function getTriggerDescription(): string {
-    $afforms = \Civi\Api4\Afform::get(FALSE)
+    $afforms = Afform::get(FALSE)
       ->addWhere('type:name', '=', 'form')
       ->addSelect('name', 'title')
       ->execute()->indexBy('name')->getArrayCopy();
@@ -145,7 +134,10 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
         $triggerOptions[] = $option['text'];
       }
     }
-    $text = E::ts('Trigger for forms: %1 on %2', [1 => implode(', ', $formTitles ?? []), 2 => implode(', ', $triggerOptions ?? [])]);
+    $text = E::ts('Trigger for forms: %1 on %2', [
+      1 => implode(', ', $formTitles ?? []),
+      2 => implode(', ', $triggerOptions ?? []),
+    ]);
     return $text;
   }
 
@@ -154,38 +146,42 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
    *
    */
   public function alterTriggerData(CRM_Civirules_TriggerData_TriggerData &$triggerData) {
-    try {
-      $afformSubmission = $triggerData->getEntityData('AfformSubmission');
-      $submissionData = json_decode($afformSubmission['data'], TRUE);
+    $afformSubmission = $triggerData->getEntityData('AfformSubmission');
+    $submissionData = json_decode($afformSubmission['data'], TRUE);
 
-
-      $contactEntities = array_filter($submissionData, function($key) {
-        $validContactEntities = ['Individual', 'Household', 'Organization'];
-        foreach ($validContactEntities as $contactEntity) {
-          return str_starts_with($key, $contactEntity);
-        }
-      }, ARRAY_FILTER_USE_KEY);
-
-      if (empty($contactEntities)) {
-        \Civi::log()->error('CiviRules AfformSubmission trigger: no contact entity found!');
-        return;
+    foreach ($submissionData as $entityName => $data) {
+      if (!isset($data[0])) {
+        continue;
       }
-      $contactEntityName = array_key_first($contactEntities);
-      $contactFields = $submissionData[$contactEntityName][0]['fields'] ?? NULL;
-      if (!$contactFields) {
-        \Civi::log()->error('CiviRules AfformSubmission trigger: no fields for contact entity found.');
-        return;
+      if (!str_ends_with($entityName, '1')) {
+        // For now we only support Entity1 for each entity type (eg. Individual1, Activity1 etc)
+        continue;
       }
-
-      $contactID = $contactFields['id'];
-
-      $contact = \Civi\Api4\Contact::get(FALSE)
-        ->addWhere('id', '=', $contactID)
-        ->execute()
-        ->first();
-        $triggerData->setEntityData('Contact', $contact);
-    } catch (Throwable $e) {
-      // Do nothing. There could be an exception when the contribution does not exists in the database anymore.
+      if (empty($data[0]['id'])) {
+        // If we have no ID we obviously can't use it..
+        continue;
+      }
+      $entityID = $data[0]['id'];
+      $realEntityName = str_replace('1', '', $entityName);
+      if (in_array($realEntityName, [
+        'Individual',
+        'Household',
+        'Organization',
+      ])) {
+        $realEntityName = 'Contact';
+      }
+      try {
+        $entity = civicrm_api4($realEntityName, 'get', [
+          'where' => [
+            ['id', '=', $entityID],
+          ],
+          'checkPermissions' => FALSE,
+        ], 0)->getArrayCopy();
+        $triggerData->setEntityData($realEntityName, $entity);
+      }
+      catch (\Throwable $t) {
+        // Do nothing. There could be an exception when something doesn't exist or it's not a real entity
+      }
     }
 
     parent::alterTriggerData($triggerData);
