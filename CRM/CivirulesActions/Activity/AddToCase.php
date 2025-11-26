@@ -6,9 +6,57 @@
  * @license AGPL-3.0
  */
 
+use Civi\Api4\ActivityContact;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activity_Add {
+
+  /**
+   * Returns an array with parameters used for processing an action
+   *
+   * @param array $params
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
+   *
+   * @return array
+   */
+  protected function alterApiParameters($params, CRM_Civirules_TriggerData_TriggerData $triggerData) {
+    $params = parent::alterApiParameters($params, $triggerData);
+
+    if (!empty($triggerData->getEntityData('Case')['id'])) {
+      // If we have an existing case, don't look it up by other fields.
+      $params['case_id'] = $triggerData->getEntityData('Case')['id'];
+      unset($params['case_type_id'], $params['case_status_id']);
+    }
+    if (!empty($triggerData->getEntityData('Activity')['id'])) {
+      // If we have an existing activity ID and assignee_contact_id is NOT set
+      //   use the assignee, source and target from the existing activity.
+      if (empty($params['assignee_contact_id']) || empty(reset($params['assignee_contact_id']))) {
+        $activityContacts = ActivityContact::get(FALSE)
+          ->addSelect('record_type_id:name', 'contact_id')
+          ->addWhere('activity_id', '=', $triggerData->getEntityData('Activity')['id'])
+          ->execute();
+        unset($params['assignee_contact_id'], $params['source_contact_id'], $params['target_contact_id']);
+        foreach ($activityContacts as $activityContact) {
+          switch ($activityContact['record_type_id:name']) {
+            case 'Activity Source':
+              // Can be only 1.
+              $params['source_contact_id'] = $activityContact['contact_id'];
+              break;
+
+            case 'Activity Targets':
+              $params['target_contact_id'][] = $activityContact['contact_id'];
+              break;
+
+            case 'Activity Assignees':
+              $params['assignee_contact_id'][] = $activityContact['contact_id'];
+              break;
+          }
+        }
+      }
+
+    }
+    return $params;
+  }
 
   /**
    * Executes the action
@@ -24,13 +72,19 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
    */
   protected function executeApiAction($entity, $action, $parameters) {
     $action_params = $this->getActionParameters();
-    $caseParams['contact_id'] = $parameters['target_contact_id'];
-    $caseParams['case_type_id'] = $action_params['case_type_id'];
-    // ensure deleted cases are not selected
-    $caseParams['is_deleted'] = FALSE;
-    if (!empty($action_params['case_status_id'])) {
-      $caseParams['status_id'] = $action_params['case_status_id'];
+    if (!empty($parameters['case_id'])) {
+      $caseParams = ['id' =>$parameters['case_id']];
     }
+    else {
+      $caseParams['contact_id'] = $parameters['target_contact_id'];
+      $caseParams['case_type_id'] = $action_params['case_type_id'];
+      // ensure deleted cases are not selected
+      $caseParams['is_deleted'] = FALSE;
+      if (!empty($action_params['case_status_id'])) {
+        $caseParams['status_id'] = $action_params['case_status_id'];
+      }
+    }
+
     try {
       $case = civicrm_api3('Case', 'getsingle', $caseParams);
     } catch (\CRM_Core_Exception $ex) {
@@ -193,17 +247,26 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
         }
       }
     }
-    $case_type = civicrm_api3('CaseType', 'getvalue', [
-      'id' => $params['case_type_id'],
-      'return' => 'title',
-      'options' => ['limit' => 1]
-    ]);
-    $case_statuses = CRM_Core_OptionGroup::values('case_status');
-    if (!empty($params['case_status_id'])) {
-      $case_status = $case_statuses[$params['case_status_id']];
-      $return .= '<br>'.E::ts('Add to case with type %1 and status %2', [1=>$case_type, 2=>$case_status]);
-    } else {
-      $return .= '<br>'.E::ts('Add to case with type %1', [1=>$case_type]);
+    if (!empty($params['case_type_id'])) {
+      $case_type = civicrm_api3('CaseType', 'getvalue', [
+        'id' => $params['case_type_id'],
+        'return' => 'title',
+        'options' => ['limit' => 1]
+      ]);
+      $case_statuses = CRM_Core_OptionGroup::values('case_status');
+      if (!empty($params['case_status_id'])) {
+        $case_status = $case_statuses[$params['case_status_id']];
+        $return .= '<br>' . E::ts('Add to case with type %1 and status %2', [
+            1 => $case_type,
+            2 => $case_status
+          ]);
+      }
+      else {
+        $return .= '<br>' . E::ts('Add to case with type %1', [1 => $case_type]);
+      }
+    }
+    else {
+      $return .= '<br>' . E::ts('Add to existing case');
     }
 
     if (!empty($params['send_email'])) {
@@ -231,6 +294,35 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
    */
   protected function getApiAction() {
     return 'create';
+  }
+
+  /**
+   * Get various types of help text for the action:
+   *   - actionDescription: When choosing from a list of actions, explains what the action does.
+   *   - actionDescriptionWithParams: When a action has been configured for a rule provides a
+   *       user friendly description of the action and params (see $this->userFriendlyConditionParams())
+   *   - actionParamsHelp (default): If the action has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context): string {
+    // Child classes should override this function
+
+    switch ($context) {
+      case 'actionDescriptionWithParams':
+        return $this->userFriendlyConditionParams();
+
+      case 'actionDescription':
+        return E::ts('Create an activity on a case');
+
+      case 'actionParamsHelp':
+        return E::ts('Create an activity on a case') . '<br>'
+          . E::ts('If the rule trigger includes a case ID that will be used. Otherwise the case will be identified based on contact ID, case type and case status.')
+          . '<br>' . E::ts('If you don\'t set assignee contact ID the contacts from the existing activity will be used on the new activity');
+    }
+
+    return $helpText ?? '';
   }
 
 }
