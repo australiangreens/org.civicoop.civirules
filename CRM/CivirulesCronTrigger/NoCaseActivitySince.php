@@ -29,12 +29,11 @@ class CRM_CivirulesCronTrigger_NoCaseActivitySince extends CRM_Civirules_Trigger
     if ($this->dao->fetch()) {
       $data = [];
       CRM_Core_DAO::storeValues($this->dao, $data);
-      $triggerData = new CRM_Civirules_TriggerData_Cron(0, 'CaseActivity', $data);
+      $triggerData = new CRM_Civirules_TriggerData_Cron(0, 'CaseActivity', $data, NULL, $this);
       $case = civicrm_api3('Case', 'getsingle', ['id' => $data['case_id']]);
       $triggerData->setEntityData('Case', $case);
       $activity = civicrm_api3('Activity', 'getsingle', ['id' => $data['activity_id']]);
       $triggerData->setEntityData('Activity', $activity);
-      $triggerData->setTrigger($this);
       return $triggerData;
     }
     return FALSE;
