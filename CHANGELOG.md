@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# Version 3.28.0 (2025-11-26)
+
+* [!322](https://lab.civicrm.org/extensions/civirules/-/merge_requests/322) - Support for CiviRules as ManagedEntities (Can now export CiviRules with civix).
+* [!321](https://lab.civicrm.org/extensions/civirules/-/merge_requests/321) - Extend Afform support to more entities - now automatically loads all "Entity1" from the Form and can be used in context for conditions/actions - eg. Activity1, Individual1, Case1 etc.
+* Remove unused/duplicate upgrader function.
+* [!319](https://lab.civicrm.org/extensions/civirules/-/merge_requests/319) - Passing an empty string to the ts() function always returns an empty string.
+
 ## Version 3.27.0 (2025-10-30)
 
 * Fix Contribution status changed (and maybe other status changed) condition not loading/saving multivalue correctly.
