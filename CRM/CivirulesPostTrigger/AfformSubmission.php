@@ -53,6 +53,22 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
   }
 
   /**
+   * Returns an array of additional entities provided in this trigger
+   *
+   * @return array of CRM_Civirules_TriggerData_EntityDefinition
+   */
+  protected function getAdditionalEntities() {
+    // @todo: This needs to support all the entities on the form.
+    // But there doesn't seem to be an easy way to get that info using Afform::get()
+    // For now just hardcode a few.
+    $entities = parent::getAdditionalEntities();
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Activity', 'Activity', 'CRM_Activity_DAO_Activity' , 'Activity');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('ActivityContact', 'ActivityContact', 'CRM_Activity_DAO_ActivityContact' , 'ActivityContact');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Case', 'Case', 'CRM_Case_DAO_Case' , 'Case');
+    return $entities;
+  }
+
+  /**
    * Returns a redirect url to extra data input from the user after adding a
    * trigger
    *
