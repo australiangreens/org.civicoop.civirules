@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# Version 3.29.0 (2025-11-27)
+
+* [!323](https://lab.civicrm.org/extensions/civirules/-/merge_requests/323) Update Create Case Activity action and AfformSubmission so we can create follow up activities from an activity in the Afform.
+* Set trigger in triggerData constructor where possible.
+
 # Version 3.28.0 (2025-11-26)
 
 * [!322](https://lab.civicrm.org/extensions/civirules/-/merge_requests/322) - Support for CiviRules as ManagedEntities (Can now export CiviRules with civix).
