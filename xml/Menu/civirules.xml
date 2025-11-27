@@ -711,6 +711,12 @@
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/action/contributionrecur_change_nextscheduledate</path>
+    <page_callback>CRM_CivirulesActions_ContributionRecur_Form_ChangeNextScheduleDate</page_callback>
+    <title>Change Next Schedule Date for Recurring Contribution</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/action/contribution_update_status</path>
     <page_callback>CRM_CivirulesActions_Contribution_Form_UpdateStatus</page_callback>
     <title>Update Contribution Status</title>
