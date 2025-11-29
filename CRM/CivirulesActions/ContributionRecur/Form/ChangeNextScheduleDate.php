@@ -25,13 +25,21 @@ class CRM_CivirulesActions_ContributionRecur_Form_ChangeNextScheduleDate extends
     $this->add('hidden', 'rule_action_id');
 
     $statuses = self::getScheduleOptions();
-    $this->add('select', 'schedule_option', E::ts('Set Next Scheduled Date relative to'), ['' => E::ts('-- please select --')] + $statuses)
-;
+    $this->add('select', 'schedule_option', E::ts('Set Next Scheduled Date relative to'), ['' => E::ts('-- please select --')] + $statuses);
     $this->add('text', 'schedule_date', ts('Set Next Scheduled Date (custom date or format)'), '', FALSE);
     $this->addButtons([
       ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
       ['type' => 'cancel', 'name' => E::ts('Cancel')]
     ]);
+  }
+
+  /**
+   * Function to add validation condition rules (overrides parent function)
+   *
+   * @access public
+   */
+  public function addRules() {
+    $this->addFormRule(['CRM_CivirulesActions_ContributionRecur_Form_ChangeNextScheduleDate', 'validateInputFields']);
   }
 
   /**
@@ -68,6 +76,7 @@ class CRM_CivirulesActions_ContributionRecur_Form_ChangeNextScheduleDate extends
     // Make sure that we have at least one set
     if (empty($fields['schedule_option']) && empty($fields['schedule_date'])) {
       $errors['schedule_option'] = E::ts('You must have either a relative option or a custom date/format');
+      $errors['schedule_date'] = E::ts('You must have either a relative option or a custom date/format');
     }
 
     return $errors;
