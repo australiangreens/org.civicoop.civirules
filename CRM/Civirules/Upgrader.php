@@ -602,8 +602,8 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
    * 
    * ps. This functionality is gone since version 3.21.0, since then you have to use the upgrade function again.
    */
-  public function upgrade_2086() {
-    $this->ctx->log->info('Applying update 2084');
+  public function upgrade_2087() {
+    $this->ctx->log->info('Applying update 2087');
     CRM_Civirules_Utils_Upgrader::insertTriggersFromJson(E::path('sql/triggers.json'));
     return TRUE;
   }
