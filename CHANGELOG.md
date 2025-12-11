@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* Added for convenience select2 to the action 'Set Custom Field on an entity with data from another Custom Field' action.
+* Added user friendly parameters to the action 'Set Custom Field on an entity with data from another Custom Field' action.
+* In the action 'Set Custom Field on an entity with data from another Custom Field' use the contact id for a field of contact reference type, instead of the display name.
+* Created a class for ParticipantPayment, for better entity data processing. For example, now you can use fields of the Participant.
+
 # Version 3.29.0 (2025-11-27)
 
 * [!323](https://lab.civicrm.org/extensions/civirules/-/merge_requests/323) Update Create Case Activity action and AfformSubmission so we can create follow up activities from an activity in the Afform.
