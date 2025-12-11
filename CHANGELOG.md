@@ -4,6 +4,7 @@
 * Added user friendly parameters to the action 'Set Custom Field on an entity with data from another Custom Field' action.
 * In the action 'Set Custom Field on an entity with data from another Custom Field' use the contact id for a field of contact reference type, instead of the display name.
 * Created a class for ParticipantPayment, for better entity data processing. For example, now you can use fields of the Participant.
+* Adding 'Failure Count Changed condition' and action to change next scheduled date
 
 # Version 3.29.0 (2025-11-27)
 
