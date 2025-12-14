@@ -604,9 +604,7 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
    */
   public function upgrade_2087() {
     $this->ctx->log->info('Applying update 2087');
-    CRM_Civirules_Utils_Upgrader::insertTriggersFromJson(E::path('sql/triggers.json'));
-    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson(E::path('sql/conditions.json'));
-    CRM_Civirules_Utils_Upgrader::insertActionsFromJson(E::path('sql/actions.json'));
+    self::postUpgrade();
     return TRUE;
   }
 
