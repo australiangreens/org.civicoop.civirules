@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# Version 3.31.0 (2025-12-23)
+
+* Make the Participant Role and Participant Status conditions work with the Event Participant Payment trigger
+
 # Version 3.30.0 (2025-12-14)
 
 * Added for convenience select2 to the action 'Set Custom Field on an entity with data from another Custom Field' action.
