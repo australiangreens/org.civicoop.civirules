@@ -62,8 +62,7 @@ class CRM_CivirulesConditions_Group_GroupType extends CRM_Civirules_Condition {
    * @return bool|string
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/group/grouptype', 'rule_condition_id='
-      .$ruleConditionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/group/grouptype', $ruleConditionId);
   }
 
   /**
@@ -108,7 +107,7 @@ class CRM_CivirulesConditions_Group_GroupType extends CRM_Civirules_Condition {
           'value' => $params['group_type_id'],
           'option_group_id' => 'group_type',
         ]);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -137,7 +136,7 @@ class CRM_CivirulesConditions_Group_GroupType extends CRM_Civirules_Condition {
           'name' => $condition_params['group_type_id'],
           'option_group_id' => 'group_type',
         ]);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -146,7 +145,7 @@ class CRM_CivirulesConditions_Group_GroupType extends CRM_Civirules_Condition {
 
   /**
    * @return array
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public static function getGroupTypes() {
     $return = [];

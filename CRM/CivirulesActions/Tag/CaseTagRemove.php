@@ -13,15 +13,9 @@ class CRM_CivirulesActions_Tag_CaseTagRemove extends CRM_Civirules_Action {
     $entityId = $triggerData->getEntityId();
     $actionParams = $this->getActionParameters();
     $entityTable = "civicrm_case";
-    $api4 = CRM_Civirules_Utils::isApi4Active();
     if (isset($actionParams['tag_id'])) {
       foreach ($actionParams['tag_id'] as $tagId) {
-        if ($api4) {
-          CRM_CivirulesActions_Tag_EntityTag::deleteApi4EntityTag($entityTable, $entityId, $tagId);
-        }
-        else {
-          CRM_CivirulesActions_Tag_EntityTag::deleteApi3EntityTag($entityTable, $entityId, $tagId);
-        }
+        CRM_CivirulesActions_Tag_EntityTag::deleteApi4EntityTag($entityTable, $entityId, $tagId);
       }
     }
   }
@@ -36,7 +30,7 @@ class CRM_CivirulesActions_Tag_CaseTagRemove extends CRM_Civirules_Action {
    */
   public function getExtraDataInputUrl($ruleActionId) {
     return CRM_Utils_System::url('civicrm/civirule/form/action/tag/entitytag', 'tn=civicrm_case&rule_action_id='
-      . $ruleActionId);
+      . $ruleActionId, FALSE, NULL, FALSE, FALSE, TRUE);
   }
 
   /**
@@ -51,12 +45,7 @@ class CRM_CivirulesActions_Tag_CaseTagRemove extends CRM_Civirules_Action {
     $actionParams = $this->getActionParameters();
     $labels = [];
     $tableName = "civicrm_case";
-    if (CRM_Civirules_Utils::isApi4Active()) {
-      $tags = CRM_CivirulesActions_Tag_EntityTag::getApi4Tags($tableName);
-    }
-    else {
-      $tags = CRM_CivirulesActions_Tag_EntityTag::getApi3Tags($tableName);
-    }
+    $tags = CRM_CivirulesActions_Tag_EntityTag::getApi4Tags($tableName);
 
     if (isset($actionParams['tag_id'])) {
       foreach ($actionParams['tag_id'] as $tagId) {
@@ -94,7 +83,7 @@ class CRM_CivirulesActions_Tag_CaseTagRemove extends CRM_Civirules_Action {
           'return' => 'name',
           'id' => $j,
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -113,7 +102,7 @@ class CRM_CivirulesActions_Tag_CaseTagRemove extends CRM_Civirules_Action {
           'return' => 'id',
           'name' => $j,
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);

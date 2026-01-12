@@ -44,7 +44,7 @@ class CRM_CivirulesActions_Contribution_ThankYouDate extends CRM_Civirules_Actio
     );
     try {
       civicrm_api3('Contribution', 'Create', $params);
-    } catch (CiviCRM_API3_Exception $ex) {}
+    } catch (CRM_Core_Exception $ex) {}
   }
 
   /**
@@ -57,7 +57,7 @@ class CRM_CivirulesActions_Contribution_ThankYouDate extends CRM_Civirules_Actio
    * @access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/contribution/thankyoudate', 'rule_action_id='.$ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/contribution/thankyoudate', $ruleActionId);
   }
 
   /**

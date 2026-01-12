@@ -47,7 +47,7 @@ class CRM_CivirulesConditions_Contact_HasRecur extends CRM_CivirulesConditions_G
    *
    * @return string
    */
-  protected function getHelpText() {
+  public function getHelpText() {
     return E::ts('This condition checks if the contact has any recurring contributions in a specific status. If you select "is not in" it is also valid if the contact has no recurring contributions.');
   }
 
@@ -57,7 +57,7 @@ class CRM_CivirulesConditions_Contact_HasRecur extends CRM_CivirulesConditions_G
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    *
    * @return bool
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $params['contact_id'] = $triggerData->getContactId();
@@ -95,7 +95,9 @@ class CRM_CivirulesConditions_Contact_HasRecur extends CRM_CivirulesConditions_G
         'rule_condition_id' => $ruleConditionId,
         'entity' => $this->getEntity(),
         'condition_name' => $this->getConditionName(),
-      ]);
+      ],
+      FALSE, NULL, FALSE, FALSE, TRUE
+    );
   }
 
   /**
@@ -115,7 +117,7 @@ class CRM_CivirulesConditions_Contact_HasRecur extends CRM_CivirulesConditions_G
             'value' => $j,
             'option_group_id' => 'contribution_status',
           ]);
-        } catch (CiviCRM_API3_Exception $e) {
+        } catch (CRM_Core_Exception $e) {
         }
       }
     } elseif (!empty($params['status_id'])) {
@@ -125,7 +127,7 @@ class CRM_CivirulesConditions_Contact_HasRecur extends CRM_CivirulesConditions_G
           'value' => $params['status_id'],
           'option_group_id' => 'contribution_status',
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return $params;
@@ -146,7 +148,7 @@ class CRM_CivirulesConditions_Contact_HasRecur extends CRM_CivirulesConditions_G
             'name' => $j,
             'option_group_id' => 'contribution_status',
           ]);
-        } catch (CiviCRM_API3_Exception $e) {
+        } catch (CRM_Core_Exception $e) {
         }
       }
     } elseif (!empty($condition_params['status_id'])) {
@@ -156,7 +158,7 @@ class CRM_CivirulesConditions_Contact_HasRecur extends CRM_CivirulesConditions_G
           'name' => $condition_params['status_id'],
           'option_group_id' => 'contribution_status',
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importConditionParameters($condition_params);

@@ -26,8 +26,8 @@ class CRM_CivirulesConditions_Form_Contribution_PaidBy extends CRM_CivirulesCond
         }
         $paymentInstruments[0] = '- select -';
         asort($paymentInstruments);
-      } catch (CiviCRM_API3_Exception $ex) {}
-    } catch (CiviCRM_API3_Exception $ex) {
+      } catch (CRM_Core_Exception $ex) {}
+    } catch (CRM_Core_Exception $ex) {
       throw new Exception('Option group with name payment_instrument not found,
       error from API OptionGroup Getvalue: '.$ex->getMessage());
     }
@@ -67,7 +67,7 @@ class CRM_CivirulesConditions_Form_Contribution_PaidBy extends CRM_CivirulesCond
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->ruleCondition->condition_params);
+    $data = $this->ruleCondition->unserializeParams();
     if (!empty($data['payment_instrument_id'])) {
       $defaultValues['payment_instrument_id'] = $data['payment_instrument_id'];
     }

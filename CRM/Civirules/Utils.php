@@ -24,7 +24,7 @@ class CRM_Civirules_Utils {
       'return' => 'display_name');
     try {
       $contactName = civicrm_api3('Contact', 'Getvalue', $params);
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (CRM_Core_Exception $ex) {
       $contactName = '';
     }
     return $contactName;
@@ -202,7 +202,7 @@ class CRM_Civirules_Utils {
       'return' => 'id');
     try {
       $optionGroupId = civicrm_api3('OptionGroup', 'Getvalue', $params);
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (CRM_Core_Exception $ex) {
       throw new Exception('Could not find an option group with the name '.$optionGroupName.
         ', error from API OptionGroup Getvalue: '.$ex->getMessage());
     }
@@ -229,7 +229,7 @@ class CRM_Civirules_Utils {
       );
       try {
         return civicrm_api3('OptionValue', 'Getvalue', $params);
-      } catch (CiviCRM_API3_Exception $ex) {
+      } catch (CRM_Core_Exception $ex) {
         return false;
       }
     }
@@ -252,7 +252,7 @@ class CRM_Civirules_Utils {
       'return' => 'value');
     try {
       $statusId = (int) civicrm_api3('OptionValue', 'Getvalue', $optionValueParams);
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (CRM_Core_Exception $ex) {
       throw new Exception('Could not retrieve a contribution status with name '.
         $statusName.', contact your system administrator. Error from API OptionValue Getvalue: '.$ex->getMessage());
     }
@@ -291,7 +291,7 @@ class CRM_Civirules_Utils {
         $return['a_b_' . $relationshipType['id']] = $relationshipType['label_a_b'] . ' (A-B)';
         $return['b_a_' . $relationshipType['id']] = $relationshipType['label_b_a'] . ' (B-A)';
       }
-    } catch (CiviCRM_API3_Exception $ex) {}
+    } catch (CRM_Core_Exception $ex) {}
     asort($return);
     return $return;
   }
@@ -364,7 +364,7 @@ class CRM_Civirules_Utils {
       foreach ($paymentProcessors['values'] as $paymentProcessor) {
         $return[$paymentProcessor['id']] = $paymentProcessor['name'];
       }
-    } catch (CiviCRM_API3_Exception $ex) {}
+    } catch (CRM_Core_Exception $ex) {}
     return $return;
   }
 
@@ -427,7 +427,7 @@ class CRM_Civirules_Utils {
       }
       asort($campaignList);
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
       $campaignList = array();
     }
     return $campaignList;
@@ -505,7 +505,7 @@ class CRM_Civirules_Utils {
    * Method to get the civirules base path
    *
    * @return string
-   * @throws CiviCRM_API3_Exception
+   * @throws CRM_Core_Exception
    */
   public static function getCivirulesPath() {
     $container = CRM_Extension_System::singleton()->getFullContainer();
@@ -596,12 +596,11 @@ class CRM_Civirules_Utils {
   public static function getObjectNameFromObject(\CRM_Core_DAO $object)
   {
     static $contact_types = []; // Array with contact ID and value the contact type.
-    // Classes renamed in core: https://github.com/civicrm/civicrm-core/pull/29390
-    $className = 'CRM_Core_DAO_AllCoreTables::getEntityNameForClass';
-    if (!method_exists('CRM_Core_DAO_AllCoreTables', 'getEntityNameForClass')) {
-      $className = 'CRM_Core_DAO_AllCoreTables::getBriefName';
+    $tableName = $object->getTableName();
+    if (empty($tableName)) {
+      return NULL;
     }
-    $objectName = $className(get_class($object));
+    $objectName = CRM_Core_DAO_AllCoreTables::getEntityNameForTable($object->getTableName());
     if ($objectName == 'Contact' && isset($object->contact_type)) {
       $objectName = $object->contact_type;
     } elseif ($objectName == 'Contact' && isset($contact_types[$object->id])) {
@@ -621,6 +620,7 @@ class CRM_Civirules_Utils {
    * Method to check if Api4 is active in the current installation
    *
    * @return bool
+   * @deprecated
    */
   public static function isApi4Active() {
     if (function_exists('civicrm_api4')) {
@@ -678,7 +678,7 @@ class CRM_Civirules_Utils {
           return $group['title'];
         }
       }
-      catch (API_Exception $ex) {
+      catch (CRM_Core_Exception $ex) {
       }
     }
     else {
@@ -688,7 +688,7 @@ class CRM_Civirules_Utils {
           'id' => $groupId,
         ]);
       }
-      catch (CiviCRM_API3_Exception $ex) {
+      catch (CRM_Core_Exception $ex) {
       }
     }
     return $groupId;
@@ -740,7 +740,7 @@ class CRM_Civirules_Utils {
           $units[$optionValue['value']] = $optionValue['label'];
         }
       }
-      catch (API_Exception $ex) {
+      catch (CRM_Core_Exception $ex) {
       }
     }
     else {
@@ -756,7 +756,7 @@ class CRM_Civirules_Utils {
           $units[$optionValue['value']] = $optionValue['label'];
         }
       }
-      catch (CiviCRM_API3_Exception $ex) {
+      catch (CRM_Core_Exception $ex) {
       }
     }
     return $units;
@@ -774,14 +774,14 @@ class CRM_Civirules_Utils {
         try {
           $events = \Civi\Api4\Event::get()
             ->addSelect('title')
-            ->addWhere('id', '=', 1)
+            ->addWhere('id', '=', $eventId)
             ->execute();
           $event = $events->first();
           if ($event['title']) {
             return $event['title'];
           }
         }
-        catch (API_Exception $ex) {
+        catch (CRM_Core_Exception $ex) {
         }
       }
       else {
@@ -794,7 +794,7 @@ class CRM_Civirules_Utils {
             return $eventTitle;
           }
         }
-        catch (CiviCRM_API3_Exception $ex) {
+        catch (CRM_Core_Exception $ex) {
         }
 
       }
@@ -819,7 +819,7 @@ class CRM_Civirules_Utils {
           return $label;
         }
       }
-      catch (CiviCRM_API3_Exception $ex) {
+      catch (CRM_Core_Exception $ex) {
       }
     }
     return NULL;
@@ -854,7 +854,7 @@ class CRM_Civirules_Utils {
         $statusId = $membershipStatus['id'];
       }
     }
-    catch (\API_Exception $ex) {
+    catch (\CRM_Core_Exception $ex) {
     }
     return $statusId;
   }

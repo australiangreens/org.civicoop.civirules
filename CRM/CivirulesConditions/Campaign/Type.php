@@ -12,8 +12,7 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
   private $_conditionParams = array();
 
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/campaign_type/',
-      'rule_condition_id=' . $ruleConditionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/campaign_type', $ruleConditionId);
   }
 
   /**
@@ -83,7 +82,7 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
         ]);
 
       }
-      catch (CiviCRM_API3_Exception $ex) {
+      catch (CRM_Core_Exception $ex) {
       }
     }
     if (!empty($campaignText)) {
@@ -107,7 +106,7 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
           'value' => $params['campaign_type_id'],
           'option_group_id' => 'campaign_type',
         ]);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -128,7 +127,7 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
           'name' => $condition_params['campaign_type_id'],
           'option_group_id' => 'campaign_type',
         ]);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

@@ -1,5 +1,7 @@
 <?php
 
+use Civi\Api4\CaseContact;
+
 /**
  * Daily trigger for case activity
  */
@@ -23,8 +25,7 @@ class CRM_CivirulesCronTrigger_CaseActivity extends CRM_Civirules_Trigger_Cron {
     if ($this->dao->fetch()) {
       $data = [];
       CRM_Core_DAO::storeValues($this->dao, $data);
-      $triggerData = new CRM_Civirules_TriggerData_Cron(0, 'Case', $data);
-      return $triggerData;
+      return new CRM_Civirules_TriggerData_Cron(0, 'Case', $data, NULL, $this);
     }
     return FALSE;
   }
@@ -51,4 +52,39 @@ class CRM_CivirulesCronTrigger_CaseActivity extends CRM_Civirules_Trigger_Cron {
 
     return TRUE;
   }
+
+  /**
+   * Returns additional entities provided in this trigger.
+   *
+   * @return array of CRM_Civirules_TriggerData_EntityDefinition
+   */
+  protected function getAdditionalEntities() {
+    // Adds in "Contact"
+    return parent::getAdditionalEntities();
+  }
+
+  /**
+   * Override alter trigger data.
+   *
+   * When a contribution is added/updated after an online payment is made
+   * contact_id and financial_type_id are not present in the data in the post hook.
+   * So we should retrieve this data from the database if it's not present.
+   */
+  public function alterTriggerData(CRM_Civirules_TriggerData_TriggerData &$triggerData) {
+    $caseData = $triggerData->getEntityData('Case');
+    if (!isset($caseData['id'])) {
+      throw new CRM_Core_Exception('Case ID must be set!');
+    }
+    // @todo: support multiple case contacts?
+    $caseContact = CaseContact::get(FALSE)
+      ->addWhere('case_id', '=', $caseData['id'])
+      ->execute()
+      ->first();
+    if (!empty($caseContact['contact_id'])) {
+      $triggerData->setEntityData('Contact', ['id' => $caseContact['contact_id']]);
+    }
+
+    parent::alterTriggerData($triggerData);
+  }
+
 }

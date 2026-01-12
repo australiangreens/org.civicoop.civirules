@@ -10,19 +10,27 @@
     <url desc="Support">http://www.civicoop.org</url>
     <url desc="Licensing">http://civicrm.org/licensing</url>
   </urls>
-  <maintainer>
-    <author>CiviCooP</author>
-    <email>helpdesk@civicoop.org</email>
-  </maintainer>
-  <releaseDate>2024-08-27</releaseDate>
-  <version>3.12</version>
+  <authors>
+    <author>
+      <name>CiviCooP</name>
+      <email>helpdesk@civicoop.org</email>
+      <role>Maintainer</role>
+    </author>
+    <author>
+      <name>MJW</name>
+      <email>mjw@mjwconsult.co.uk</email>
+      <role>Maintainer</role>
+    </author>
+  </authors>
+  <releaseDate>2025-12-23</releaseDate>
+  <version>3.31.0</version>
   <develStage>stable</develStage>
   <compatibility>
-    <ver>5.49</ver>
+    <ver>5.82</ver>
   </compatibility>
   <civix>
     <namespace>CRM/Civirules</namespace>
-    <format>23.02.1</format>
+    <format>25.10.1</format>
   </civix>
   <classloader>
     <psr0 prefix="CRM_" path="."/>
@@ -31,8 +39,8 @@
   <mixins>
     <mixin>menu-xml@1.0.0</mixin>
     <mixin>mgd-php@1.0.0</mixin>
-    <mixin>smarty-v2@1.0.1</mixin>
-    <mixin>entity-types-php@1.0.0</mixin>
+    <mixin>entity-types-php@2.0.0</mixin>
+    <mixin>smarty@1.0.3</mixin>
   </mixins>
-  <upgrader>CRM_Civirules_Upgrader</upgrader>
+  <upgrader>CiviMix\Schema\Civirules\AutomaticUpgrader</upgrader>
 </extension>

@@ -6,6 +6,8 @@
  * @license AGPL-3.0
  */
 
+use CRM_Civirules_ExtensionUtil as E;
+
 class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
 
   /**
@@ -17,6 +19,16 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
    * @var string
    */
   protected $op;
+
+  public static ?CRM_Civirules_TriggerData_TriggerData $triggerDataCache = NULL;
+
+  public function __construct($trigger = NULL) {
+    if (isset($trigger)) {
+      $this->op = $trigger['op'] ?? NULL;
+      $this->objectName = $trigger['object_name'] ?? NULL;
+    }
+    parent::__construct($trigger);
+  }
 
   /**
    * Getter for object name
@@ -104,12 +116,21 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
     if (!in_array($op, $extensionConfig->getValidTriggerOperations())) {
       return;
     }
+    // Delete the cached trigger data in case we modify the same record twice in one process.
+    self::$triggerDataCache = NULL;
 
     // find matching rules for this objectName and op
     $triggers = CRM_Civirules_BAO_CiviRulesRule::findRulesByObjectNameAndOp($objectName, $op);
     foreach($triggers as $trigger) {
       if ($trigger instanceof CRM_Civirules_Trigger_Post) {
+        if (self::$triggerDataCache) {
+          $trigger->setTriggerData(self::$triggerDataCache);
+        }
         $trigger->triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
+        // Capture the trigger data for the first trigger so we don't have to query again on future triggers.
+        if ($trigger->hasTriggerData()) {
+          self::$triggerDataCache ??= $trigger->getTriggerData();
+        }
       }
     }
   }
@@ -152,9 +173,9 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
     if ($op === 'edit' || $op === 'delete') {
       //set also original data with an edit event
       $oldData = CRM_Civirules_Utils_PreData::getPreData($entity, $objectId, $eventID);
-      $triggerData = new CRM_Civirules_TriggerData_Edit($entity, $objectId, $data, $oldData);
+      $triggerData = new CRM_Civirules_TriggerData_Edit($entity, $objectId, $data, $oldData, $this);
     } else {
-      $triggerData = new CRM_Civirules_TriggerData_Post($entity, $objectId, $data);
+      $triggerData = new CRM_Civirules_TriggerData_Post($entity, $objectId, $data, $this);
     }
 
     $this->alterTriggerData($triggerData);
@@ -197,6 +218,58 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
    */
   public function alterPreData($data, $op, $objectName, $objectId, $params, $eventID) {
     return $data;
+  }
+
+  /**
+   * Get various types of help text for the trigger:
+   *   - triggerDescription: When choosing from a list of triggers, explains what the trigger does.
+   *   - triggerDescriptionWithParams: When a trigger has been configured for a rule provides a
+   *       user friendly description of the trigger and params (see $this->getTriggerDescription())
+   *   - triggerParamsHelp (default): If the trigger has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context = 'triggerParamsHelp'): string {
+    switch ($context) {
+      case 'triggerDescription':
+        return E::ts('Trigger on %1', [1 => $this->getObjectName()]);
+
+      case 'triggerDescriptionWithParams':
+        return $this->getTriggerDescription();
+
+      case 'triggerParamsHelp':
+          switch ($this->getOp()) {
+            case 'create|edit':
+              return E::ts('Select if you want to trigger on Create and/or Edit');
+
+            case 'delete':
+            default:
+              return '';
+          }
+      default:
+        return parent::getHelpText($context);
+    }
+  }
+
+  /**
+   * Returns a description of this trigger
+   *
+   * @return string
+   */
+  public function getTriggerDescription(): string {
+    $text = parent::getTriggerDescription();
+    $options = CRM_CivirulesTrigger_Form_Form::getTriggerOptions();
+    $triggerOps = explode(',', $this->triggerParams['trigger_op'] ?? '');
+    foreach ($options as $option) {
+      if (in_array($option['id'], $triggerOps)) {
+        $triggerOptions[] = $option['text'];
+      }
+    }
+    if (empty($text) && !empty($triggerOptions)) {
+      $text = E::ts('Trigger on %1', [1 => implode(', ', $triggerOptions ?? [])]);
+    }
+    return $text;
   }
 
 }

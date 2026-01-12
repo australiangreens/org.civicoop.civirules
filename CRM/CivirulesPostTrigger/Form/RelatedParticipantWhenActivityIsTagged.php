@@ -4,12 +4,17 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
 
+use Civi\Api4\Tag;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged extends CRM_CivirulesTrigger_Form_Form {
 
   protected $entityTable = 'civicrm_activity';
 
+  /**
+   * @return array
+   * @throws \CRM_Core_Exception
+   */
   public static function getActivityCustomFields() {
     $customGroups = civicrm_api3('CustomGroup', 'get', ['extends' => 'Activity', 'options' => ['limit' => 0]]);
     $activityCustomFields = [];
@@ -25,7 +30,6 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
   /**
    * Overridden parent method to build form
    *
-   * @access public
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_id');
@@ -51,7 +55,6 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
    * Overridden parent method to set default values
    *
    * @return array $defaultValues
-   * @access public
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
@@ -72,21 +75,17 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
    * Overridden parent method to process form data after submission
    *
    * @throws Exception when rule condition not found
-   * @access public
    */
   public function postProcess() {
-    $data['event_id_custom_field'] = $this->_submitValues['event_id_custom_field'];
-    $data['activity_type_id'] = [];
+    $this->triggerParams['event_id_custom_field'] = $this->getSubmittedValue('event_id_custom_field');
+    $this->triggerParams['activity_type_id'] = [];
     if (isset($this->_submitValues['activity_type_id'])) {
-      $data['activity_type_id'] = $this->_submitValues['activity_type_id'];
+      $this->triggerParams['activity_type_id'] = $this->getSubmittedValue('activity_type_id');
     }
-    $data['tag_ids'] = [];
+    $this->triggerParams['tag_ids'] = [];
     if (isset($this->_submitValues['tag_ids'])) {
-      $data['tag_ids'] = $this->_submitValues['tag_ids'];
+      $this->triggerParams['tag_ids'] = $this->getSubmittedValue('tag_ids');
     }
-    $this->rule->trigger_params = serialize($data);
-    $this->rule->save();
-
     parent::postProcess();
   }
 
@@ -94,55 +93,19 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
    * Method to get the tags for the entity
    *
    * @return array
+   * @throws \CRM_Core_Exception
+   * @throws \Civi\API\Exception\UnauthorizedException
    */
   public function getEntityTags() {
-    if (CRM_Civirules_Utils::isApi4Active()) {
-      return $this->getApi4Tags();
-    }
-    else {
-      return $this->getApi3Tags();
-    }
-  }
-
-  /**
-   * Method to get all contact tags with API4
-   */
-  private function getApi4Tags() {
     $tags = [];
-    try {
-      $apiTags = \Civi\Api4\Tag::get()
-        ->addSelect('name')
-        ->addWhere('used_for', 'LIKE', '%' . $this->entityTable . '%')
-        ->execute();
-      foreach ($apiTags as $apiTag) {
-        if (!isset($tags[$apiTag['id']])) {
-          $tags[$apiTag['id']] = $apiTag['name'];
-        }
+    $apiTags = Tag::get(FALSE)
+      ->addSelect('name')
+      ->addWhere('used_for', 'LIKE', '%' . $this->entityTable . '%')
+      ->execute();
+    foreach ($apiTags as $apiTag) {
+      if (!isset($tags[$apiTag['id']])) {
+        $tags[$apiTag['id']] = $apiTag['name'];
       }
-    }
-    catch (API_Exception $ex) {
-    }
-    return $tags;
-  }
-
-  /**
-   * Method to get all contact tags with API3
-   */
-  private function getApi3Tags() {
-    $tags = [];
-    try {
-      $apiTags = civicrm_api3('Tag', 'get', [
-        'return' => ["name"],
-        'used_for' => ['LIKE' => "%" . $this->entityTable ."%"],
-        'options' => ['limit' => 0],
-      ]);
-      foreach ($apiTags['values'] as $apiTagId => $apiTag) {
-        if (!isset($tags[$apiTagId])) {
-          $tags[$apiTagId] = $apiTag['name'];
-        }
-      }
-    }
-    catch (CiviCRM_API3_Exception $ex) {
     }
     return $tags;
   }

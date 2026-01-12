@@ -74,7 +74,7 @@ class CRM_CivirulesConditions_Form_Status extends CRM_CivirulesConditions_Form_F
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
     $defaultValues['entity'] = $this->ruleConditionEntity;
-    $data = unserialize($this->ruleCondition->condition_params);
+    $data = !empty($this->ruleCondition->condition_params) ? unserialize($this->ruleCondition->condition_params) : [];
 
     // Old versions may have stored the condition param as eg membership_status_id instead of the generic status_id.
     // Also may not have been array but a single value, so convert here.
@@ -114,7 +114,7 @@ class CRM_CivirulesConditions_Form_Status extends CRM_CivirulesConditions_Form_F
    *
    * @return string
    */
-  protected function getHelpText() {
+  public function getHelpText() {
     switch ($this->ruleConditionName) {
       case 'contact_has_recurring':
         return E::ts('This condition checks if the contact has any recurring contributions that are (not) in one of the statuses selected.');

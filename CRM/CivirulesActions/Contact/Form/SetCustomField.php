@@ -31,7 +31,7 @@ class CRM_CivirulesActions_Contact_Form_SetCustomField extends CRM_CivirulesActi
         FALSE);
 
     // set defaults
-    $this->setDefaults(unserialize($this->ruleAction->action_params));
+    $this->setDefaults($this->ruleAction->unserializeParams());
 
     $this->addButtons(array(
       array('type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE,),
@@ -46,8 +46,8 @@ class CRM_CivirulesActions_Contact_Form_SetCustomField extends CRM_CivirulesActi
   public function postProcess() {
     $values = $this->exportValues();
     $configuration = [
-        'field_id'  => CRM_Utils_Array::value('field_id', $values),
-        'value'     => CRM_Utils_Array::value('value', $values),
+        'field_id'  => $values['field_id'] ?? NULL,
+        'value'     => $values['value'] ?? NULL,
     ];
 
     $this->ruleAction->action_params = serialize($configuration);

@@ -78,7 +78,7 @@ class CRM_CivirulesConditions_Membership_Type extends CRM_Civirules_Condition {
           'return' => 'name',
           'id' => $params['membership_type_ids'],
         ]);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -105,7 +105,7 @@ class CRM_CivirulesConditions_Membership_Type extends CRM_Civirules_Condition {
           'return' => 'id',
           'name' => $condition_params['membership_type_ids'],
         ]);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -121,7 +121,7 @@ class CRM_CivirulesConditions_Membership_Type extends CRM_Civirules_Condition {
    * @return bool|string
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/membershiptype', 'rule_condition_id=' . $ruleConditionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/membershiptype', $ruleConditionId);
   }
 
   /**
@@ -162,7 +162,7 @@ class CRM_CivirulesConditions_Membership_Type extends CRM_Civirules_Condition {
       }
       return E::ts('Membership type %1 %2', [1 => $operator, 2=> implode(', ', $membershipTypeLabels)]);
     }
-    catch (CiviCRM_API3_Exception $ex) {}
+    catch (CRM_Core_Exception $ex) {}
     return '';
   }
 

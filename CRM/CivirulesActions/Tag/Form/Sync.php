@@ -11,13 +11,7 @@ class CRM_CivirulesActions_Tag_Form_Sync extends CRM_CivirulesActions_Form_Form 
    * @access protected
    */
   protected function getTags() {
-    if (CRM_Civirules_Utils::isApi4Active()) {
-      $tags = CRM_CivirulesActions_Tag_EntityTag::getApi4Tags('civicrm_contact');
-    }
-    else {
-      $tags = CRM_CivirulesActions_Tag_EntityTag::getApi3Tags('civicrm_contact');
-    }
-    return $tags;
+    return CRM_CivirulesActions_Tag_EntityTag::getApi4Tags('civicrm_contact');
   }
 
 
@@ -57,7 +51,7 @@ class CRM_CivirulesActions_Tag_Form_Sync extends CRM_CivirulesActions_Form_Form 
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->ruleAction->action_params);
+    $data = $this->ruleAction->unserializeParams();
     if (!empty($data['type'])) {
       $defaultValues['type'] = $data['type'];
     }

@@ -41,7 +41,7 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CiviCRM_API3_Exception $e) {
+        } catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -62,7 +62,7 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CiviCRM_API3_Exception $e) {
+        } catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -120,7 +120,7 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
           break;
       }
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
       Civi::log()->error(ts('Unexpected error from API Contribution getcount in ') . __METHOD__
         . ts(', error message: ') . $ex->getMessage());
     }
@@ -136,7 +136,7 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
    * @access public
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/contribution/xthcontribution/', 'rule_condition_id='.$ruleConditionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/contribution/xthcontribution', $ruleConditionId);
   }
 
   /**
