@@ -31,7 +31,7 @@ class CRM_CivirulesActions_Contact_Form_CopyCustomField extends CRM_CivirulesAct
         TRUE);
 
     // set defaults
-    $this->setDefaults(unserialize($this->ruleAction->action_params));
+    $this->setDefaults($this->ruleAction->unserializeParams());
 
     $this->addButtons(array(
       array('type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE,),
@@ -46,8 +46,8 @@ class CRM_CivirulesActions_Contact_Form_CopyCustomField extends CRM_CivirulesAct
   public function postProcess() {
     $values = $this->exportValues();
     $configuration = [
-        'copy_from_field_id' => CRM_Utils_Array::value('copy_from_field_id', $values),
-        'field_id'  => CRM_Utils_Array::value('field_id', $values),
+        'copy_from_field_id' => $values['copy_from_field_id'] ?? NULL,
+        'field_id'  => $values['field_id'] ?? NULL,
     ];
 
     $this->ruleAction->action_params = serialize($configuration);

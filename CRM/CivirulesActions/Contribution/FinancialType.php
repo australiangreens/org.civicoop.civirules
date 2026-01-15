@@ -24,7 +24,7 @@ class CRM_CivirulesActions_Contribution_FinancialType extends CRM_Civirules_Acti
     );
     try {
       civicrm_api3('Contribution', 'Create', $params);
-    } catch (CiviCRM_API3_Exception $ex) {}
+    } catch (CRM_Core_Exception $ex) {}
   }
 
   /**
@@ -40,7 +40,7 @@ class CRM_CivirulesActions_Contribution_FinancialType extends CRM_Civirules_Acti
         'return' => 'name',
         'id' => $action_params['financial_type_id'],
       ]);
-    } catch (CiviCRM_API3_Exception $e) {
+    } catch (CRM_Core_Exception $e) {
     }
     return $action_params;
   }
@@ -57,7 +57,7 @@ class CRM_CivirulesActions_Contribution_FinancialType extends CRM_Civirules_Acti
         'return' => 'id',
         'name' => $action_params['financial_type_id'],
       ]);
-    } catch (CiviCRM_API3_Exception $e) {
+    } catch (CRM_Core_Exception $e) {
     }
     return parent::importActionParameters($action_params);
   }
@@ -72,7 +72,7 @@ class CRM_CivirulesActions_Contribution_FinancialType extends CRM_Civirules_Acti
    * @access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/contribution/financialtype', 'rule_action_id='.$ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/contribution/financialtype', $ruleActionId);
   }
 
   /**

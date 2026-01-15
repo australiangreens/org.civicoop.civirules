@@ -33,7 +33,7 @@ class CRM_CivirulesConditions_Form_Contact_HasActivityInCampaign extends CRM_Civ
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->ruleCondition->condition_params);
+    $data = $this->ruleCondition->unserializeParams();
     if (!empty($data['activity_type_id'])) {
       $defaultValues['activity_type_id'] = $data['activity_type_id'];
     }
@@ -78,7 +78,7 @@ class CRM_CivirulesConditions_Form_Contact_HasActivityInCampaign extends CRM_Civ
       }
       asort($activityTypeList);
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
       $activityTypeList = array();
     }
     return $activityTypeList;

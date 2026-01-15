@@ -34,7 +34,7 @@ class CRM_CivirulesConditions_Form_Contact_LivesInCountry extends CRM_CivirulesC
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->ruleCondition->condition_params);
+    $data = $this->ruleCondition->unserializeParams();
     if (!empty($data['country_id'])) {
       $defaultValues['country_id'] = $data['country_id'];
     }
@@ -94,7 +94,7 @@ class CRM_CivirulesConditions_Form_Contact_LivesInCountry extends CRM_CivirulesC
         $countries[$apiCountryId] = $apiCountry['name'];
       }
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
     }
     return $countries;
   }
@@ -116,7 +116,7 @@ class CRM_CivirulesConditions_Form_Contact_LivesInCountry extends CRM_CivirulesC
         $locationTypes[$apiLocationTypeId] = $apiLocationType['display_name'];
       }
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
     }
     return $locationTypes;
   }

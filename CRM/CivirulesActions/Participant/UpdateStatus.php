@@ -56,7 +56,7 @@ class CRM_CivirulesActions_Participant_UpdateStatus extends CRM_CivirulesActions
           'return' => 'name',
           'id' => $action_params['status_id'],
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -75,7 +75,7 @@ class CRM_CivirulesActions_Participant_UpdateStatus extends CRM_CivirulesActions
           'return' => 'id',
           'name' => $action_params['status_id'],
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);
@@ -91,7 +91,7 @@ class CRM_CivirulesActions_Participant_UpdateStatus extends CRM_CivirulesActions
    * @access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/action/participant_update_status', 'rule_action_id='.$ruleActionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/participant_update_status', $ruleActionId);
   }
 
   /**
@@ -100,7 +100,7 @@ class CRM_CivirulesActions_Participant_UpdateStatus extends CRM_CivirulesActions
    *
    * @return string
    * @access public
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public function userFriendlyConditionParams() {
     $return = '';

@@ -87,7 +87,7 @@ class CRM_CivirulesConditions_Case_CaseCustomFieldChanged extends CRM_Civirules_
         unset($params['case_custom_field_id']);
         $params['case_custom_field_group'] = $customGroup['name'];
         $params['case_custom_field_field'] = $customField['name'];
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -110,7 +110,7 @@ class CRM_CivirulesConditions_Case_CaseCustomFieldChanged extends CRM_Civirules_
         $condition_params['case_custom_field_id'] = $customField['id'];
         unset($condition_params['case_custom_field_field']);
         unset($condition_params['case_custom_field_group']);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -128,8 +128,7 @@ class CRM_CivirulesConditions_Case_CaseCustomFieldChanged extends CRM_Civirules_
    * @abstract
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/casecustomfield', 'rule_condition_id='
-      . $ruleConditionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/casecustomfield', $ruleConditionId);
   }
 
   /**
@@ -153,7 +152,7 @@ class CRM_CivirulesConditions_Case_CaseCustomFieldChanged extends CRM_Civirules_
       }
       $friendlyText .= implode(",", $fields);
     }
-    catch (CiviCRM_API3_Exception $ex) {
+    catch (CRM_Core_Exception $ex) {
     }
     return $friendlyText;
   }

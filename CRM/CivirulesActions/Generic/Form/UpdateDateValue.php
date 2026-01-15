@@ -41,7 +41,7 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
         ts('Operand'));
 
     // set defaults
-    $this->setDefaults(unserialize($this->ruleAction->action_params));
+    $this->setDefaults($this->ruleAction->unserializeParams());
 
     $this->addButtons(array(
       array('type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE,),
@@ -182,9 +182,9 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
   public function postProcess() {
     $values = $this->exportValues();
     $configuration = [
-      'source_field_id'  => CRM_Utils_Array::value('source_field_id', $values),
-      'target_field_id'  => CRM_Utils_Array::value('target_field_id', $values),
-      'update_operation' => CRM_Utils_Array::value('update_operation', $values),
+      'source_field_id'  => $values['source_field_id'] ?? NULL,
+      'target_field_id'  => $values['target_field_id'] ?? NULL,
+      'update_operation' => $values['update_operation'] ?? NULL,
       'update_operand'   => CRM_Utils_Array::value('update_operand', $values, 0),
     ];
 

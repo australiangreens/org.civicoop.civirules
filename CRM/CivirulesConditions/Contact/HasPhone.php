@@ -50,7 +50,7 @@ class CRM_CivirulesConditions_Contact_HasPhone extends CRM_Civirules_Condition {
    * @abstract
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/condition/contact_hasphone/', 'rule_condition_id='.$ruleConditionId);
+    return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/contact_hasphone', $ruleConditionId);
   }
 
   /**
@@ -98,7 +98,7 @@ class CRM_CivirulesConditions_Contact_HasPhone extends CRM_Civirules_Condition {
           'value' => $params['phone_type'],
           'option_group_id' => 'phone_type',
         ]);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -108,7 +108,7 @@ class CRM_CivirulesConditions_Contact_HasPhone extends CRM_Civirules_Condition {
           'return' => 'name',
           'id' => $params['location_type'],
         ]);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -129,7 +129,7 @@ class CRM_CivirulesConditions_Contact_HasPhone extends CRM_Civirules_Condition {
           'name' => $condition_params['phone_type'],
           'option_group_id' => 'phone_type',
         ]);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -139,7 +139,7 @@ class CRM_CivirulesConditions_Contact_HasPhone extends CRM_Civirules_Condition {
           'return' => 'id',
           'name' => $condition_params['location_type'],
         ]);
-      } catch (\CiviCRM_Api3_Exception $e) {
+      } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

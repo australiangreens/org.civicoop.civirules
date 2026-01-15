@@ -13,15 +13,9 @@ class CRM_CivirulesActions_Tag_ContactTagRemove extends CRM_Civirules_Action {
     $contactId = $triggerData->getContactId();
     $actionParams = $this->getActionParameters();
     $entityTable = "civicrm_contact";
-    $api4 = CRM_Civirules_Utils::isApi4Active();
     if (isset($actionParams['tag_id'])) {
       foreach ($actionParams['tag_id'] as $tagId) {
-        if ($api4) {
-          CRM_CivirulesActions_Tag_EntityTag::deleteApi4EntityTag($entityTable, $contactId, $tagId);
-        }
-        else {
-          CRM_CivirulesActions_Tag_EntityTag::deleteApi3EntityTag($entityTable, $contactId, $tagId);
-        }
+        CRM_CivirulesActions_Tag_EntityTag::deleteApi4EntityTag($entityTable, $contactId, $tagId);
       }
     }
   }
@@ -36,7 +30,7 @@ class CRM_CivirulesActions_Tag_ContactTagRemove extends CRM_Civirules_Action {
    */
   public function getExtraDataInputUrl($ruleActionId) {
     return CRM_Utils_System::url('civicrm/civirule/form/action/tag/entitytag', 'tn=civicrm_contact&rule_action_id='
-      . $ruleActionId);
+      . $ruleActionId, FALSE, NULL, FALSE, FALSE, TRUE);
   }
 
   /**
@@ -51,12 +45,7 @@ class CRM_CivirulesActions_Tag_ContactTagRemove extends CRM_Civirules_Action {
     $actionParams = $this->getActionParameters();
     $labels = [];
     $tableName = "civicrm_contact";
-    if (CRM_Civirules_Utils::isApi4Active()) {
-      $tags = CRM_CivirulesActions_Tag_EntityTag::getApi4Tags($tableName);
-    }
-    else {
-      $tags = CRM_CivirulesActions_Tag_EntityTag::getApi3Tags($tableName);
-    }
+    $tags = CRM_CivirulesActions_Tag_EntityTag::getApi4Tags($tableName);
 
     if (isset($actionParams['tag_id'])) {
       foreach ($actionParams['tag_id'] as $tagId) {
@@ -82,7 +71,7 @@ class CRM_CivirulesActions_Tag_ContactTagRemove extends CRM_Civirules_Action {
           'return' => 'name',
           'id' => $j,
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -101,7 +90,7 @@ class CRM_CivirulesActions_Tag_ContactTagRemove extends CRM_Civirules_Action {
           'return' => 'id',
           'name' => $j,
         ]);
-      } catch (CiviCRM_API3_Exception $e) {
+      } catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);

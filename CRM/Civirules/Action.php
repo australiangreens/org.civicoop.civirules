@@ -6,6 +6,8 @@
  * @license AGPL-3.0
  */
 
+use CRM_Civirules_ExtensionUtil as E;
+
 abstract class CRM_Civirules_Action {
 
   protected array $ruleAction = [];
@@ -110,6 +112,16 @@ abstract class CRM_Civirules_Action {
   abstract public function getExtraDataInputUrl($ruleActionId);
 
   /**
+   * @param string $url
+   * @param int $ruleActionID
+   *
+   * @return string
+   */
+  public function getFormattedExtraDataInputUrl(string $url, int $ruleActionID): string {
+    return CRM_Utils_System::url($url, 'rule_action_id=' . $ruleActionID, FALSE, NULL, FALSE, FALSE, TRUE);
+  }
+
+  /**
    * Returns a user friendly text explaining the condition params
    * e.g. 'Older than 65'
    *
@@ -141,7 +153,7 @@ abstract class CRM_Civirules_Action {
    * @param \CRM_Civirules_TriggerData_TriggerData|NULL $triggerData
    * @param string $level Should be one of \Psr\Log\LogLevel
    */
-  protected function logAction($message, CRM_Civirules_TriggerData_TriggerData $triggerData=null, $level=\Psr\Log\LogLevel::INFO) {
+  protected function logAction($message, ?CRM_Civirules_TriggerData_TriggerData $triggerData=null, $level=\Psr\Log\LogLevel::INFO) {
     $context = [];
     $context['message'] = $message;
     $context['rule_id'] = $this->ruleAction['rule_id'];
@@ -155,9 +167,18 @@ abstract class CRM_Civirules_Action {
     $context['action_label'] = CRM_Civirules_BAO_Action::getActionLabelWithId($this->ruleAction['action_id']);
     $context['action_parameters'] = $this->userFriendlyConditionParams();
     $context['contact_id'] = $triggerData ? $triggerData->getContactId() : - 1;
-    $msg = "{action_label} (ID: {rule_action_id})\r\n\r\n{message}\r\n\r\nRule: '{rule_title}' with id {rule_id}";
+    $msg = E::ts(
+      "Rule: '%1' with id %2: Action: %3 with id %4: %5",
+      [
+        1 => $context['rule_title'],
+        2 => $context['rule_id'],
+        3 => $context['action_label'],
+        4 => $context['rule_action_id'],
+        5 => $message,
+      ]
+    );
     if ($context['contact_id'] > 0) {
-      $msg .= "\r\nFor contact: {contact_id}";
+      $msg .= ": " . E::ts('For contact: %1', [1 => $context['contact_id']]);
     }
     CRM_Civirules_Utils_LoggerFactory::log($msg, $context, $level);
   }
@@ -168,4 +189,46 @@ abstract class CRM_Civirules_Action {
   public function getRuleId() {
     return $this->ruleAction['rule_id'];
   }
+
+  /**
+   * Get various types of help text for the action:
+   *   - actionDescription: When choosing from a list of actions, explains what the action does.
+   *   - actionDescriptionWithParams: When a action has been configured for a rule provides a
+   *       user friendly description of the action and params (see $this->userFriendlyConditionParams())
+   *   - actionParamsHelp (default): If the action has configurable params, show this help text when configuring
+   * @param string $context
+   *
+   * @return string
+   */
+  public function getHelpText(string $context): string {
+    // Child classes should override this function
+
+    switch ($context) {
+      case 'actionDescriptionWithParams':
+        return $this->userFriendlyConditionParams();
+
+      case 'actionDescription':
+      case 'actionParamsHelp':
+      default:
+        // Historically getHelpText() was on the form class.
+        // But we have no way to get the form class - only the path via getExtraDataInputUrl()
+        // The Form *does* have access to the action class via $this->actionClass so if getHelpText()
+        //   is on the actionClass we can just do $this->actionClass->getHelpText().
+
+        // getHelpText() doesn't exist on action class.
+        // Try to get Form class for action and see if getHelpText() exists there
+        $classBits = explode('_', get_class($this));
+
+        $formClass = $classBits[0] . '_' . $classBits[1] . '_Form';
+        for ($i = 2; $i < count($classBits); $i++) {
+          $formClass .= '_' . $classBits[$i];
+        }
+        if (class_exists($formClass) && method_exists($formClass, 'getHelpText')) {
+          $helpText = (new $formClass())->getHelpText();
+        }
+    }
+
+    return $helpText ?? '';
+  }
+
 }

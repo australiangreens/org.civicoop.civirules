@@ -8,6 +8,7 @@ if (!class_exists("\\Psr\\Log\\LogLevel")) {
   require_once('psr/log/LogLevel.php');
 }
 
+use Civi\Core\ClassScanner;
 use CRM_Civirules_ExtensionUtil as E;
 
 /**
@@ -78,56 +79,6 @@ function civirules_civicrm_enable() {
 }
 
 /**
- * Implementation of hook_civicrm_managed
- *
- * Generate a list of entities to create/deactivate/delete when this module
- * is installed, disabled, uninstalled.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
- */
-function civirules_civicrm_managed(&$entities) {
-  // First create a backup because the managed entities are gone
-  // so the actions and conditions table are first going to be emptied
-  _civirules_upgrade_to_2x_backup();
-  // Check triggers, actions and conditions
-  CRM_Civirules_Utils_Upgrader::insertTriggersFromJson(E::path('sql/triggers.json'));
-  CRM_Civirules_Utils_Upgrader::insertActionsFromJson(E::path('sql/actions.json'));
-  CRM_Civirules_Utils_Upgrader::insertConditionsFromJson(E::path('sql/conditions.json'));
-}
-
-/**
- * Helper function to create a backup if the current schema version is of a 1.x version.
- * We need this backup to restore missing actions and rules after upgrading.
- */
-function _civirules_upgrade_to_2x_backup() {
-  // Check schema version
-  // Schema version 1023 is inserted by a 2x version
-  // So if the schema version is lower than 1023 we are still on a 1x version.
-  $schemaVersion = CRM_Core_DAO::singleValueQuery("SELECT schema_version FROM civicrm_extension WHERE `name` = 'CiviRules'");
-  if ($schemaVersion >= 1023) {
-    return; // No need for preparing the update.
-  }
-
-  if (!CRM_Core_DAO::checkTableExists('civirule_rule_action_backup')) {
-    // Backup the current action and condition connected to a civirule
-    CRM_Core_DAO::executeQuery("
-      CREATE TABLE `civirule_rule_action_backup`
-      SELECT `civirule_rule_action`.*, `civirule_action`.`class_name` as `action_class_name`
-      FROM `civirule_rule_action`
-      INNER JOIN `civirule_action` ON `civirule_rule_action`.`action_id` = `civirule_action`.`id`
-    ");
-  }
-  if (!CRM_Core_DAO::checkTableExists('civirule_rule_action_backup')) {
-    CRM_Core_DAO::executeQuery("
-      CREATE TABLE `civirule_rule_condition_backup`
-      SELECT `civirule_rule_condition`.*, `civirule_condition`.`class_name` as `condition_class_name`
-      FROM `civirule_rule_condition`
-      INNER JOIN `civirule_condition` ON `civirule_rule_condition`.`condition_id` = `civirule_condition`.`id`
-    ");
-  }
-}
-
-/**
  * By default we use the Symfony event for preInsert, preUpdate, postInsert etc.
  * However there a couple of entities which do not work yet with the symfony events.
  *
@@ -141,6 +92,7 @@ function _civirules_upgrade_to_2x_backup() {
  * @param $params
  */
 function civirules_civicrm_pre($op, $objectName, $objectId, &$params) {
+  CRM_Civirules_Utils_ContributionTrigger::pre($op, $objectName, $objectId, $params);
   // New style pre/post Delete/Insert/Update events exist from 5.34.
   if (civirules_use_prehook($op, $objectName, $objectId, $params)) {
     try {
@@ -251,6 +203,10 @@ function civirules_trigger_postinsert($event) {
 function civirules_trigger_preupdate(\Civi\Core\DAO\Event\PreUpdate $event) {
   try {
     $objectName = CRM_Civirules_Utils::getObjectNameFromObject($event->object);
+    if (empty($objectName)) {
+      // If the object name is empty, we cannot proceed with the pre-update.
+      return;
+    }
     $objectId = $event->object->id;
     $eventID = $event->eventID ?? 1;
     $params = [];
@@ -435,4 +391,39 @@ function civirules_civicrm_permission(&$permissions) {
     'label' => E::ts('CiviRules: administer CiviRules extension'),
     'description' => E::ts('Perform all CiviRules administration tasks in CiviCRM'),
   ];
+}
+
+/**
+ * We can't use mixin scan-classes directly because we need to exclude the ConfigItems classes
+ *   since that will fail if ConfigItems extension is not installed because scan-classes
+ *   picks them up automatically.
+ *
+ * @param $classes
+ *
+ * @return void
+ *
+ * Implements hook_civicrm_scanClasses
+ *
+ * @see CRM_Utils_Hook::scanClasses()
+ */
+function civirules_civicrm_scanClasses(&$classes) {
+  ClassScanner::scanFolders($classes, __DIR__, 'CRM', '_');
+  ClassScanner::scanFolders($classes, __DIR__, 'Civi', '\\', ';(ConfigItems);');
+}
+
+/**
+ * Intercept form functions
+ * @param $formName
+ * @param $form
+ */
+function civirules_civicrm_buildForm($formName, &$form) {
+  switch ($formName) {
+    case 'CRM_Civirules_Form_Rule':
+      Civi::service('angularjs.loader')->addModules([
+        'afsearchRuleConditions',
+        'afsearchRuleActions',
+        'afsearchRuleTriggerHistory'
+      ]);
+      break;
+  }
 }

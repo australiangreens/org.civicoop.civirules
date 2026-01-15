@@ -69,7 +69,7 @@ class CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring extends CRM_Civ
           $isConditionValid = TRUE;
         }
       }
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (CRM_Core_Exception $ex) {
       if ($this->conditionParams['has_recurring']) {
         $isConditionValid = FALSE;
       } else {
@@ -92,7 +92,8 @@ class CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring extends CRM_Civ
       [
         'rule_condition_id' => $ruleConditionId,
         'condition_name' => $this->getConditionName(),
-      ]
+      ],
+      FALSE, NULL, FALSE, FALSE, TRUE
     );
   }
 
